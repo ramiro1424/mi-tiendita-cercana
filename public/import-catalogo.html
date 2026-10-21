@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Importar catálogo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body style="font-family: system-ui; padding: 16px;">
+  <h1>Importar catálogo (300)</h1>
+  <p>Debes estar logueado. Pulsa el botón para importar/actualizar <code>/catalogo</code>.</p>
+
+  <button id="btn">Importar ahora</button>
+  <pre id="log" style="white-space:pre-wrap; background:#f6f7f9; padding:12px; border-radius:8px; margin-top:12px;"></pre>
+
+  <!-- 1) Inicializa Firebase (tu archivo existente) -->
+  <script type="module" src="./js/firebase-init.js"></script>
+
+  <!-- 2) Script de importación -->
+  <script type="module">
+    import { db, ensureLogin } from './js/firebase-init.js';
+    import { doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const CSV_URL = './data/catalogo.csv'; // <-- Asegúrate que este archivo exista
+
+    const $log = document.getElementById('log');
+    const log = (m) => { $log.textContent += m + '\n'; };
+
+    // Parser sencillo de CSV (cabeceras en la primera fila).
+    // Si tu CSV puede traer comas entre comillas, usa un parser más completo.
+    function parseCSV(text) {
+      // quita BOM si existe
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length <= 1) return [];
+
+      const headers = lines.shift().split(',').map(h => h.trim());
+      return lines.map(line => {
+        const parts = line.split(','); // CSV simple (sin comillas complejas)
+        const row = {};
+        headers.forEach((h, i) => (row[h] = (parts[i] ?? '').trim()));
+        // Normalizaciones:
+        row.precioSugerido = Number(row.precioSugerido || 0);
+        row.activo = String(row.activo || 'true').toLowerCase() !== 'false';
+        return row;
+      });
+    }
+
+    async function importCatalogo() {
+      try {
+        // 1) Asegura sesión (abre popup si no lo estás)
+        await ensureLogin();
+
+        // 2) Carga CSV
+        log('Cargando CSV…');
+        const txt = await fetch(CSV_URL).then(r => {
+          if (!r.ok) throw new Error('No se pudo leer ' + CSV_URL);
+          return r.text();
+        });
+        const rows = parseCSV(txt);
+        log(`Leídas ${rows.length} filas.`);
+
+        // 3) Guarda en /catalogo en tandas (Promise.all simple, <=400 a la vez)
+        let ok = 0;
+        let pending = [];
+
+        async function flush() {
+          if (!pending.length) return;
+          await Promise.all(
+            pending.map(({ id, data }) =>
+              setDoc(doc(db, 'catalogo', id), {
+                nombre: String(data.nombre || ''),
+                categoria: String(data.categoria || 'otros'),
+                unidadBase: String(data.unidadBase || 'unidad'),
+                precioSugerido: Number(data.precioSugerido || 0),
+                imagen: String(data.imagen || ''),
+                emoji: String(data.emoji || ''),
+                descripcion: String(data.descripcion || ''),
+                stickerUrl: String(data.stickerUrl || ''),
+                activo: data.activo !== false,
+                creadoEn: serverTimestamp(),
+                actualizadoEn: serverTimestamp(),
+              }, { merge: true })
+            )
+          );
+          ok += pending.length;
+          log(`   + Guardadas ${ok}`);
+          pending = [];
+        }
+
+        rows.forEach((r, i) => {
+          const id = (r.id && String(r.id).trim()) || `cat_${String(i + 1).padStart(3, '0')}`;
+          pending.push({ id, data: r });
+        });
+
+        // divide en bloques de 400 para no saturar
+        while (pending.length) {
+          const chunk = pending.splice(0, 400);
+          await Promise.all(
+            chunk.map(({ id, data }) =>
+              setDoc(doc(db, 'catalogo', id), {
+                nombre: String(data.nombre || ''),
+                categoria: String(data.categoria || 'otros'),
+                unidadBase: String(data.unidadBase || 'unidad'),
+                precioSugerido: Number(data.precioSugerido || 0),
+                imagen: String(data.imagen || ''),
+                emoji: String(data.emoji || ''),
+                descripcion: String(data.descripcion || ''),
+                stickerUrl: String(data.stickerUrl || ''),
+                activo: data.activo !== false,
+                creadoEn: serverTimestamp(),
+                actualizadoEn: serverTimestamp(),
+              }, { merge: true })
+            )
+          );
+          ok += chunk.length;
+          log(`   + Guardadas ${ok}`);
+        }
+
+        log(`✅ ¡Listo! Importadas/actualizadas ${ok} referencias en /catalogo.`);
+      } catch (e) {
+        console.error(e);
+        log('❌ ERROR: ' + (e.message || e));
+      }
+    }
+
+    document.getElementById('btn').addEventListener('click', importCatalogo);
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+// firestore.rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // =========================
+    // PERFILES
+    // =========================
+    match /perfiles/{uid} {
+      allow read: if true;
+      allow write: if isOwner(uid);
+    }
+
+    // =========================
+    // USUARIOS
+    // =========================
+    match /usuarios/{uid} {
+      allow read: if true;
+      allow write: if isOwner(uid);
+    }
+
+    // =========================
+    // PERFILES PÚBLICOS
+    // =========================
+    match /perfiles-publicos/{uid} {
+      allow read: if true;
+      allow write: if isOwner(uid);
+    }
+
+    // =========================
+    // TIENDAS
+    // =========================
+    match /tiendas/{uid} {
+      allow read, write: if isOwner(uid);
+
+      // Productos de la tienda
+      match /productos/{prodId} {
+        allow read: if true;
+        allow create, update, delete, write: if isOwner(uid);
+      }
+
+      // Configuración
+      match /config/{doc} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // Metadatos
+      match /meta/{doc} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // =========================
+    // PRODUCTOS (colección raíz)
+    // =========================
+    match /productos/{prodId} {
+      allow read: if resource.data.activo == true;
+
+      allow create: if signedIn()
+        && request.resource.data.tiendaId == request.auth.uid;
+
+      allow update, delete: if signedIn()
+        && resource.data.tiendaId == request.auth.uid;
+    }
+
+    // =========================
+    // PEDIDOS
+    // =========================
+    match /pedidos/{pedidoId} {
+
+      // El cliente crea el pedido
+      allow create: if signedIn();
+
+      // Lo leen el cliente o la tienda
+      allow read: if signedIn()
+        && (
+          resource.data.tiendaId == request.auth.uid ||
+          resource.data.clienteId == request.auth.uid
+        );
+
+      // Solo la tienda cambia el estado
+      allow update: if signedIn()
+        && resource.data.tiendaId == request.auth.uid;
+
+      allow delete: if false;
+    }
+
+    // =========================
+    // CATÁLOGO
+    // =========================
+    match /catalogo/{doc=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

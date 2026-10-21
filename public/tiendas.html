@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tiendas cercanas – Mi Tiendita Cercana</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+    
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .wrap { max-width: 1400px; margin: 0 auto; }
+    .hbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .left { display: flex; align-items: center; gap: 12px; }
+    .title { font-size: 22px; font-weight: 800; }
+    .muted { opacity: 0.9; font-size: 13px; }
+    .btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+    }
+    .btn:hover { background: rgba(255,255,255,0.3); }
+    
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 24px;
+    }
+    
+    .store-card-modern {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    
+    .store-card-modern:hover { transform: translateY(-8px); }
+    
+    .store-media-modern {
+      height: 180px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .store-illus-modern { font-size: 70px; }
+    .store-category-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.95);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .store-body-modern { padding: 18px; }
+    .store-title-modern { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+    .store-meta-modern { color: #666; font-size: 14px; margin: 12px 0; padding: 8px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+    
+    .btn-select-tienda {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      color: white;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .btn-select-tienda:hover { transform: scale(0.98); }
+    
+    #map { height: 300px; margin: 0 24px 24px; border-radius: 20px; overflow: hidden; }
+    .empty { text-align: center; padding: 60px; color: #777; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap hbar">
+      <div class="left">
+        <div class="title">🏪 Tiendas cercanas</div>
+        <div class="muted" id="welcomeText">Elige una tienda</div>
+      </div>
+      <div class="controls">
+        <button id="useLocation" class="btn">📍 Mi ubicación</button>
+        <a href="./index.html" class="btn">🚪 Salir</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="grid"></div>
+    <div id="empty" class="empty" style="display:none">No hay tiendas disponibles</div>
+    <div id="map"></div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module">
+    import { db, auth } from './js/firebase-config.js';
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    let map;
+
+    function initMap() {
+      const mapDiv = document.getElementById('map');
+      if (!mapDiv) return;
+      map = L.map('map').setView([4.7110, -74.0721], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    }
+
+    function renderTiendas(tiendas) {
+      const grid = document.getElementById('grid');
+      const emptyDiv = document.getElementById('empty');
+      
+      if (!grid) return;
+      
+      if (tiendas.length === 0) {
+        grid.style.display = 'none';
+        emptyDiv.style.display = 'block';
+        return;
+      }
+      
+      grid.style.display = 'grid';
+      emptyDiv.style.display = 'none';
+      
+      grid.innerHTML = tiendas.map(tienda => `
+        <div class="store-card-modern" data-id="${tienda.id}">
+          <div class="store-media-modern">
+            <div class="store-illus-modern">🏪</div>
+            <span class="store-category-badge">${tienda.tipo || 'tienda'}</span>
+          </div>
+          <div class="store-body-modern">
+            <div class="store-title-modern">${tienda.nombre || 'Sin nombre'}</div>
+            <div class="store-meta-modern">📍 ${tienda.direccion || 'Dirección no disponible'}</div>
+            <button class="btn-select-tienda" data-id="${tienda.id}">Ver tienda →</button>
+          </div>
+        </div>
+      `).join('');
+      
+      document.querySelectorAll('.btn-select-tienda').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-id');
+          window.location.href = `productos.html?tienda=${id}`;
+        });
+      });
+    }
+
+    async function cargarTiendas() {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'tiendas'));
+        const tiendas = [];
+        querySnapshot.forEach(doc => {
+          tiendas.push({ id: doc.id, ...doc.data() });
+        });
+        console.log('Tiendas cargadas:', tiendas.length);
+        renderTiendas(tiendas);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    function mostrarUsuario() {
+      auth.onAuthStateChanged((user) => {
+        const welcomeText = document.getElementById('welcomeText');
+        if (user && welcomeText) {
+          welcomeText.textContent = `Hola, ${user.email?.split('@')[0]}`;
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      cargarTiendas();
+      mostrarUsuario();
+      
+      document.getElementById('useLocation')?.addEventListener('click', () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(pos => {
+            map?.setView([pos.coords.latitude, pos.coords.longitude], 14);
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

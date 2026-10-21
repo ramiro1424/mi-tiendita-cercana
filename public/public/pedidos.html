@@ -1,0 +1,163 @@
+<!-- public/pedidos.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - Mi Tiendita Cercana</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/pedido-history.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #f1f5f9; min-height: 100vh; }
+        
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #1e293b;
+            text-decoration: none;
+        }
+        
+        .nav-brand i { color: #4f46e5; font-size: 24px; }
+        
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-links a:hover { background: #f1f5f9; color: #1e293b; }
+        .nav-links a.active { background: #4f46e5; color: white; }
+        .nav-links a.active i { color: white; }
+        .nav-links a i { font-size: 16px; color: #94a3b8; }
+        
+        @media (max-width: 768px) {
+            .nav-links a span { display: none; }
+            .nav-links a { padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/productos.html" class="nav-brand">
+                <i class="fas fa-store-alt"></i>
+                <span>Mi Tiendita</span>
+            </a>
+            <div class="nav-links">
+                <a href="/productos.html">
+                    <i class="fas fa-home"></i>
+                    <span>Tiendas</span>
+                </a>
+                <a href="/pedidos.html" class="active">
+                    <i class="fas fa-history"></i>
+                    <span>Mis Pedidos</span>
+                </a>
+                <a href="/perfil.html">
+                    <i class="fas fa-user"></i>
+                    <span>Perfil</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO -->
+    <main class="history-page">
+        <div class="history-header">
+            <h1>
+                <i class="fas fa-history"></i>
+                Mis Pedidos
+                <span class="badge" id="history-badge">0</span>
+            </h1>
+        </div>
+
+        <div class="history-filters">
+            <button class="filter-btn active" data-filter="todos">
+                <i class="fas fa-list"></i> Todos
+            </button>
+            <button class="filter-btn" data-filter="pendientes">
+                <i class="fas fa-clock"></i> Pendientes
+            </button>
+            <button class="filter-btn" data-filter="curso">
+                <i class="fas fa-spinner"></i> En curso
+            </button>
+            <button class="filter-btn" data-filter="entregados">
+                <i class="fas fa-check-circle"></i> Entregados
+            </button>
+            <button class="filter-btn" data-filter="cancelados">
+                <i class="fas fa-times-circle"></i> Cancelados
+            </button>
+        </div>
+
+        <div id="history-container" class="history-container">
+            <!-- Los pedidos se renderizan aquí -->
+        </div>
+    </main>
+
+    <!-- MODAL DE DETALLE -->
+    <div id="detalle-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="window.cerrarDetalle()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="detalle-content"></div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="importmap">
+        {
+            "imports": {
+                "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+                "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+                "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import './js/pedido-history.js';
+        console.log('✅ Sistema de historial cargado');
+    </script>
+</body>
+</html>

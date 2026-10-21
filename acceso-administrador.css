@@ -1,0 +1,490 @@
+/* ============================================================
+   ACCESO ADMINISTRADOR
+   MI TIENDITA CERCANA
+============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eefaf5 0%,
+            #f7faf9 50%,
+            #eaf7f2 100%
+        );
+
+    color: #173b32;
+}
+
+
+/* ============================================================
+   CONTENEDOR PRINCIPAL
+============================================================ */
+
+.admin-login-page {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 24px;
+}
+
+
+/* ============================================================
+   TARJETA
+============================================================ */
+
+.admin-login-card {
+
+    width: 100%;
+
+    max-width: 430px;
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    padding: 36px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.10);
+
+    border: 1px solid #e5eee9;
+}
+
+
+/* ============================================================
+   ICONO
+============================================================ */
+
+.admin-icon {
+
+    width: 78px;
+
+    height: 78px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 22px;
+
+    background: #07895d;
+
+    font-size: 40px;
+
+    box-shadow:
+        0 10px 25px rgba(7, 137, 93, 0.20);
+}
+
+
+/* ============================================================
+   MARCA
+============================================================ */
+
+.admin-brand {
+
+    text-align: center;
+
+    color: #07895d;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    margin-bottom: 8px;
+}
+
+
+/* ============================================================
+   TITULO
+============================================================ */
+
+h1 {
+
+    margin: 0;
+
+    text-align: center;
+
+    font-size: 30px;
+
+    color: #102f29;
+}
+
+
+/* ============================================================
+   SUBTITULO
+============================================================ */
+
+.subtitle {
+
+    text-align: center;
+
+    margin: 8px 0 30px;
+
+    color: #71827d;
+
+    font-size: 15px;
+}
+
+
+/* ============================================================
+   GRUPOS DEL FORMULARIO
+============================================================ */
+
+.form-group {
+
+    margin-bottom: 20px;
+}
+
+
+/* ============================================================
+   ETIQUETAS
+============================================================ */
+
+label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #28463e;
+}
+
+
+/* ============================================================
+   CAMPOS
+============================================================ */
+
+input {
+
+    width: 100%;
+
+    height: 50px;
+
+    padding: 0 15px;
+
+    border: 1px solid #d8e4df;
+
+    border-radius: 12px;
+
+    outline: none;
+
+    font-size: 15px;
+
+    color: #173b32;
+
+    background: #fbfdfc;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+
+input:focus {
+
+    border-color: #07895d;
+
+    box-shadow:
+        0 0 0 4px rgba(7, 137, 93, 0.10);
+}
+
+
+/* ============================================================
+   CONTRASEÑA
+============================================================ */
+
+.password-wrapper {
+
+    position: relative;
+}
+
+
+.password-wrapper input {
+
+    padding-right: 55px;
+}
+
+
+/* ============================================================
+   MOSTRAR / OCULTAR CONTRASEÑA
+============================================================ */
+
+.password-toggle {
+
+    position: absolute;
+
+    right: 8px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 40px;
+
+    height: 40px;
+
+    border: 0;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    border-radius: 8px;
+}
+
+
+.password-toggle:hover {
+
+    background: #eef7f3;
+}
+
+
+/* ============================================================
+   BOTÓN INGRESAR
+============================================================ */
+
+.btn-login {
+
+    width: 100%;
+
+    height: 52px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    background: #07895d;
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s,
+        transform 0.1s;
+}
+
+
+.btn-login:hover {
+
+    background: #06764f;
+}
+
+
+.btn-login:active {
+
+    transform: scale(0.99);
+}
+
+
+.btn-login:disabled {
+
+    opacity: 0.65;
+
+    cursor: not-allowed;
+}
+
+
+/* ============================================================
+   RECUPERAR CONTRASEÑA
+============================================================ */
+
+.btn-recuperar {
+
+    display: block;
+
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 8px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #07895d;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+
+
+.btn-recuperar:hover {
+
+    background: #eef7f3;
+
+    color: #06764f;
+}
+
+
+.btn-recuperar:active {
+
+    transform: scale(0.99);
+}
+
+
+.btn-recuperar:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* ============================================================
+   MENSAJES
+============================================================ */
+
+.login-status {
+
+    min-height: 22px;
+
+    margin-top: 16px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+}
+
+
+.login-status.success {
+
+    color: #087a53;
+}
+
+
+.login-status.error {
+
+    color: #c62828;
+}
+
+
+.login-status.loading {
+
+    color: #64746f;
+}
+
+
+/* ============================================================
+   AVISO DE SEGURIDAD
+============================================================ */
+
+.security-note {
+
+    margin-top: 28px;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    background: #f1f8f5;
+
+    color: #356158;
+
+    font-size: 13px;
+
+    text-align: center;
+
+    line-height: 1.5;
+}
+
+
+.security-note span {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #70817c;
+
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 520px) {
+
+    .admin-login-page {
+
+        padding: 15px;
+    }
+
+
+    .admin-login-card {
+
+        padding: 28px 22px;
+
+        border-radius: 20px;
+    }
+
+
+    h1 {
+
+        font-size: 26px;
+    }
+
+
+    .admin-icon {
+
+        width: 70px;
+
+        height: 70px;
+
+        font-size: 34px;
+    }
+
+}

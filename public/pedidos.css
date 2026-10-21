@@ -1,0 +1,1395 @@
+/* ============================================================
+   PEDIDOS.CSS - Página fija de pedidos con CHAT INTEGRADO
+   VERSIÓN PROFESIONAL CON SISTEMA DE CONFIRMACIÓN
+   ============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #f1f5f9;
+    min-height: 100vh;
+    color: #0f172a;
+}
+
+/* ===== HEADER FIJO ===== */
+.pedidos-header {
+    background: linear-gradient(135deg, #0D9488, #10B981);
+    padding: 16px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(13, 148, 136, 0.2);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-left h1 {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-volver {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.btn-volver:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.usuario-nombre {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.btn-cerrar-sesion {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cerrar-sesion:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* ===== CONTENIDO ===== */
+.pedidos-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* ===== RESUMEN ===== */
+.resumen-pedidos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.resumen-card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.resumen-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.resumen-card.activos {
+    border-left: 4px solid #F59E0B;
+}
+
+.resumen-card.entregados {
+    border-left: 4px solid #10B981;
+}
+
+.resumen-icon {
+    font-size: 1.8rem;
+}
+
+.resumen-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.resumen-numero {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.resumen-label {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* ===== TABS ===== */
+.tabs-container {
+    display: flex;
+    gap: 4px;
+    background: white;
+    border-radius: 14px;
+    padding: 6px;
+    margin-bottom: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #6b7280;
+    background: transparent;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 120px;
+}
+
+.tab-btn:hover {
+    color: #0D9488;
+    background: rgba(13, 148, 136, 0.05);
+}
+
+.tab-btn.activo {
+    background: linear-gradient(135deg, #0D9488, #10B981);
+    color: white;
+    box-shadow: 0 4px 16px rgba(13, 148, 136, 0.25);
+}
+
+.tab-btn .tab-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: none;
+}
+
+.tab-btn.activo .tab-badge {
+    background: rgba(255, 255, 255, 0.25);
+    display: inline-flex;
+}
+
+/* 🔥 NUEVO: ESTILO PARA LA PESTAÑA POR CONFIRMAR */
+.tab-btn.tab-por-confirmar {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.tab-btn.tab-por-confirmar.activo {
+    background: linear-gradient(135deg, #F59E0B, #FBBF24);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+}
+
+.tab-btn .badge-alert {
+    background: #ef4444;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+/* ===== LISTA DE PEDIDOS ===== */
+.lista-pedidos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 🔥 NUEVO: ESTILO DE PEDIDO PENDIENTE DE CONFIRMACIÓN */
+.pedido-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.pedido-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border-color: #10B981;
+}
+
+/* 🔥 Resaltado de pedidos que faltan confirmar */
+.pedido-card.pendiente-confirmacion {
+    background: #fffbeb;
+    border: 2px solid #f59e0b;
+    box-shadow: 0 6px 24px rgba(245, 158, 11, 0.1);
+}
+
+.pedido-card.pendiente-confirmacion:hover {
+    border-color: #d97706;
+    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.2);
+}
+
+/* 🔥 Aviso dentro de la tarjeta */
+.aviso-confirmar-card {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #fde68a;
+}
+
+.pedido-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.pedido-id {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #0f172a;
+}
+
+.pedido-id span {
+    font-weight: 400;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.pedido-estado {
+    padding: 4px 16px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Estados */
+.estado-pendiente { background: #F59E0B; }
+.estado-aceptado { background: #3B82F6; }
+.estado-en_preparacion { background: #8B5CF6; }
+.estado-preparando { background: #8B5CF6; }
+.estado-listo { background: #22C55E; }
+.estado-entregado { background: #10B981; }
+.estado-completado { background: #10B981; }
+.estado-cancelado { background: #EF4444; }
+
+.pedido-card-body {
+    margin-bottom: 12px;
+}
+
+.pedido-productos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.producto-tag {
+    background: #f1f5f9;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    color: #475569;
+    border: 1px solid #e5e7eb;
+}
+
+.pedido-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.pedido-fecha {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pedido-total {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #10B981;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ============================================================
+   BOTÓN UNIFICADO - Ver pedido y chatear / Confirmar
+   ============================================================ */
+
+.btn-unificado {
+    width: 100% !important;
+    background: linear-gradient(135deg, #10b981, #0ea5e9) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25) !important;
+    margin-top: 4px !important;
+}
+
+.btn-unificado:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35) !important;
+}
+
+.btn-unificado:active {
+    transform: scale(0.97) !important;
+}
+
+/* 🔥 BOTÓN PARA CONFIRMAR RECEPCIÓN EN LA TARJETA */
+.btn-confirmar-card {
+    width: 100% !important;
+    background: linear-gradient(135deg, #F59E0B, #FBBF24) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    font-weight: 800 !important;
+    font-size: 0.9rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+    margin-top: 4px !important;
+}
+
+.btn-confirmar-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5) !important;
+}
+
+.btn-unificado .badge-unread,
+.btn-confirmar-card .badge-unread {
+    background: #ef4444 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    padding: 0 10px !important;
+    font-size: 0.7rem !important;
+    min-width: 22px !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+    line-height: 22px !important;
+}
+
+/* ============================================================
+   CHAT INTEGRADO EN EL MODAL
+   ============================================================ */
+#seccion-chat-modal {
+    border-top: 2px solid #e5e7eb;
+    padding-top: 16px;
+    margin-top: 8px;
+}
+
+.chat-header-modal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.chat-header-modal h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.chat-estado-modal {
+    font-size: 0.65rem;
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.chat-estado-modal.cancelado {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.chat-estado-modal.entregado {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Mensajes rápidos */
+.mensajes-rapidos-modal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.mensajes-rapidos-modal button {
+    padding: 4px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #f9fafb;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #374151;
+}
+
+.mensajes-rapidos-modal button:hover {
+    background: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+/* Contenedor de mensajes */
+.mensajes-detalle-modal {
+    max-height: 220px;
+    overflow-y: auto;
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.mensajes-detalle-modal::-webkit-scrollbar {
+    width: 4px;
+}
+.mensajes-detalle-modal::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.mensajes-detalle-modal::-webkit-scrollbar-thumb {
+    background: #c1c7cd;
+    border-radius: 10px;
+}
+.mensajes-detalle-modal::-webkit-scrollbar-thumb:hover {
+    background: #a0a7ae;
+}
+
+/* Mensajes individuales */
+.mensaje-chat-modal {
+    display: flex;
+    flex-direction: column;
+    margin: 6px 0;
+    animation: fadeInMsg 0.3s ease;
+}
+
+@keyframes fadeInMsg {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mensaje-chat-modal.enviado {
+    align-items: flex-end;
+}
+
+.mensaje-chat-modal.recibido {
+    align-items: flex-start;
+}
+
+.mensaje-chat-modal .burbuja {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.mensaje-chat-modal.enviado .burbuja {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 12px 12px 4px 12px;
+}
+
+.mensaje-chat-modal.recibido .burbuja {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px 12px 12px 4px;
+}
+
+.mensaje-chat-modal .remitente {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 2px;
+}
+
+.mensaje-chat-modal .texto {
+    font-size: 0.9rem;
+    word-break: break-word;
+}
+
+.mensaje-chat-modal .hora {
+    font-size: 0.6rem;
+    color: #9ca3af;
+    margin-top: 4px;
+    text-align: right;
+}
+
+/* Input de chat en el modal */
+.input-chat-modal {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-chat-modal input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+}
+
+.input-chat-modal input:focus {
+    border-color: #3b82f6;
+}
+
+.input-chat-modal input:disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.input-chat-modal button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.input-chat-modal button:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+}
+
+.input-chat-modal button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============================================================
+   MODAL DE DETALLE DE PEDIDO
+   ============================================================ */
+
+/* Contenedor del modal */
+#pedido-detalle-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Overlay del modal */
+.modal-overlay-detalle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 10001;
+}
+
+/* Contenido del modal */
+.modal-content-pedido {
+    position: relative;
+    z-index: 10002;
+    background: white;
+    max-width: 640px;
+    width: 95vw;
+    max-height: 95vh;
+    overflow-y: auto;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideUp 0.3s ease;
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header del modal */
+.modal-header-pedido {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.modal-header-pedido h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header-pedido h2 i {
+    color: #10b981;
+}
+
+.modal-close-pedido {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.modal-close-pedido:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+/* Estado en el modal */
+.modal-estado-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.modal-estado-container span:first-child {
+    font-weight: 600;
+}
+
+/* 🔥 AVISO DE CONFIRMACIÓN EN EL MODAL */
+.aviso-confirmar-modal {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border: 1px solid #fde68a;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.aviso-confirmar-modal i {
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+/* 🔥 BOTÓN DE CONFIRMAR EN EL MODAL */
+.btn-confirmar-modal {
+    background: linear-gradient(135deg, #F59E0B, #FBBF24) !important;
+    color: white !important;
+    font-weight: 800 !important;
+    padding: 14px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    font-size: 1rem !important;
+    width: 100% !important;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3) !important;
+    transition: all 0.3s ease !important;
+    margin-top: 8px !important;
+}
+
+.btn-confirmar-modal:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5) !important;
+}
+
+/* Información del comerciante */
+.modal-comerciante {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border-radius: 12px;
+    border-left: 4px solid #10b981;
+}
+
+.modal-comerciante h3 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-comerciante h3 i {
+    color: #10b981;
+}
+
+.modal-comerciante-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    font-size: 0.9rem;
+}
+
+.modal-comerciante-grid strong {
+    font-weight: 600;
+}
+
+/* Tabla de productos */
+.modal-productos-titulo {
+    font-size: 1rem;
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-productos-titulo i {
+    color: #10b981;
+}
+
+.modal-tabla-productos {
+    margin-bottom: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.modal-tabla-productos table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.modal-tabla-productos thead {
+    background: #f8fafc;
+}
+
+.modal-tabla-productos th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.modal-tabla-productos th:nth-child(2) {
+    text-align: center;
+}
+
+.modal-tabla-productos th:nth-child(3),
+.modal-tabla-productos th:nth-child(4) {
+    text-align: right;
+}
+
+.modal-tabla-productos td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-tabla-productos td:nth-child(2) {
+    text-align: center;
+}
+
+.modal-tabla-productos td:nth-child(3),
+.modal-tabla-productos td:nth-child(4) {
+    text-align: right;
+}
+
+.modal-tabla-productos td:last-child {
+    font-weight: 600;
+    color: #10b981;
+}
+
+.modal-tabla-productos tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.modal-tabla-productos tr:last-child td {
+    border-bottom: none;
+}
+
+/* Resumen financiero */
+.modal-resumen {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.modal-resumen-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 0.9rem;
+}
+
+.modal-resumen-row .label {
+    color: #64748b;
+}
+
+.modal-resumen-row.total {
+    padding: 8px 0;
+    border-top: 2px solid #e5e7eb;
+    margin-top: 4px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.modal-resumen-row.total .label {
+    color: #0f172a;
+}
+
+.modal-resumen-row.total .value {
+    color: #10b981;
+}
+
+.modal-resumen-row.metodo-pago {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.modal-resumen-row.metodo-pago .value {
+    color: #0f172a;
+}
+
+.modal-resumen-row.descuento .value {
+    color: #ef4444;
+}
+
+/* Botones de acción (Comerciante) */
+.modal-acciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.modal-acciones .btn-aceptar {
+    padding: 10px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-acciones .btn-aceptar:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+.modal-acciones .btn-entregar {
+    padding: 10px;
+    background: #3B82F6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-acciones .btn-entregar:hover {
+    background: #2563EB;
+    transform: translateY(-2px);
+}
+
+.modal-acciones .btn-cancelar {
+    padding: 10px;
+    background: #EF4444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-acciones .btn-cancelar:hover {
+    background: #DC2626;
+    transform: translateY(-2px);
+}
+
+.modal-acciones .btn-completado {
+    padding: 10px;
+    background: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    grid-column: span 3;
+    transition: all 0.2s ease;
+}
+
+.modal-acciones .btn-completado:hover {
+    background: #4b5563;
+    transform: translateY(-2px);
+}
+
+/* Timeline de estados */
+.modal-timeline {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.modal-timeline-steps {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #64748b;
+    position: relative;
+}
+
+.modal-timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.modal-timeline-step .icon {
+    font-size: 1.2rem;
+}
+
+.modal-timeline-step .label {
+    margin-top: 2px;
+}
+
+.modal-timeline-step .actual {
+    color: #10b981;
+    font-size: 0.65rem;
+    margin-top: 2px;
+}
+
+.modal-timeline-bar {
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    margin: 8px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-timeline-bar .progress {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.modal-timeline-bar .progress.pendiente {
+    width: 10%;
+    background: linear-gradient(90deg, #F59E0B, #FCD34D);
+}
+
+.modal-timeline-bar .progress.aceptado {
+    width: 55%;
+    background: linear-gradient(90deg, #3B82F6, #60A5FA);
+}
+
+.modal-timeline-bar .progress.entregado {
+    width: 100%;
+    background: linear-gradient(90deg, #10b981, #34D399);
+}
+
+.modal-timeline-bar .progress.cancelado {
+    width: 100%;
+    background: #EF4444;
+}
+
+/* ===== ESTADOS VACÍOS / CARGA ===== */
+.cargando, .vacio, .error {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.cargando i, .vacio i, .error i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.cargando i {
+    color: #10B981;
+}
+
+.vacio p {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+}
+
+.btn-comprar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #0D9488, #10B981);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-comprar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(13, 148, 136, 0.3);
+}
+
+.error {
+    color: #EF4444;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .header-left {
+        flex-wrap: wrap;
+    }
+
+    .header-left h1 {
+        font-size: 1.1rem;
+    }
+
+    .resumen-pedidos {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .resumen-card {
+        padding: 14px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .resumen-icon {
+        font-size: 1.4rem;
+    }
+
+    .resumen-numero {
+        font-size: 1.4rem;
+    }
+
+    .tabs-container {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 4px;
+    }
+
+    .tab-btn {
+        min-width: 100px;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+    }
+
+    .pedido-card {
+        padding: 16px;
+    }
+
+    .pedido-card-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .btn-detalle {
+        justify-content: center;
+    }
+
+    /* Modal responsive */
+    .modal-content-pedido {
+        padding: 16px;
+        width: 98vw;
+        max-height: 95vh;
+    }
+
+    .modal-acciones {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .modal-acciones .btn-completado {
+        grid-column: span 2;
+    }
+
+    .modal-tabla-productos table {
+        font-size: 0.8rem;
+    }
+
+    .modal-tabla-productos th,
+    .modal-tabla-productos td {
+        padding: 8px 10px;
+    }
+
+    .modal-comerciante-grid {
+        font-size: 0.85rem;
+    }
+
+    /* Chat responsive */
+    .mensajes-detalle-modal {
+        max-height: 160px;
+    }
+
+    .input-chat-modal input {
+        font-size: 0.85rem;
+        padding: 8px 14px;
+    }
+
+    .input-chat-modal button {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .resumen-pedidos {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pedido-id {
+        font-size: 1rem;
+    }
+
+    /* Botones de chat en móvil */
+    .btn-chat-pedido span {
+        display: none;
+    }
+    .btn-chat-pedido {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+        min-width: 44px;
+    }
+    .btn-detalle {
+        font-size: 0.75rem;
+        padding: 8px 10px;
+    }
+
+    /* Modal responsive móvil */
+    .modal-content-pedido {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .modal-header-pedido h2 {
+        font-size: 1.1rem;
+    }
+
+    .modal-acciones {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .modal-acciones .btn-completado {
+        grid-column: span 1;
+    }
+
+    .modal-tabla-productos table {
+        font-size: 0.75rem;
+    }
+
+    .modal-tabla-productos th,
+    .modal-tabla-productos td {
+        padding: 6px 8px;
+    }
+
+    .modal-timeline-steps {
+        font-size: 0.65rem;
+    }
+
+    .modal-timeline-step .icon {
+        font-size: 1rem;
+    }
+
+    .modal-resumen-row {
+        font-size: 0.85rem;
+    }
+
+    .modal-resumen-row.total {
+        font-size: 1rem;
+    }
+
+    .modal-comerciante-grid {
+        font-size: 0.8rem;
+    }
+
+    /* Chat móvil */
+    .mensajes-detalle-modal {
+        max-height: 140px;
+    }
+
+    .mensajes-rapidos-modal button {
+        font-size: 0.65rem;
+        padding: 3px 10px;
+    }
+
+    .input-chat-modal input {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+
+    .input-chat-modal button {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .chat-header-modal h3 {
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================================
+   SCROLLBAR PERSONALIZADA PARA EL MODAL
+   ============================================================ */
+
+.modal-content-pedido::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content-pedido::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.modal-content-pedido::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.modal-content-pedido::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

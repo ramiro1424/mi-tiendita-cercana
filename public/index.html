@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Mi Tiendita Cercana - Inicio</title>
+  <meta name="theme-color" content="#10B981" />
+  <meta name="description" content="Regístrate e inicia sesión para comprar en comercios cercanos: bodegas, licorerías, carnicerías, farmacias y más." />
+
+  <!-- Iconos y estilos base -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Favicon usando el nuevo logo -->
+  <link rel="icon" href="assets/mitiendita-logo.svg.png" />
+
+  <!-- 🔥 Leaflet (mapa) — necesario para el mapa del registro -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- ===== LOGO GRANDE Y LIMPIO (NUEVO LOGO) ===== -->
+    <div class="logo-wrapper">
+      <img
+        src="assets/mitiendita-logo.svg.png"
+        alt="Mi Tiendita Cercana"
+        class="brand-logo"
+        loading="lazy"
+      />
+    </div>
+
+   <!-- ===== Formulario de Login ===== -->
+<section id="login-form" class="form-box" aria-labelledby="titulo-login">
+
+ 
+
+  
+  <!-- Nombre de la marca -->
+  <div class="brand-text">
+      <h1><span class="verde">Mi</span>Tiendita</h1>
+      <h2>CERCANA</h2>
+      <p>TODO LO QUE NECESITAS, CERCA DE TI</p>
+  </div>
+
+  <h2 id="titulo-login" class="form-title">Bienvenido</h2>
+  <p class="form-subtitle">Inicia sesión para continuar</p>
+
+  <!-- resto del formulario -->
+      
+      <div id="login-mensaje" class="message" role="status" aria-live="polite"></div>
+
+      <form id="form-login" novalidate>
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="login-email" placeholder="Correo Electrónico" required inputmode="email" autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="login-password" placeholder="Contraseña" required autocomplete="current-password" />
+            <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-user-tag"></i>
+            <select id="login-tipoUsuario" name="tipoUsuario" required>
+              <option value="">Tipo de usuario</option>
+              <option value="cliente">Cliente</option>
+              <option value="comerciante">Comerciante</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </button>
+      </form>
+
+      <div class="switch-form">
+        <span>¿No tienes cuenta?</span>
+        <a href="#" id="mostrar-registro">Regístrate aquí</a>
+        <br />
+        <a href="#" id="mostrar-recuperacion" class="forgot-link">¿Olvidaste tu contraseña?</a>
+      </div>
+    </section>
+
+    <!-- ===== Registro ===== -->
+    <section id="registro-form" class="form-box hidden" aria-labelledby="titulo-registro">
+      
+
+      <h2 id="titulo-registro" class="form-title">Crear Cuenta</h2>
+      <p class="form-subtitle">Regístrate para comenzar a comprar</p>
+      
+      <div id="registro-mensaje" class="message" role="status" aria-live="polite"></div>
+
+      <form id="form-registro" novalidate>
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-user-tag"></i>
+            <select id="tipoUsuario-reg" name="tipoUsuario" required>
+              <option value="">Tipo de usuario</option>
+              <option value="cliente">Cliente</option>
+              <option value="comerciante">Comerciante</option>
+            </select>
+          </div>
+        </div>
+
+        
+<div class="form-group hidden" id="wrapper-categoria">
+  <div class="input-icon">
+    <i class="fas fa-store"></i>
+    <select id="categoriaComercio" name="categoriaComercio">
+      <option value="">Tipo de comerciante</option>
+      <option value="tienda">Tienda</option>
+      <option value="licoreria">Licorería</option>
+    </select>
+  </div>
+</div>
+
+
+        <div class="form-row">
+          <div class="form-group half">
+            <div class="input-icon">
+              <i class="fas fa-user"></i>
+              <input type="text" id="nombre" placeholder="Nombres" required minlength="2" />
+            </div>
+          </div>
+          <div class="form-group half">
+            <div class="input-icon">
+              <i class="fas fa-user"></i>
+              <input type="text" id="apellido" placeholder="Apellidos" required minlength="2" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ NUEVO: Tipo de documento -->
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-id-card"></i>
+            <select id="tipoDocumento" name="tipoDocumento" required>
+              <option value="">Tipo de documento</option>
+              <option value="CC">Cédula de ciudadanía</option>
+              <option value="CE">Cédula de extranjería</option>
+              <option value="PA">Pasaporte</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ✅ NUEVO: Número de documento -->
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-hashtag"></i>
+            <input type="text" id="numeroDocumento" placeholder="Número de documento" required inputmode="numeric" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="Correo Electrónico" required inputmode="email" autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="telefono" placeholder="Celular" required inputmode="tel" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Contraseña (mín. 6 caracteres)" required minlength="6" autocomplete="new-password" />
+            <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-check-circle"></i>
+            <input type="password" id="confirmar-password" placeholder="Confirmar Contraseña" required autocomplete="new-password" />
+            <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 🔥 UBICACIÓN REAL DEL COMERCIANTE (REGISTRO)                 -->
+        <!-- Se muestra solo cuando el usuario elige "Comerciante".       -->
+        <!-- El cliente NO la ve, así no se rompe nada del flujo cliente. -->
+        <!-- ============================================================ -->
+        <div id="wrapper-ubicacion-comerciante" class="hidden" style="margin-top:8px;">
+
+          <div class="location-map" aria-label="Selección de ubicación">
+            <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+            <div class="map-title">Ubicación de tu comercio</div>
+            <small>Marca en el mapa dónde está tu negocio. Los clientes lo verán aquí.</small>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:10px;">
+            <button type="button" id="btn-usar-mi-ubicacion-reg"
+                    style="flex:1; padding:10px; background:#10B981; color:#fff; border:none;
+                           border-radius:8px; font-weight:600; cursor:pointer; font-size:13px;">
+              <i class="fas fa-crosshairs"></i> Usar mi ubicación actual
+            </button>
+            <button type="button" id="btn-limpiar-ubicacion-reg"
+                    style="padding:10px 14px; background:#f3f4f6; color:#555; border:none;
+                           border-radius:8px; font-weight:600; cursor:pointer; font-size:13px;"
+                    title="Limpiar ubicación">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <!-- Mapa -->
+          <div id="mapa-registro"
+               style="height:220px; width:100%; margin-top:10px;
+                      border-radius:12px; border:2px solid #e5e7eb;
+                      background:#f3f4f6; position:relative; z-index:1;"></div>
+
+          <!-- Mensaje de estado -->
+          <div id="ubicacion-status-reg"
+               style="margin-top:8px; font-size:12px; color:#6b7280; text-align:center;">
+            Aún no has marcado tu ubicación.
+          </div>
+
+          <!-- Inputs ocultos -->
+          <input type="hidden" id="ubicacion-lat" value="">
+          <input type="hidden" id="ubicacion-lng" value="">
+          <input type="hidden" id="ubicacion-dir" value="">
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-user-plus"></i> Registrarse
+        </button>
+      </form>
+
+      <div class="switch-form">
+        <span>¿Ya tienes una cuenta?</span>
+        <a href="#" id="mostrar-login">Inicia sesión aquí</a>
+      </div>
+    </section>
+
+    <!-- ===== Recuperación ===== -->
+    <section id="recuperacion-form" class="form-box hidden" aria-labelledby="titulo-recuperar">
+      <div class="logo-wrapper mini">
+        <img src="assets/mitiendita-logo.svg.png" alt="Logo Mi Tiendita Cercana" class="brand-logo mini" loading="lazy" />
+      </div>
+
+      <h2 id="titulo-recuperar" class="form-title">Recuperar Contraseña</h2>
+      <p class="form-subtitle">Te enviaremos un enlace a tu correo</p>
+      
+      <div id="recuperacion-mensaje" class="message" role="status" aria-live="polite"></div>
+
+      <form id="form-recuperacion" novalidate>
+        <div class="form-group">
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="recuperacion-email" placeholder="Correo Electrónico" required inputmode="email" autocomplete="email" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-secondary">
+          <i class="fas fa-paper-plane"></i> Enviar Enlace
+        </button>
+      </form>
+
+      <div class="switch-form">
+        <a href="#" id="volver-login" class="forgot-link">
+          <i class="fas fa-arrow-left"></i> Volver al inicio de sesión
+        </a>
+      </div>
+    </section>
+
+    <!-- Dashboard oculto -->
+    <section class="dashboard" aria-hidden="true">
+      <canvas id="ventasChart"></canvas>
+      <canvas id="productosChart"></canvas>
+    </section>
+  </div>
+
+  <!-- Botón flotante de chat -->
+  <button id="toggle-chat" aria-label="Abrir chat de soporte">
+    <i class="fas fa-comments" aria-hidden="true"></i>
+  </button>
+
+  <!-- Contenedor del chat -->
+  <div id="chat-container" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chat-title">
+    <div class="chat-header">
+      <h3 id="chat-title">Chat con Comerciante</h3>
+      <span id="close-chat" role="button" tabindex="0" aria-label="Cerrar chat">&times;</span>
+    </div>
+    <div id="chat-messages" class="chat-messages"></div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" class="chat-input" placeholder="Escribe un mensaje..." />
+      <button id="chat-send-btn" class="chat-send-btn" aria-label="Enviar mensaje">
+        <i class="fas fa-paper-plane" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader" class="loader-overlay hidden" aria-live="polite" aria-busy="true">
+    <div class="pin-loader" role="status">
+      <svg class="pin" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="pinGradLoad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#0EB8FF"/>
+            <stop offset="1" stop-color="#10B981"/>
+          </linearGradient>
+        </defs>
+        <path d="M32 8a16 16 0 0 0-16 16c0 11.2 11.3 18.6 14.6 21a2 2 0 0 0 2.8 0C36.7 42.6 48 35.2 48 24A16 16 0 0 0 32 8z" fill="url(#pinGradLoad)"/>
+        <circle cx="32" cy="24" r="5" fill="#fff"/>
+      </svg>
+      <span class="ripple r1"></span>
+      <span class="ripple r2"></span>
+      <span class="ripple r3"></span>
+      <div class="loader-text">Cargando…</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- Script para mostrar/ocultar "Tipo de comerciante" + MAPA     -->
+  <!-- ============================================================ -->
+  <script>
+    (function () {
+      const tipoSel = document.getElementById('tipoUsuario-reg');
+      const wrapCat = document.getElementById('wrapper-categoria');
+      const wrapUbi = document.getElementById('wrapper-ubicacion-comerciante');
+
+      function toggleCategoria() {
+        if (!tipoSel) return;
+        const isComerciante = (tipoSel.value === 'comerciante');
+
+        if (wrapCat) wrapCat.classList.toggle('hidden', !isComerciante);
+        if (wrapUbi) wrapUbi.classList.toggle('hidden', !isComerciante);
+
+        // Inicializar el mapa la primera vez que se muestra
+        if (isComerciante && wrapUbi && !window.__MTC_MAPA_REG_INIT) {
+          window.__MTC_MAPA_REG_INIT = true;
+          setTimeout(() => {
+            if (typeof window.initMapaRegistro === 'function') {
+              window.initMapaRegistro();
+            }
+          }, 200);
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', toggleCategoria);
+      tipoSel?.addEventListener('change', toggleCategoria);
+    })();
+  </script>
+
+  <!-- 🔥 Script para mostrar/ocultar contraseña -->
+  <script>
+    (function () {
+
+      function attachTogglePassword() {
+
+        const botones = document.querySelectorAll('.toggle-password');
+
+        botones.forEach(function (btn) {
+
+          // Evitar duplicar listeners
+          if (btn.dataset.toggleReady === '1') return;
+          btn.dataset.toggleReady = '1';
+
+          btn.addEventListener('click', function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Encontrar el input dentro del mismo .input-icon
+            const wrapper = btn.closest('.input-icon');
+            if (!wrapper) return;
+
+            const input = wrapper.querySelector('input');
+            if (!input) return;
+
+            const icono = btn.querySelector('i');
+
+            const esPassword = input.type === 'password';
+
+            input.type = esPassword ? 'text' : 'password';
+
+            if (icono) {
+              icono.classList.toggle('fa-eye', !esPassword);
+              icono.classList.toggle('fa-eye-slash', esPassword);
+            }
+
+          });
+
+        });
+
+      }
+
+      // Ejecutar al cargar y también por si los elementos se añaden dinámicamente
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attachTogglePassword);
+      } else {
+        attachTogglePassword();
+      }
+
+      // Reintentar por si los forms se renderizan después
+      setTimeout(attachTogglePassword, 500);
+      setTimeout(attachTogglePassword, 1500);
+
+    })();
+  </script>
+
+  <!-- Librerías -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Módulos -->
+  <script type="module" src="./js/firebase-config.js"></script>
+  <script type="module" src="./js/notifications.js"></script>
+  <script type="module" src="./js/auth.js?v=20260928-02"></script>
+  <script type="module" src="./js/registro.js?v=20260928-02"></script>
+  <script type="module" src="./js/recuperarcontraseña.js"></script>
+  <script type="module" src="./js/chat.js"></script>
+  <script type="module" src="./js/ui.js"></script>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

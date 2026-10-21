@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+functions/node_modules/
+
+# Secretos
+.env
+.env.*
+!.env.example
+*-firebase-adminsdk-*.json
+*serviceAccount*.json
+
+# Logs y archivos de respaldo
+firebase-debug.log
+firestore-debug.log
+*.backup
+*.bak
+firebase.backup.json
+
+# Otros
+*.exe
+
+# Caché local de Firebase
+.firebase/

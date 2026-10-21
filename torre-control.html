@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torre de Control | Mi Tiendita Cercana</title>
+
+    <link rel="stylesheet" href="./torre-control.css">
+
+    <style>
+        /* =========================================================
+           BASE / RESET SUAVE
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            scroll-behavior: smooth;
+        }
+
+        /* =========================================================
+           TEMA OSCURO
+        ========================================================= */
+
+        body.dark-mode {
+            background: #0f1a17 !important;
+            color: #d9f0e7;
+        }
+
+        body.dark-mode .topbar {
+            background: #152722 !important;
+            border-bottom: 1px solid #23443a;
+        }
+
+        body.dark-mode .stat-card,
+        body.dark-mode .section,
+        body.dark-mode .orders-table-wrapper,
+        body.dark-mode .table-container,
+        body.dark-mode .user-controls,
+        body.dark-mode .orders-toolbar,
+        body.dark-mode .order-modal-card {
+            background: #152722 !important;
+            color: #d9f0e7;
+            border-color: #23443a !important;
+        }
+
+        body.dark-mode .orders-table th,
+        body.dark-mode .user-table th {
+            background: #1a3029 !important;
+            color: #9ac9b8;
+        }
+
+        body.dark-mode .orders-table td,
+        body.dark-mode .user-table td {
+            color: #c2ddd1;
+            border-color: #23443a;
+        }
+
+        body.dark-mode .orders-search,
+        body.dark-mode .orders-filter,
+        body.dark-mode .search-box input,
+        body.dark-mode .filter-box select,
+        body.dark-mode .global-search {
+            background: #1a3029 !important;
+            color: #d9f0e7 !important;
+            border-color: #23443a !important;
+        }
+
+        body.dark-mode .stat-label {
+            color: #9ac9b8;
+        }
+
+        body.dark-mode .stat-card strong {
+            color: #a4e6c9;
+        }
+
+        body.dark-mode .tabs {
+            background: #1a3029;
+        }
+
+        body.dark-mode .tab-btn {
+            color: #9ac9b8;
+        }
+
+        body.dark-mode .tab-btn.active {
+            background: #23443a;
+            color: #a4e6c9;
+        }
+
+        /* =========================================================
+           ACCIONES ADMINISTRATIVAS
+        ========================================================= */
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn-logout {
+            height: 42px;
+            padding: 0 16px;
+            border: 0;
+            border-radius: 10px;
+            background: #fff1f1;
+            color: #c62828;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            background: #ffe0e0;
+            box-shadow: 0 4px 12px rgba(198, 40, 40, 0.12);
+        }
+
+        .btn-logout:active {
+            transform: scale(0.98);
+        }
+
+        .btn-logout:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        /* =========================================================
+           BOTÓN TEMA
+        ========================================================= */
+
+        .btn-theme {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            border: 1px solid #d8e4df;
+            background: #f4f9f7;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-theme:hover {
+            transform: scale(1.05);
+            background: #e8f4ef;
+        }
+
+        /* =========================================================
+           INDICADOR DE CONEXIÓN
+        ========================================================= */
+
+        .conn-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: #fff7df;
+            color: #b77900;
+            font-weight: 700;
+            border: 1px solid #f5e6b8;
+        }
+
+        .conn-indicator.ok {
+            background: #eaf8f1;
+            color: #087a53;
+            border-color: #b9e6d2;
+        }
+
+        .conn-indicator.error {
+            background: #fff0f0;
+            color: #c62828;
+            border-color: #f5c2c2;
+        }
+
+        .conn-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse-dot 1.6s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.15); }
+        }
+
+        /* =========================================================
+           AUTO-REFRESCO
+        ========================================================= */
+
+        .auto-refresh-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #52665f;
+            background: #f4f9f7;
+            border: 1px solid #d8e4df;
+            border-radius: 10px;
+            padding: 6px 10px;
+            margin-right: 6px;
+            position: relative;
+        }
+
+        .auto-refresh-wrap input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            accent-color: #07895d;
+        }
+
+        .auto-refresh-count {
+            font-weight: 700;
+            color: #07895d;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .live-dot {
+            display: none;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse-dot 1.2s ease-in-out infinite;
+        }
+
+        .auto-refresh-wrap.active .live-dot {
+            display: inline-block;
+        }
+
+        /* =========================================================
+           GESTIÓN DE PEDIDOS / SERVICIOS
+        ========================================================= */
+
+        .orders-management {
+            margin-top: 24px;
+        }
+
+        .orders-toolbar {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) 220px 220px;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .orders-search,
+        .orders-filter {
+            width: 100%;
+            height: 46px;
+            border: 1px solid #d8e4df;
+            border-radius: 10px;
+            padding: 0 14px;
+            background: #ffffff;
+            color: #173b32;
+            font-size: 14px;
+            outline: none;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+
+        .orders-search:focus,
+        .orders-filter:focus {
+            border-color: #07895d;
+            box-shadow: 0 0 0 3px rgba(7, 137, 93, 0.10);
+        }
+
+        .orders-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: #60736d;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .orders-summary-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-mini {
+            border: 1px solid #d8e4df;
+            background: #ffffff;
+            color: #52665f;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-mini:hover {
+            background: #f4f9f7;
+            border-color: #07895d;
+            color: #07895d;
+        }
+
+        .btn-mini.active {
+            background: #07895d;
+            color: white;
+            border-color: #07895d;
+        }
+
+        .orders-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            background: #ffffff;
+            border: 1px solid #e1ebe7;
+            border-radius: 14px;
+        }
+
+        .orders-table-wrapper.compact .orders-table td,
+        .orders-table-wrapper.compact .orders-table th {
+            padding: 7px 10px;
+            font-size: 11.5px;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        .orders-table th {
+            padding: 13px 14px;
+            text-align: left;
+            background: #f4f9f7;
+            color: #31574d;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            border-bottom: 1px solid #e1ebe7;
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s ease;
+        }
+
+        .orders-table th:hover {
+            background: #e8f4ef;
+        }
+
+        .orders-table th.sorted-asc::after {
+            content: ' ▲';
+            color: #07895d;
+        }
+
+        .orders-table th.sorted-desc::after {
+            content: ' ▼';
+            color: #07895d;
+        }
+
+        .orders-table td {
+            padding: 13px 14px;
+            border-bottom: 1px solid #edf2f0;
+            color: #435e56;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .orders-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #fbfdfc;
+        }
+
+        .order-id {
+            font-weight: 700;
+            color: #173b32;
+        }
+
+        .order-secondary {
+            display: block;
+            margin-top: 3px;
+            color: #83938e;
+            font-size: 11px;
+        }
+
+        .order-total {
+            font-weight: 700;
+            color: #07895d;
+            white-space: nowrap;
+        }
+
+        .order-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .order-status.pending {
+            background: #fff7df;
+            color: #b77900;
+        }
+
+        .order-status.process {
+            background: #edf4ff;
+            color: #2d6cdf;
+        }
+
+        .order-status.sent {
+            background: #f1edff;
+            color: #6847d8;
+        }
+
+        .order-status.completed {
+            background: #eaf8f1;
+            color: #087a53;
+        }
+
+        .order-status.cancelled {
+            background: #fff0f0;
+            color: #c62828;
+        }
+
+        .order-status.other {
+            background: #f1f4f3;
+            color: #60736d;
+        }
+
+        .btn-order-detail {
+            border: 0;
+            border-radius: 8px;
+            padding: 8px 11px;
+            background: #eaf7f2;
+            color: #07895d;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .15s ease;
+        }
+
+        .btn-order-detail:hover {
+            background: #d9f0e7;
+        }
+
+        .orders-empty {
+            padding: 35px 20px;
+            text-align: center;
+            color: #73847f;
+        }
+
+        /* =========================================================
+           PAGINACIÓN
+        ========================================================= */
+
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #ffffff;
+            border-top: 1px solid #e1ebe7;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #52665f;
+        }
+
+        .pagination-info {
+            font-weight: 600;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .pagination-controls button {
+            border: 1px solid #d8e4df;
+            background: #ffffff;
+            color: #52665f;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .15s ease;
+        }
+
+        .pagination-controls button:hover:not(:disabled) {
+            background: #07895d;
+            color: white;
+            border-color: #07895d;
+        }
+
+        .pagination-controls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination-controls button.active-page {
+            background: #07895d;
+            color: white;
+            border-color: #07895d;
+        }
+
+        .pagination-controls select {
+            border: 1px solid #d8e4df;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #52665f;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        /* =========================================================
+           SKELETON LOADING
+        ========================================================= */
+
+        .skeleton-row {
+            background: linear-gradient(90deg, #eef4f2 0%, #f7fbf9 40%, #eef4f2 80%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            height: 20px;
+            border-radius: 6px;
+            margin: 8px 0;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* =========================================================
+           MODAL PEDIDO / SERVICIO
+        ========================================================= */
+
+        .order-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 42, 35, 0.48);
+            animation: fadeIn .2s ease;
+        }
+
+        .order-modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .order-modal-card {
+            width: 100%;
+            max-width: 760px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.22);
+            animation: slideUpModal .3s ease;
+        }
+
+        @keyframes slideUpModal {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .order-modal-header {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 22px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5eee9;
+        }
+
+        .order-modal-header h3 {
+            margin: 0;
+            color: #173b32;
+            font-size: 20px;
+        }
+
+        .order-modal-close {
+            width: 36px;
+            height: 36px;
+            border: 0;
+            border-radius: 9px;
+            background: #f1f5f3;
+            color: #52665f;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background .15s ease;
+        }
+
+        .order-modal-close:hover {
+            background: #e7eeeb;
+        }
+
+        .order-modal-body {
+            padding: 22px;
+        }
+
+        .order-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .order-detail-card {
+            padding: 15px;
+            border-radius: 12px;
+            background: #f7faf9;
+            border: 1px solid #e5eee9;
+        }
+
+        .order-detail-card h4 {
+            margin: 0 0 10px;
+            color: #07895d;
+            font-size: 13px;
+        }
+
+        .order-detail-card p {
+            margin: 5px 0;
+            color: #52665f;
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #d8e4df;
+            background: #ffffff;
+            color: #52665f;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 6px;
+            transition: all .15s ease;
+        }
+
+        .copy-btn:hover {
+            background: #07895d;
+            color: white;
+            border-color: #07895d;
+        }
+
+        .order-products-title {
+            margin: 0 0 10px;
+            color: #173b32;
+            font-size: 15px;
+        }
+
+        .order-products {
+            overflow-x: auto;
+            border: 1px solid #e4ece9;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+
+        .order-products table {
+            width: 100%;
+            min-width: 500px;
+            border-collapse: collapse;
+        }
+
+        .order-products th,
+        .order-products td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #edf2f0;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .order-products th {
+            background: #f5f9f7;
+            color: #52665f;
+        }
+
+        .order-products tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .order-totals {
+            margin-left: auto;
+            max-width: 300px;
+        }
+
+        .order-total-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 7px 0;
+            color: #60736d;
+            font-size: 13px;
+        }
+
+        .order-total-row.final {
+            margin-top: 6px;
+            padding-top: 12px;
+            border-top: 1px solid #dfe9e5;
+            color: #07895d;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .order-raw {
+            margin-top: 20px;
+        }
+
+        .order-raw summary {
+            cursor: pointer;
+            color: #07895d;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .order-raw pre {
+            margin-top: 10px;
+            padding: 12px;
+            max-height: 250px;
+            overflow: auto;
+            border-radius: 10px;
+            background: #18231f;
+            color: #d9f0e7;
+            font-size: 11px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* =========================================================
+           GESTIÓN DE USUARIOS
+        ========================================================= */
+
+        .user-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            background: #ffffff;
+            border: 1px solid #dce7e9;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #dce7e9;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f9fbfc;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #087f5b;
+            box-shadow: 0 0 0 3px rgba(8, 127, 91, 0.1);
+        }
+
+        .filter-box select {
+            padding: 10px 14px;
+            border: 1px solid #dce7e9;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f9fbfc;
+            cursor: pointer;
+        }
+
+        .filter-box select:focus {
+            outline: none;
+            border-color: #087f5b;
+        }
+
+        .user-stats {
+            color: #6b7b8c;
+            font-size: 13px;
+            margin-left: auto;
+        }
+
+        .user-stats b {
+            color: #14213d;
+        }
+
+        /* =========================================================
+           TARJETAS DE ESTADÍSTICAS
+        ========================================================= */
+
+        .stat-card {
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .stat-card[data-filtro] {
+            cursor: pointer;
+        }
+
+        .stat-card[data-filtro]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(7, 137, 93, 0.14);
+        }
+
+        .stat-card[data-filtro]:active {
+            transform: translateY(-1px);
+        }
+
+        .stat-card[data-filtro]:focus-visible {
+            outline: 3px solid rgba(7, 137, 93, 0.35);
+            outline-offset: 2px;
+        }
+
+        /* Contadores animados */
+        .stat-card strong {
+            transition: color .2s ease;
+        }
+
+        .stat-card strong.counting {
+            color: #f59e0b;
+        }
+
+        /* Animación del badge de pendientes */
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* =========================================================
+           TABLAS COMPARTIDAS
+        ========================================================= */
+
+        .table-container {
+            background: #ffffff;
+            border: 1px solid #dce7e9;
+            border-radius: 12px;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .user-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .user-table th {
+            background: #f3f7f8;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 12px;
+            color: #6b7b8c;
+            border-bottom: 1px solid #dce7e9;
+            white-space: nowrap;
+        }
+
+        .user-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #edf1f2;
+            color: #14213d;
+        }
+
+        .user-table tbody tr:hover {
+            background: #f8fafb;
+        }
+
+        /* =========================================================
+           ESTADOS (colores)
+        ========================================================= */
+
+        .estado-activo { color: #087f5b; font-weight: 700; }
+        .estado-inactivo { color: #d84c4c; font-weight: 700; }
+        .estado-pendiente { color: #d99100; font-weight: 700; }
+        .estado-proceso { color: #3979e8; font-weight: 700; }
+        .estado-enviado { color: #6b58d9; font-weight: 700; }
+        .estado-completado { color: #0b9f70; font-weight: 700; }
+        .estado-cancelado { color: #d84c4c; font-weight: 700; }
+        .servicio-pendiente { color: #d99100; font-weight: 700; }
+        .servicio-verificar { color: #c58b00; font-weight: 700; }
+        .servicio-pagado { color: #0b9f70; font-weight: 700; }
+
+        /* =========================================================
+           TIPOS DE USUARIO
+        ========================================================= */
+
+        .tipo-comerciante {
+            background: #e9f8f3;
+            color: #087f5b;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .tipo-cliente {
+            background: #e9f0f8;
+            color: #3979e8;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* =========================================================
+           TABS
+        ========================================================= */
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: #f3f7f8;
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: #6b7b8c;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(8, 127, 91, 0.08);
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: #087f5b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeInTab .25s ease;
+        }
+
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================================
+           LOADING TEXT
+        ========================================================= */
+
+        .loading-text {
+            text-align: center;
+            color: #718096;
+            padding: 30px !important;
+        }
+
+        /* =========================================================
+           BUSCADOR GLOBAL
+        ========================================================= */
+
+        .global-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f4f9f7;
+            border: 1px solid #d8e4df;
+            border-radius: 10px;
+            padding: 0 12px;
+            height: 42px;
+            min-width: 240px;
+        }
+
+        .global-search input {
+            border: 0;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            color: #173b32;
+            width: 100%;
+        }
+
+        .global-search input::placeholder {
+            color: #94a39e;
+        }
+
+        /* =========================================================
+           BREADCRUMB
+        ========================================================= */
+
+        .breadcrumb {
+            font-size: 12px;
+            color: #6b7b8c;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .breadcrumb span {
+            color: #07895d;
+        }
+
+        /* =========================================================
+           TOAST NOTIFICACIONES
+        ========================================================= */
+
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 340px;
+        }
+
+        .toast {
+            background: #ffffff;
+            border-left: 4px solid #07895d;
+            border-radius: 10px;
+            padding: 12px 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            font-size: 13px;
+            color: #173b32;
+            font-weight: 600;
+            animation: slideInRight .3s ease;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+            color: #c62828;
+        }
+
+        .toast.warning {
+            border-left-color: #f59e0b;
+            color: #b77900;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* =========================================================
+           MODAL CONFIRMACIÓN
+        ========================================================= */
+
+        .confirm-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 42, 35, 0.55);
+        }
+
+        .confirm-modal.active {
+            display: flex;
+        }
+
+        .confirm-modal-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: slideUpModal .25s ease;
+        }
+
+        .confirm-modal-card h3 {
+            margin: 0 0 10px;
+            color: #173b32;
+            font-size: 18px;
+        }
+
+        .confirm-modal-card p {
+            margin: 0 0 20px;
+            color: #60736d;
+            font-size: 14px;
+        }
+
+        .confirm-modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .confirm-modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: 0;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all .15s ease;
+        }
+
+        .btn-cancel {
+            background: #f1f5f3;
+            color: #52665f;
+        }
+
+        .btn-cancel:hover {
+            background: #e7eeeb;
+        }
+
+        .btn-confirm {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #dc2626;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 900px) {
+            .orders-toolbar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .orders-toolbar > *:first-child {
+                grid-column: 1 / -1;
+            }
+
+            .pagination-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .admin-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .admin-actions .btn-reload,
+            .admin-actions .btn-logout {
+                flex: 1;
+            }
+
+            .global-search {
+                display: none;
+            }
+
+            .orders-toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .order-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-modal {
+                padding: 10px;
+            }
+
+            .order-modal-card {
+                max-height: 95vh;
+            }
+
+            .user-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .user-stats {
+                margin-left: 0;
+                text-align: center;
+            }
+
+            .user-table {
+                font-size: 12px;
+            }
+
+            .user-table th,
+            .user-table td {
+                padding: 8px 10px;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                text-align: center;
+                justify-content: center;
+            }
+
+            .toast-container {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =========================================================
+         TOAST CONTAINER
+    ========================================================== -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- =========================================================
+         CABECERA
+    ========================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+            <div class="brand-icon">🏢</div>
+            <div>
+                <h1>Torre de Control</h1>
+                <span>Mi Tiendita Cercana</span>
+            </div>
+        </div>
+
+        <div class="topbar-right">
+
+            <div id="admin-user" class="admin-user">
+                Cargando administrador...
+            </div>
+
+            <div class="admin-actions">
+
+                <!-- 🆕 Indicador de conexión -->
+                <span id="conn-indicator" class="conn-indicator" title="Estado de conexión con Firebase">
+                    <span class="conn-dot"></span>
+                    <span id="conn-text">Conectando...</span>
+                </span>
+
+                <!-- 🆕 Auto-refresco con cuenta atrás -->
+                <label class="auto-refresh-wrap" title="Recargar automáticamente cada 60 segundos">
+                    <span class="live-dot"></span>
+                    <input type="checkbox" id="auto-refresh-toggle" />
+                    <span>Auto</span>
+                    <span class="auto-refresh-count" id="auto-refresh-count">--</span>
+                </label>
+
+                <!-- 🆕 Botón tema -->
+                <button id="btn-theme" class="btn-theme" type="button" title="Cambiar tema">🌙</button>
+
+                <button id="btn-recargar" class="btn-reload" type="button" title="Actualizar todos los datos">
+                    ↻ Actualizar
+                </button>
+                <button id="btn-cerrar-sesion" class="btn-logout" type="button" title="Cerrar sesión">
+                    🔒 Cerrar sesión
+                </button>
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- =========================================================
+         CONTENIDO
+    ========================================================== -->
+
+    <main class="container">
+
+        <!-- =====================================================
+             CABECERA
+        ====================================================== -->
+
+        <section class="dashboard-heading">
+            <div>
+                <span class="eyebrow">CENTRO DE OPERACIONES</span>
+                <h2>Resumen general</h2>
+                <p>Control general de clientes, comerciantes, pedidos y servicios de Mi Tiendita Cercana.</p>
+                <div id="breadcrumb" class="breadcrumb" style="margin-top:8px;">
+                    Estás en: <span>Usuarios</span>
+                </div>
+            </div>
+            <div id="ultima-actualizacion" class="last-update">--</div>
+        </section>
+
+        <!-- =====================================================
+             TABS
+        ====================================================== -->
+
+        <div class="tabs" role="tablist" aria-label="Secciones de la Torre de Control">
+            <button class="tab-btn active" data-tab="usuarios" role="tab" aria-selected="true">
+                👥 Usuarios
+            </button>
+            <button class="tab-btn" data-tab="pedidos" role="tab" aria-selected="false">
+                🛒 Pedidos
+                <span class="tab-badge" id="tab-badge-pedidos" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="servicios" role="tab" aria-selected="false">
+                💰 Servicios
+                <span class="tab-badge" id="tab-badge-servicios" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="recaudo" role="tab" aria-selected="false">🏦 Recaudo</button>
+            <button class="tab-btn" data-tab="soporte" role="tab" aria-selected="false">
+                💬 Soporte
+                <span class="tab-badge" id="tab-badge-soporte" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="auditoria" role="tab" aria-selected="false">🕵️ Auditoría</button>
+        </div>
+
+        <!-- =====================================================
+             TAB: USUARIOS
+        ====================================================== -->
+
+        <div id="tab-usuarios" class="tab-content active" role="tabpanel">
+
+            <section class="section">
+                <div class="section-title">
+                    <span>👥</span>
+                    <h3>Usuarios</h3>
+                </div>
+                <div class="cards-grid">
+                    <article class="stat-card merchant" data-filtro="comerciante" tabindex="0" role="button" title="Clic para ver solo comerciantes">
+                        <div class="stat-icon">🏪</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Comerciantes registrados</span>
+                            <strong id="total-comerciantes">--</strong>
+                            <small>Nuevos este mes: <b id="nuevos-comerciantes">--</b></small>
+                        </div>
+                    </article>
+                    <article class="stat-card clients" data-filtro="cliente" tabindex="0" role="button" title="Clic para ver solo clientes">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Clientes registrados</span>
+                            <strong id="total-clientes">--</strong>
+                            <small>Nuevos este mes: <b id="nuevos-clientes">--</b></small>
+                        </div>
+                    </article>
+
+                    <!-- 🆕 Aquí el JS inyecta el desglose por tipo de comercio -->
+                </div>
+            </section>
+
+            <section class="section" id="gestion-usuarios">
+                <div class="section-title">
+                    <span>👤</span>
+                    <h3>Gestión de usuarios</h3>
+                    <span style="font-size: 12px; color: #6b7b8c; font-weight: normal; margin-left: 8px;">(Solo lectura)</span>
+                </div>
+                <div class="user-controls">
+                    <div class="search-box">
+                        <input type="text" id="buscar-usuario" placeholder="🔍 Buscar por nombre, correo o UID..." autocomplete="off">
+                    </div>
+                    <div class="filter-box">
+                        <select id="filtro-tipo" title="Filtrar por tipo de usuario">
+                            <option value="todos">Todos</option>
+                            <option value="comerciante">Comerciantes</option>
+                            <option value="cliente">Clientes</option>
+                        </select>
+                    </div>
+                    <button class="btn-mini" id="btn-export-usuarios" title="Exportar a CSV">
+                        📥 Exportar CSV
+                    </button>
+                    <div class="user-stats">
+                        <span id="usuarios-mostrados">--</span> usuarios mostrados
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Tipo</th>
+                                <th>UID</th>
+                                <th>Estado</th>
+                                <th>Fecha registro</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-usuarios">
+                            <tr><td colspan="6" class="loading-text">Cargando usuarios...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- =====================================================
+             TAB: PEDIDOS
+        ====================================================== -->
+
+        <div id="tab-pedidos" class="tab-content" role="tabpanel">
+
+            <section class="section">
+                <div class="section-title">
+                    <span>🛒</span>
+                    <h3>Pedidos</h3>
+                </div>
+                <div class="cards-grid orders-grid">
+                    <article class="stat-card" data-filtro="todos" tabindex="0" role="button" title="Ver todos los pedidos">
+                        <div class="stat-icon">🛒</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Pedidos totales</span>
+                            <strong id="total-pedidos">--</strong>
+                        </div>
+                    </article>
+                    <article class="stat-card pending" data-filtro="pendiente" tabindex="0" role="button" title="Ver pedidos pendientes">
+                        <div class="stat-icon">🟡</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Pendientes</span>
+                            <strong id="pedidos-pendientes">--</strong>
+                        </div>
+                    </article>
+                    <article class="stat-card process" data-filtro="proceso" tabindex="0" role="button" title="Ver pedidos en proceso">
+                        <div class="stat-icon">🔵</div>
+                        <div class="stat-content">
+                            <span class="stat-label">En proceso</span>
+                            <strong id="pedidos-proceso">--</strong>
+                        </div>
+                    </article>
+                    <article class="stat-card sent" data-filtro="enviado" tabindex="0" role="button" title="Ver pedidos enviados">
+                        <div class="stat-icon">🚚</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Enviados</span>
+                            <strong id="pedidos-enviados">--</strong>
+                        </div>
+                    </article>
+                    <article class="stat-card completed" data-filtro="completado" tabindex="0" role="button" title="Ver pedidos completados">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Completados</span>
+                            <strong id="pedidos-completados">--</strong>
+                        </div>
+                    </article>
+                    <article class="stat-card cancelled" data-filtro="cancelado" tabindex="0" role="button" title="Ver pedidos cancelados">
+                        <div class="stat-icon">❌</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Cancelados</span>
+                            <strong id="pedidos-cancelados">--</strong>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="orders-management">
+                    <div class="section-title">
+                        <span>📋</span>
+                        <h3>Gestión de pedidos</h3>
+                        <span style="font-size: 12px; color: #6b7b8c; font-weight: normal; margin-left: 8px;">(Solo lectura)</span>
+                    </div>
+                    <div class="orders-toolbar">
+                        <input id="buscar-pedido" class="orders-search" type="search" placeholder="🔎 Buscar por pedido, cliente, correo o comerciante..." autocomplete="off">
+                        <select id="filtro-estado-pedido" class="orders-filter" title="Filtrar por estado">
+                            <option value="todos">Todos los estados</option>
+                            <option value="pendiente">Pendientes</option>
+                            <option value="proceso">En proceso</option>
+                            <option value="enviado">Enviados</option>
+                            <option value="completado">Completados</option>
+                            <option value="cancelado">Cancelados</option>
+                        </select>
+                        <select id="filtro-fecha-pedido" class="orders-filter" title="Filtrar por fecha">
+                            <option value="todos">📅 Todas las fechas</option>
+                            <option value="hoy">Hoy</option>
+                            <option value="semana">Esta semana</option>
+                            <option value="mes">Este mes</option>
+                        </select>
+                    </div>
+                    <div class="orders-summary">
+                        <span id="pedidos-filtrados">Mostrando pedidos...</span>
+                        <div class="orders-summary-actions">
+                            <button class="btn-mini" id="btn-compact-pedidos" title="Vista compacta">📐 Compacta</button>
+                            <button class="btn-mini" id="btn-export-pedidos" title="Exportar a CSV">📥 CSV</button>
+                            <span>👁️ Solo consulta administrativa</span>
+                        </div>
+                    </div>
+                    <div id="pedidos-table-wrapper" class="orders-table-wrapper">
+                        <table class="orders-table" id="tabla-pedidos-tabla">
+                            <thead>
+                                <tr>
+                                    <th data-col="id">Pedido</th>
+                                    <th data-col="cliente">Cliente</th>
+                                    <th data-col="comerciante">Comerciante</th>
+                                    <th data-col="estado">Estado</th>
+                                    <th data-col="total">Total</th>
+                                    <th data-col="fecha">Fecha</th>
+                                    <th data-col="accion">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-pedidos-body">
+                                <tr><td colspan="7" class="orders-empty">Cargando pedidos...</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination-bar" id="pagination-pedidos" style="display:none;">
+                            <span class="pagination-info" id="pagination-pedidos-info">--</span>
+                            <div class="pagination-controls" id="pagination-pedidos-controls"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- =====================================================
+             TAB: SERVICIOS
+        ====================================================== -->
+
+        <div id="tab-servicios" class="tab-content" role="tabpanel">
+
+            <section class="section">
+                <div class="section-title">
+                    <span>💰</span>
+                    <h3>Servicios y cobros</h3>
+                </div>
+                <div class="cards-grid services-grid">
+                    <article class="stat-card money" data-filtro="todos" tabindex="0" role="button" title="Ver todos los servicios">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Servicios generados</span>
+                            <strong id="servicios-generados">$0</strong>
+                            <small>Cantidad: <b id="cantidad-servicios">0</b></small>
+                        </div>
+                    </article>
+                    <article class="stat-card service-pending" data-filtro="pendiente" tabindex="0" role="button" title="Ver servicios pendientes">
+                        <div class="stat-icon">🟠</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Servicios pendientes</span>
+                            <strong id="servicios-pendientes">$0</strong>
+                            <small>Servicios: <b id="cantidad-pendientes">0</b></small>
+                        </div>
+                    </article>
+                    <article class="stat-card service-review" data-filtro="por_verificar" tabindex="0" role="button" title="Ver pagos por verificar">
+                        <div class="stat-icon">🟡</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Pagos por verificar</span>
+                            <strong id="servicios-verificar">$0</strong>
+                            <small>Servicios: <b id="cantidad-verificar">0</b></small>
+                        </div>
+                    </article>
+                    <article class="stat-card service-paid" data-filtro="pagado" tabindex="0" role="button" title="Ver servicios pagados">
+                        <div class="stat-icon">🟢</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Servicios pagados</span>
+                            <strong id="servicios-pagados">$0</strong>
+                            <small>Servicios: <b id="cantidad-pagados">0</b></small>
+                        </div>
+                    </article>
+                    <article class="stat-card service-debt" data-filtro="todos" tabindex="0" role="button" title="Total por cobrar">
+                        <div class="stat-icon">💵</div>
+                        <div class="stat-content">
+                            <span class="stat-label">Total por cobrar</span>
+                            <strong id="total-por-cobrar">$0</strong>
+                            <small>Pendiente de pago</small>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="orders-management services-management">
+                    <div class="section-title">
+                        <span>📋</span>
+                        <h3>Gestión de servicios</h3>
+                        <span style="font-size: 12px; color: #6b7b8c; font-weight: normal; margin-left: 8px;">(Solo lectura)</span>
+                    </div>
+                    <div class="orders-toolbar">
+                        <input id="buscar-servicio" class="orders-search" type="search" placeholder="🔎 Buscar servicio, comerciante o pedido..." autocomplete="off">
+                        <select id="filtro-estado-servicio" class="orders-filter" title="Filtrar por estado">
+                            <option value="todos">Todos los estados</option>
+                            <option value="pendiente">Pendientes</option>
+                            <option value="por_verificar">Por verificar</option>
+                            <option value="pagado">Pagados</option>
+                        </select>
+                    </div>
+                    <div class="orders-summary">
+                        <span id="servicios-filtrados">Mostrando servicios...</span>
+                        <div class="orders-summary-actions">
+                            <button class="btn-mini" id="btn-export-servicios" title="Exportar a CSV">📥 CSV</button>
+                            <span>👁️ Solo consulta administrativa</span>
+                        </div>
+                    </div>
+                    <div class="orders-table-wrapper">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Servicio</th>
+                                    <th>Comerciante</th>
+                                    <th>Pedido</th>
+                                    <th>Estado</th>
+                                    <th>Monto</th>
+                                    <th>Fecha</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-servicios-body">
+                                <tr><td colspan="7" class="orders-empty">Cargando servicios...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- =====================================================
+             TAB: RECAUDO
+        ====================================================== -->
+
+        <div id="tab-recaudo" class="tab-content" role="tabpanel">
+
+            <section class="section">
+                <div class="section-title">
+                    <span>🏦</span>
+                    <h3>Cuenta de recaudo de Mi Tiendita Cercana</h3>
+                </div>
+
+                <div class="order-detail-card" style="margin-bottom:16px;">
+                    <h4>Cuenta oficial para recibir pagos</h4>
+                    <p>
+                        Esta es la cuenta bancaria oficial donde los comerciantes
+                        realizarán el pago de sus servicios pendientes.
+                    </p>
+                </div>
+
+                <form id="form-cuenta-recaudo">
+                    <div class="order-detail-grid">
+                        <div class="order-detail-card">
+                            <h4>Banco</h4>
+                            <input id="recaudo-banco" type="text" placeholder="Nombre del banco" autocomplete="off" />
+                        </div>
+
+                        <div class="order-detail-card">
+                            <h4>Tipo de cuenta</h4>
+                            <select id="recaudo-tipo-cuenta">
+                                <option value="">Seleccionar</option>
+                                <option value="Ahorros">Ahorros</option>
+                                <option value="Corriente">Corriente</option>
+                            </select>
+                        </div>
+
+                        <div class="order-detail-card">
+                            <h4>Número de cuenta</h4>
+                            <input id="recaudo-numero-cuenta" type="text" placeholder="Número de cuenta" autocomplete="off" />
+                        </div>
+
+                        <div class="order-detail-card">
+                            <h4>Titular de la cuenta</h4>
+                            <input id="recaudo-titular" type="text" placeholder="Nombre del titular" autocomplete="off" />
+                        </div>
+
+                        <div class="order-detail-card">
+                            <h4>Documento / NIT</h4>
+                            <input id="recaudo-documento" type="text" placeholder="Documento o NIT" autocomplete="off" />
+                        </div>
+
+                        <div class="order-detail-card">
+                            <h4>Estado</h4>
+                            <label style="display:flex;align-items:center;gap:8px;">
+                                <input id="recaudo-activo" type="checkbox" />
+                                Cuenta activa
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="order-detail-card" style="margin-bottom:16px;">
+                        <h4>Instrucciones de pago</h4>
+                        <textarea id="recaudo-instrucciones" rows="4" placeholder="Escriba las instrucciones que verá el comerciante al momento de pagar." style="width:100%;box-sizing:border-box;"></textarea>
+                    </div>
+
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <button id="btn-guardar-recaudo" type="button" class="btn-reload">
+                            💾 Guardar cuenta de recaudo
+                        </button>
+                        <span id="recaudo-msg" style="font-size:13px;font-weight:700;"></span>
+                    </div>
+                </form>
+            </section>
+
+            <section class="section">
+                <div class="section-title">
+                    <span>💳</span>
+                    <h3>Pagos reportados por comerciantes</h3>
+                </div>
+                <div id="recaudo-pagos-container">
+                    <div class="orders-empty">
+                        <i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:12px;opacity:0.3;"></i>
+                        Aún no hay pagos reportados.
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- =====================================================
+             TAB: SOPORTE
+        ====================================================== -->
+
+        <div id="tab-soporte" class="tab-content" role="tabpanel">
+            <section class="section">
+                <div class="section-title">
+                    <span>💬</span>
+                    <h3>Tickets de Soporte</h3>
+                </div>
+                <div class="table-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr><th>Usuario</th><th>Asunto</th><th>Estado</th><th>Fecha</th></tr>
+                        </thead>
+                        <tbody id="tabla-soporte">
+                            <tr><td colspan="4" class="loading-text">Cargando tickets...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- =====================================================
+             TAB: AUDITORÍA
+        ====================================================== -->
+
+        <div id="tab-auditoria" class="tab-content" role="tabpanel">
+            <section class="section">
+                <div class="section-title">
+                    <span>🕵️</span>
+                    <h3>Historial de Cuentas Eliminadas</h3>
+                </div>
+                <div class="table-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr><th>Nombre</th><th>Email</th><th>Tipo</th><th>Motivo</th><th>Fecha</th></tr>
+                        </thead>
+                        <tbody id="tabla-auditoria">
+                            <tr><td colspan="5" class="loading-text">Cargando historial...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- =====================================================
+             ACTIVIDAD RECIENTE
+        ====================================================== -->
+
+        <section class="section">
+            <div class="section-title">
+                <span>🔔</span>
+                <h3>Actividad reciente</h3>
+            </div>
+            <div id="actividad-reciente" class="activity-panel">
+                <div class="loading">Cargando actividad...</div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             ESTADO
+        ====================================================== -->
+
+        <div id="estado-panel" class="status-panel">
+            Conectando con Firebase...
+        </div>
+
+    </main>
+
+    <!-- =========================================================
+         MODAL DETALLE PEDIDO
+    ========================================================== -->
+
+    <div id="order-modal" class="order-modal" aria-hidden="true">
+        <div class="order-modal-card">
+            <div class="order-modal-header">
+                <h3 id="order-modal-title">Detalle del pedido</h3>
+                <button id="btn-cerrar-detalle-pedido" class="order-modal-close" type="button" aria-label="Cerrar">×</button>
+            </div>
+            <div id="order-modal-body" class="order-modal-body">Cargando...</div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         MODAL DETALLE SERVICIO
+    ========================================================== -->
+
+    <div id="service-modal" class="order-modal" aria-hidden="true">
+        <div class="order-modal-card">
+            <div class="order-modal-header">
+                <h3 id="service-modal-title">Detalle del servicio</h3>
+                <button id="btn-cerrar-detalle-servicio" class="order-modal-close" type="button" aria-label="Cerrar">×</button>
+            </div>
+            <div id="service-modal-body" class="order-modal-body">Cargando...</div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         MODAL CONFIRMACIÓN
+    ========================================================== -->
+
+    <div id="confirm-modal" class="confirm-modal" aria-hidden="true">
+        <div class="confirm-modal-card">
+            <h3 id="confirm-modal-title">¿Estás seguro?</h3>
+            <p id="confirm-modal-msg">Esta acción no se puede deshacer.</p>
+            <div class="confirm-modal-actions">
+                <button class="btn-cancel" id="confirm-modal-cancel">Cancelar</button>
+                <button class="btn-confirm" id="confirm-modal-ok">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         JAVASCRIPT PRINCIPAL
+    ========================================================== -->
+
+    <script type="module" src="./torre-control.js"></script>
+    <script type="module">
+import { auth, db } from './public/js/firebase-config.js';
+import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+    /* ============================================================
+       🛠️ UTILIDADES
+    ============================================================ */
+
+    const $ = (id) => document.getElementById(id);
+
+    function toast(msg, type = 'success') {
+        const container = $('toast-container');
+        if (!container) return;
+        const el = document.createElement('div');
+        el.className = 'toast' + (type === 'error' ? ' error' : type === 'warning' ? ' warning' : '');
+        el.textContent = msg;
+        container.appendChild(el);
+        setTimeout(() => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(30px)';
+            el.style.transition = 'all .3s ease';
+            setTimeout(() => el.remove(), 300);
+        }, 3500);
+    }
+
+    window.showToast = toast;
+
+    /* Confirmación bonita */
+    let confirmResolve = null;
+
+    function showConfirm(title, message) {
+        return new Promise((resolve) => {
+            confirmResolve = resolve;
+            $('confirm-modal-title').textContent = title;
+            $('confirm-modal-msg').textContent = message;
+            $('confirm-modal').classList.add('active');
+        });
+    }
+
+    $('confirm-modal-cancel')?.addEventListener('click', () => {
+        $('confirm-modal').classList.remove('active');
+        if (confirmResolve) confirmResolve(false);
+        confirmResolve = null;
+    });
+
+    $('confirm-modal-ok')?.addEventListener('click', () => {
+        $('confirm-modal').classList.remove('active');
+        if (confirmResolve) confirmResolve(true);
+        confirmResolve = null;
+    });
+
+    /* Copiar al portapapeles */
+    function copyText(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            toast('✅ Copiado: ' + text.slice(0, 20) + '...');
+        }).catch(() => {
+            toast('❌ No se pudo copiar', 'error');
+        });
+    }
+
+    window.copyText = copyText;
+
+    /* Exportar CSV */
+    function exportCSV(filename, headers, rows) {
+        const csv = [
+            headers.map(h => `"${h}"`).join(','),
+            ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))
+        ].join('\n');
+
+        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        toast('📥 CSV descargado: ' + filename);
+    }
+
+    /* ============================================================
+       CERRAR SESIÓN
+    ============================================================ */
+
+    const botonCerrarSesion = $('btn-cerrar-sesion');
+
+    botonCerrarSesion?.addEventListener('click', async () => {
+        const ok = await showConfirm(
+            '🔒 Cerrar sesión',
+            '¿Deseas cerrar la sesión administrativa?'
+        );
+
+        if (!ok) return;
+
+        try {
+            botonCerrarSesion.disabled = true;
+            botonCerrarSesion.textContent = '⏳ Cerrando...';
+
+            await signOut(auth);
+            sessionStorage.clear();
+
+            toast('✅ Sesión cerrada', 'success');
+
+            setTimeout(() => {
+                window.location.replace('./acceso-administrador.html');
+            }, 600);
+
+        } catch (error) {
+            console.error('❌ Error al cerrar sesión:', error);
+            botonCerrarSesion.disabled = false;
+            botonCerrarSesion.textContent = '🔒 Cerrar sesión';
+            toast('❌ No fue posible cerrar sesión', 'error');
+        }
+    });
+
+    /* ============================================================
+       🆕 AUTO-REFRESCO CON CUENTA ATRÁS
+    ============================================================ */
+
+    const autoToggle = $('auto-refresh-toggle');
+    const autoCount = $('auto-refresh-count');
+    const autoWrap = document.querySelector('.auto-refresh-wrap');
+    const btnRecargar = $('btn-recargar');
+
+    let autoRefreshTimer = null;
+    let autoRefreshCountdown = null;
+    let countdownSeconds = 60;
+
+    function iniciarAutoRefresh() {
+        if (autoRefreshTimer) return;
+        autoWrap?.classList.add('active');
+        countdownSeconds = 60;
+        actualizarCountdown();
+
+        autoRefreshCountdown = setInterval(() => {
+            countdownSeconds--;
+            actualizarCountdown();
+            if (countdownSeconds <= 0) {
+                countdownSeconds = 60;
+                console.log('🔁 Auto-refresh disparado');
+                btnRecargar?.click();
+            }
+        }, 1000);
+
+        autoRefreshTimer = setInterval(() => {}, 999999);
+    }
+
+    function detenerAutoRefresh() {
+        if (autoRefreshTimer) {
+            clearInterval(autoRefreshTimer);
+            autoRefreshTimer = null;
+        }
+        if (autoRefreshCountdown) {
+            clearInterval(autoRefreshCountdown);
+            autoRefreshCountdown = null;
+        }
+        autoWrap?.classList.remove('active');
+        if (autoCount) autoCount.textContent = '--';
+    }
+
+    function actualizarCountdown() {
+        if (autoCount) autoCount.textContent = countdownSeconds + 's';
+    }
+
+    autoToggle?.addEventListener('change', () => {
+        if (autoToggle.checked) {
+            iniciarAutoRefresh();
+            toast('🔄 Auto-refresco activado');
+        } else {
+            detenerAutoRefresh();
+            toast('⏸️ Auto-refresco desactivado');
+        }
+    });
+
+    /* ============================================================
+       🆕 BOTÓN TEMA CLARO/OSCURO
+    ============================================================ */
+
+    const btnTheme = $('btn-theme');
+
+    function aplicarTema(tema) {
+        if (tema === 'dark') {
+            document.body.classList.add('dark-mode');
+            if (btnTheme) btnTheme.textContent = '☀️';
+        } else {
+            document.body.classList.remove('dark-mode');
+            if (btnTheme) btnTheme.textContent = '🌙';
+        }
+        try { localStorage.setItem('torre_theme', tema); } catch {}
+    }
+
+    btnTheme?.addEventListener('click', () => {
+        const isDark = document.body.classList.contains('dark-mode');
+        aplicarTema(isDark ? 'light' : 'dark');
+    });
+
+    (function initTema() {
+        try {
+            const guardado = localStorage.getItem('torre_theme') || 'light';
+            aplicarTema(guardado);
+        } catch {}
+    })();
+
+    /* ============================================================
+       🆕 BOTÓN RECARGAR CON SPINNER Y TOAST
+    ============================================================ */
+
+    btnRecargar?.addEventListener('click', () => {
+        const originalText = btnRecargar.textContent;
+        btnRecargar.disabled = true;
+        btnRecargar.textContent = '⏳';
+        setTimeout(() => {
+            btnRecargar.disabled = false;
+            btnRecargar.textContent = originalText;
+        }, 1500);
+    });
+
+    /* ============================================================
+       🆕 INDICADOR DE CONEXIÓN
+    ============================================================ */
+
+    const connIndicator = $('conn-indicator');
+    const connText = $('conn-text');
+
+    function setConexion(estado, texto) {
+        if (!connIndicator) return;
+        connIndicator.classList.remove('ok', 'error');
+        if (estado === 'ok') connIndicator.classList.add('ok');
+        if (estado === 'error') connIndicator.classList.add('error');
+        if (connText) connText.textContent = texto;
+    }
+
+    window.setConexionTorre = setConexion;
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            setConexion('ok', 'En línea');
+        } else {
+            setConexion('error', 'Sin sesión');
+        }
+    });
+
+    /* ============================================================
+       🆕 NAVEGACIÓN POR TECLADO EN TARJETAS
+    ============================================================ */
+
+    document.querySelectorAll('.stat-card[data-filtro]').forEach(card => {
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
+            }
+        });
+    });
+
+    /* ============================================================
+       🆕 BREADCRUMB Y MARCA DE PESTAÑA ACTIVA
+    ============================================================ */
+
+    const tabNames = {
+        usuarios: 'Usuarios',
+        pedidos: 'Pedidos',
+        servicios: 'Servicios',
+        recaudo: 'Recaudo',
+        soporte: 'Soporte',
+        auditoria: 'Auditoría'
+    };
+
+    function actualizarBreadcrumb(tabId) {
+        const el = document.querySelector('#breadcrumb span');
+        if (el) el.textContent = tabNames[tabId] || tabId;
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+            });
+            const tabId = btn.dataset.tab;
+            actualizarBreadcrumb(tabId);
+        });
+    });
+
+    /* ============================================================
+       🆕 BUSCADOR GLOBAL INTELIGENTE
+    ============================================================ */
+
+    (function crearBuscadorGlobal() {
+        const topbar = document.querySelector('.topbar');
+        if (!topbar) return;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'global-search';
+        wrap.innerHTML = `
+            <span style="font-size:14px;">🔎</span>
+            <input type="search" id="buscador-global" placeholder="Buscar en esta sección..." autocomplete="off" />
+        `;
+
+        const adminActions = topbar.querySelector('.admin-actions');
+        if (adminActions && adminActions.parentElement) {
+            adminActions.parentElement.insertBefore(wrap, adminActions);
+        } else {
+            topbar.appendChild(wrap);
+        }
+
+        const input = $('buscador-global');
+
+        input?.addEventListener('input', () => {
+            const tabActiva = document.querySelector('.tab-btn.active')?.dataset?.tab;
+
+            const map = {
+                pedidos: 'buscar-pedido',
+                servicios: 'buscar-servicio',
+                usuarios: 'buscar-usuario'
+            };
+
+            const buscadorId = map[tabActiva];
+            if (!buscadorId) return;
+
+            const buscador = $(buscadorId);
+            if (buscador) {
+                buscador.value = input.value;
+                buscador.dispatchEvent(new Event('input'));
+            }
+        });
+    })();
+
+    /* ============================================================
+       🆕 CONTADORES ANIMADOS EN TARJETAS
+    ============================================================ */
+
+    window.animarContador = function(el, valorFinal) {
+        if (!el) return;
+        const numFinal = Number(valorFinal) || 0;
+        if (numFinal === 0) {
+            el.textContent = '0';
+            return;
+        }
+        el.classList.add('counting');
+        const duracion = 600;
+        const inicio = performance.now();
+        const start = 0;
+
+        function animar(now) {
+            const p = Math.min((now - inicio) / duracion, 1);
+            const val = Math.round(start + (numFinal - start) * p);
+            el.textContent = val.toLocaleString('es-CO');
+            if (p < 1) {
+                requestAnimationFrame(animar);
+            } else {
+                el.textContent = numFinal.toLocaleString('es-CO');
+                el.classList.remove('counting');
+            }
+        }
+        requestAnimationFrame(animar);
+    };
+
+    /* ============================================================
+       🆕 BADGES EN PESTAÑAS
+    ============================================================ */
+
+    window.actualizarBadgePedidos = function(count) {
+        const badge = $('tab-badge-pedidos');
+        if (!badge) return;
+        if (count > 0) {
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.style.display = 'inline-flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    };
+
+    window.actualizarBadgeServicios = function(count) {
+        const badge = $('tab-badge-servicios');
+        if (!badge) return;
+        if (count > 0) {
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.style.display = 'inline-flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    };
+
+    window.actualizarBadgeSoporte = function(count) {
+        const badge = $('tab-badge-soporte');
+        if (!badge) return;
+        if (count > 0) {
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.style.display = 'inline-flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    };
+
+    /* ============================================================
+       🆕 TARJETAS DE USUARIOS: clic filtra
+    ============================================================ */
+
+    document.querySelectorAll('#tab-usuarios .stat-card[data-filtro]').forEach(card => {
+        card.addEventListener('click', () => {
+            const filtro = card.dataset.filtro;
+            const select = $('filtro-tipo');
+            if (select) {
+                select.value = filtro;
+                select.dispatchEvent(new Event('change'));
+                toast('🔍 Filtrando por: ' + filtro);
+            }
+            document.getElementById('gestion-usuarios')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    /* ============================================================
+       🆕 BOTÓN VISTA COMPACTA EN PEDIDOS
+    ============================================================ */
+
+    let compactMode = false;
+    $('btn-compact-pedidos')?.addEventListener('click', () => {
+        compactMode = !compactMode;
+        const wrapper = $('pedidos-table-wrapper');
+        const btn = $('btn-compact-pedidos');
+        if (wrapper) wrapper.classList.toggle('compact', compactMode);
+        if (btn) btn.classList.toggle('active', compactMode);
+        toast(compactMode ? '📐 Vista compacta' : '📐 Vista normal');
+    });
+
+    /* ============================================================
+       🆕 ORDENAR TABLA POR COLUMNA
+    ============================================================ */
+
+    function initSortPedidos() {
+        const tabla = $('tabla-pedidos-tabla');
+        if (!tabla) return;
+
+        let sortCol = null;
+        let sortDir = 'asc';
+
+        tabla.querySelectorAll('th[data-col]').forEach(th => {
+            th.addEventListener('click', () => {
+                const col = th.dataset.col;
+                if (col === 'accion') return;
+
+                if (sortCol === col) {
+                    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortCol = col;
+                    sortDir = 'asc';
+                }
+
+                tabla.querySelectorAll('th').forEach(h => {
+                    h.classList.remove('sorted-asc', 'sorted-desc');
+                });
+
+                th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+
+                if (typeof window.ordenarPedidos === 'function') {
+                    window.ordenarPedidos(col, sortDir);
+                }
+            });
+        });
+    }
+
+    /* ============================================================
+       🆕 EXPORTAR A CSV
+    ============================================================ */
+
+    $('btn-export-pedidos')?.addEventListener('click', () => {
+        if (typeof window.exportarPedidosCSV === 'function') {
+            window.exportarPedidosCSV();
+        } else {
+            toast('⚠️ No hay datos para exportar', 'warning');
+        }
+    });
+
+    $('btn-export-servicios')?.addEventListener('click', () => {
+        if (typeof window.exportarServiciosCSV === 'function') {
+            window.exportarServiciosCSV();
+        } else {
+            toast('⚠️ No hay datos para exportar', 'warning');
+        }
+    });
+
+    $('btn-export-usuarios')?.addEventListener('click', () => {
+        if (typeof window.exportarUsuariosCSV === 'function') {
+            window.exportarUsuariosCSV();
+        } else {
+            toast('⚠️ No hay datos para exportar', 'warning');
+        }
+    });
+
+    window.exportCSV = exportCSV;
+    window.showConfirm = showConfirm;
+
+    /* ============================================================
+       🆕 CERRAR MODALES CON ESC Y CLIC FUERA
+    ============================================================ */
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.order-modal.active').forEach(m => {
+                m.classList.remove('active');
+                m.setAttribute('aria-hidden', 'true');
+            });
+            $('confirm-modal')?.classList.remove('active');
+        }
+    });
+
+    /* ============================================================
+       🆕 INICIALIZACIÓN FINAL
+    ============================================================ */
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            initSortPedidos();
+            actualizarBreadcrumb('usuarios');
+            console.log('✅ Torre de Control: UI avanzada lista');
+        }, 500);
+    });
+
+    console.log('✅ Mejoras de UI conectadas: auto-refresh, teclado, tema, badges, CSV, orden, paginación, breadcrumb');
+</script>
+
+</body>
+
+</html>

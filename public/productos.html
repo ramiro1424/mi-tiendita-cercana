@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Productos - Mi Tiendita Cercana</title>
+
+  <!-- Iconos y estilos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+ <link rel="stylesheet" href="./productos.css?v=6">
+
+  <!-- Favicon inline -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='48' x='6' font-size='48'%3E🛒%3C/text%3E%3C/svg%3E">
+
+  <!-- 🚀 PEDIDO TRACKER - ESTILOS PREMIUM -->
+  <link rel="stylesheet" href="./pedido-tracker.css?v=2">
+
+  <!-- ============================================================
+       ESTILOS PARA NOTIFICACIÓN PERSISTENTE DE CONFIRMACIÓN
+       ============================================================ -->
+  <style>
+    /* ===== RESET Y BASE ===== */
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+
+    /* ===== NOTIFICACIÓN GLOBAL ===== */
+    #notificacion-confirmacion {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 99999;
+      background: linear-gradient(135deg, #d1fae5, #dbeafe);
+    border-bottom: 3px solid #8b5cf6;
+      padding: 14px 20px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #notificacion-confirmacion:hover {
+      background: linear-gradient(135deg, #fde68a, #fcd34d);
+      box-shadow: 0 6px 30px rgba(245, 158, 11, 0.35);
+    }
+    #notificacion-confirmacion .notif-icono {
+      font-size: 1.8rem;
+      flex-shrink: 0;
+      animation: notifPulse 2s ease-in-out infinite;
+    }
+    #notificacion-confirmacion .notif-contenido {
+      flex: 1;
+      min-width: 0;
+    }
+    #notificacion-confirmacion .notif-titulo {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #92400e;
+    }
+    #notificacion-confirmacion .notif-subtitulo {
+      font-size: 0.85rem;
+      color: #78350f;
+      opacity: 0.8;
+    }
+    #notificacion-confirmacion .notif-boton {
+      background: #f59e0b;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 12px rgba(245, 158, 11, 0.3);
+    }
+    #notificacion-confirmacion .notif-boton:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(245, 158, 11, 0.4);
+      background: #d97706;
+    }
+    #notificacion-confirmacion .notif-cerrar {
+      background: rgba(0,0,0,0.1);
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #92400e;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    #notificacion-confirmacion .notif-cerrar:hover {
+      background: rgba(0,0,0,0.2);
+      transform: scale(1.1);
+    }
+
+    @keyframes notifPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    @keyframes notifSlideDown {
+      from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 640px) {
+      #notificacion-confirmacion {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+      #notificacion-confirmacion .notif-boton {
+        justify-content: center;
+        width: 100%;
+      }
+      #notificacion-confirmacion .notif-cerrar {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+      }
+      #notificacion-confirmacion .notif-icono {
+        font-size: 1.4rem;
+      }
+    }
+
+    /* ============================================================
+       ===== HEADER RESPONSIVE (MEJORADO) =====
+       ============================================================ */
+    .page-hero {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas:
+        "brand title actions"
+        "search search search";
+      align-items: center;
+      gap: 10px 12px;
+      padding: 12px 16px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .header-left {
+      grid-area: brand;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .header-center-title {
+      grid-area: title;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .header-actions {
+      grid-area: actions;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      min-width: 0;
+    }
+
+    .search-container {
+      grid-area: search;
+      display: flex;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .brand-bubble--sm {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+    }
+
+    .brand-bubble--sm svg {
+      width: 38px;
+      height: 38px;
+    }
+
+    .page-hero__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #f1f5f9;
+      color: #0f172a;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn:hover { background: #e2e8f0; transform: translateY(-1px); }
+    .btn-primary { background: #10b981; color: white; }
+    .btn-primary:hover { background: #059669; }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px 4px 4px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      max-width: 180px;
+    }
+
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #10b981;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    #nombre-usuario {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #cerrar-sesion {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    #cerrar-sesion:hover { background: #fef2f2; }
+
+    .search-container input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px 0 0 10px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.2s ease;
+      min-width: 0;
+    }
+    .search-container input:focus { border-color: #10b981; }
+    .search-container button {
+      padding: 10px 14px;
+      border: 1px solid #e5e7eb;
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+      background: #f1f5f9;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .search-container button:hover { background: #e2e8f0; }
+
+    #theme-toggle {
+      background: transparent;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #theme-toggle:hover { background: #f1f5f9; }
+
+    /* Ocultar textos progresivamente según tamaño */
+    @media (max-width: 1024px) {
+      .hide-md { display: none !important; }
+    }
+
+    @media (max-width: 768px) {
+      .page-hero {
+        grid-template-columns: auto 1fr auto;
+        grid-template-areas:
+          "brand title actions"
+          "search search search";
+        padding: 10px 12px;
+        gap: 8px;
+      }
+      .page-hero__title { font-size: 0.95rem; }
+      .btn { padding: 7px 10px; font-size: 0.8rem; }
+      .user-info { padding: 4px; }
+      #nombre-usuario { display: none; }
+      #btn-cambiar-tienda .btn-label { display: none; }
+      #theme-toggle .btn-label { display: none; }
+      #cerrar-sesion .btn-label { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .page-hero {
+        padding: 10px;
+      }
+      .page-hero__title { font-size: 0.9rem; gap: 6px; }
+      .brand-bubble--sm { width: 32px; height: 32px; }
+      .brand-bubble--sm svg { width: 32px; height: 32px; }
+      .user-info { display: none; }
+      .btn { padding: 6px 9px; font-size: 0.75rem; }
+    }
+
+    /* ===== FILTROS ===== */
+    .filtros-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 16px;
+    }
+    .filtro-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 150px;
+      flex: 1;
+    }
+    .filtro-group label {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .filtro {
+      padding: 8px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .filtro:focus { border-color: #10b981; }
+
+    .price-range-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .price-range {
+      flex: 1;
+      accent-color: #10b981;
+    }
+    .price-value {
+      font-weight: 600;
+      color: #0f172a;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       ===== FAB "MIS PEDIDOS" (NUEVO, IZQUIERDA) =====
+       ============================================================ */
+    .fab-pedidos {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 60;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #10b981, #0ea5a4);
+      color: #fff;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 12px 32px rgba(139, 92, 246, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 22px;
+      text-decoration: none;
+    }
+    .fab-pedidos:hover {
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 16px 40px rgba(139, 92, 246, 0.6);
+    }
+    .fab-pedidos:active { transform: scale(0.96); }
+
+    .fab-pedidos .fab-pedidos-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #ef4444;
+      color: #fff;
+      display: none;
+      place-items: center;
+      font-weight: 700;
+      font-size: 11px;
+      border: 2px solid #fff;
+      line-height: 1;
+    }
+    .fab-pedidos .fab-pedidos-badge.visible { display: grid; }
+    .fab-pedidos .fab-pedidos-badge.pulse {
+      animation: badgeBounce 1.5s ease-in-out infinite;
+    }
+
+    /* En tablet y desktop, se convierte en píldora con texto */
+    @media (min-width: 640px) {
+      .fab-pedidos {
+        width: auto;
+        min-width: 64px;
+        height: 64px;
+        border-radius: 999px;
+        padding: 0 22px;
+        gap: 10px;
+        grid-auto-flow: column;
+        font-size: 20px;
+      }
+      .fab-pedidos .fab-pedidos-text {
+        display: inline-block;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+    }
+    @media (min-width: 1024px) {
+      .fab-pedidos {
+        left: 24px;
+        bottom: 24px;
+        height: 68px;
+        padding: 0 26px;
+      }
+    }
+    @media (max-width: 639px) {
+      .fab-pedidos .fab-pedidos-text { display: none; }
+    }
+
+    /* ============================================================
+       ===== FAB CARRITO (AJUSTADO) =====
+       ============================================================ */
+    .fab-cart{
+      position:fixed; right:16px; bottom:16px; z-index:60;
+      width:64px; height:64px; border-radius:50%;
+      border:none; background: linear-gradient(135deg, #10b981, #0ea5e9);
+      color:#fff; cursor:pointer; display:grid; place-items:center;
+      box-shadow:0 12px 32px rgba(16, 185, 129, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 22px;
+    }
+    .fab-cart:hover { transform: scale(1.1) translateY(-2px); box-shadow: 0 16px 40px rgba(16, 185, 129, 0.6); }
+    .fab-cart.pulse { animation: cartPulse 1.5s infinite; }
+    @keyframes cartPulse { 0%{box-shadow:0 12px 32px rgba(16,185,129,.4);} 50%{box-shadow:0 12px 32px rgba(16,185,129,.8);} 100%{box-shadow:0 12px 32px rgba(16,185,129,.4);} }
+
+    .fab-badge{
+      position:absolute; top:-6px; right:-6px; min-width:24px; height:24px; padding:0 6px; border-radius:999px;
+      background:#ef4444; color:#fff; display:inline-grid; place-items:center; font-weight:700; font-size:12px;
+      border: 2px solid #fff; animation: badgeBounce 0.5s ease;
+    }
+    @keyframes badgeBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+
+    @media (min-width: 640px) {
+      .fab-cart { right: 20px; bottom: 20px; }
+    }
+    @media (min-width: 1024px) {
+      .fab-cart { right: 24px; bottom: 24px; width: 68px; height: 68px; font-size: 24px; }
+    }
+
+    .cart-section{
+      position:fixed; right:20px; bottom:20px; z-index:59;
+      width:min(420px,94vw); max-height:80vh; overflow:auto;
+      background:#fff; border:1px solid #e5e7eb; border-radius:20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      transform:translateY(calc(100% + 24px)); transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding:0;
+    }
+    body.cart-open .cart-section{ transform:translateY(0); }
+
+    .cart-header { background: linear-gradient(135deg, #10b981, #0ea5e9); color: white; padding: 20px; border-radius: 20px 20px 0 0; display: flex; align-items: center; gap: 12px; }
+    .cart-header h2 { margin: 0; font-size: 1.4rem; font-weight: 700; }
+    .cart-header i { font-size: 1.6rem; }
+
+    .cart-content { padding: 20px; max-height: 400px; overflow-y: auto; }
+    .cart-stats { background:#f8fafc; padding:20px; border-radius:12px; margin-bottom:20px; }
+    .cart-stat { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #e5e7eb; }
+    .cart-stat:last-child { border-bottom:none; font-size:1.1rem; font-weight:700; color:#111827; }
+
+    #carrito { list-style:none; margin:0; padding:0; }
+    .carrito-item { display:flex; align-items:center; gap:12px; padding:15px; background:#f8fafc; border-radius:12px; margin-bottom:10px; transition:.2s ease; border:1px solid transparent; }
+    .carrito-item:hover { border-color:#10b981; transform: translateX(4px); }
+    .carrito-item-img { width:60px; height:60px; border-radius:10px; object-fit:cover; border:2px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+    .carrito-item-detalles { flex:1; }
+    .carrito-item-nombre { font-weight:700; color:#111827; margin-bottom:4px; }
+    .carrito-item-info-detalle { color:#6b7280; font-size:.9rem; }
+    .carrito-item-precio { font-weight:700; color:#10b981; font-size:1rem; }
+    .carrito-item-eliminar { background:#ef4444; color:#fff; border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.2s ease; }
+    .carrito-item-eliminar:hover { background:#dc2626; transform: scale(1.1); }
+
+    .cart-footer { padding:20px; border-top:1px solid #e5e7eb; background:#f8fafc; border-radius:0 0 20px 20px; }
+    .cart-buttons { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    #vaciar-carrito { background:#6b7280; color:#fff; border:none; padding:12px; border-radius:10px; cursor:pointer; font-weight:600; transition:.2s ease; display:flex; align-items:center; justify-content:center; gap:8px; }
+    #vaciar-carrito:hover { background:#4b5563; transform: translateY(-1px); }
+    #pagar { background: linear-gradient(135deg, #10b981, #0ea5e9); color:#fff; border:none; padding:12px; border-radius:10px; cursor:pointer; font-weight:600; transition:.2s ease; display:flex; align-items:center; justify-content:center; gap:8px; }
+    #pagar:hover { transform: translateY(-1px); box-shadow:0 8px 20px rgba(16,185,129,.4); }
+
+    .empty-cart { text-align:center; padding:40px 20px; color:#6b7280; }
+    .empty-cart i { font-size:3rem; margin-bottom:16px; opacity:.5; }
+    .empty-cart p { margin:0; font-size:1.1rem; }
+
+    /* ============================================================
+       MODAL DE DETALLE DE PEDIDO CON CHAT INTEGRADO
+       ============================================================ */
+    #pedido-detalle-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay-detalle {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 10001;
+      backdrop-filter: blur(4px);
+    }
+    .modal-content-pedido {
+      position: relative;
+      z-index: 10002;
+      background: white;
+      max-width: 580px;
+      width: 92vw;
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalSlideUp 0.3s ease;
+    }
+    @keyframes modalSlideUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-header-pedido {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .modal-header-pedido h2 { margin: 0; font-size: 1.2rem; }
+    .modal-close-pedido {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .modal-close-pedido:hover { background: #f3f4f6; color: #111827; }
+
+    /* ===== CHAT INTEGRADO EN EL DETALLE DEL PEDIDO ===== */
+    #seccion-chat-pedido {
+      margin-top: 20px;
+      border-top: 2px solid #e5e7eb;
+      padding-top: 20px;
+      display: none;
+    }
+
+    .chat-header-detalle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .chat-header-detalle h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #1f2937;
+      font-weight: 600;
+    }
+    .chat-header-detalle .chat-estado {
+      font-size: 0.7rem;
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .mensajes-detalle-chat {
+      max-height: 250px;
+      overflow-y: auto;
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .mensaje-chat-detalle {
+      display: flex;
+      flex-direction: column;
+      margin: 6px 0;
+    }
+    .mensaje-chat-detalle.enviado {
+      align-items: flex-end;
+    }
+    .mensaje-chat-detalle.recibido {
+      align-items: flex-start;
+    }
+
+    .mensaje-chat-detalle .burbuja {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .mensaje-chat-detalle.enviado .burbuja {
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      border-radius: 12px 12px 4px 12px;
+    }
+    .mensaje-chat-detalle.recibido .burbuja {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px 12px 12px 4px;
+    }
+
+    .mensaje-chat-detalle .remitente {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+    .mensaje-chat-detalle .texto {
+      font-size: 0.9rem;
+      word-break: break-word;
+    }
+    .mensaje-chat-detalle .hora {
+      font-size: 0.6rem;
+      color: #9ca3af;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .input-chat-detalle {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .input-chat-detalle input {
+      flex: 1;
+      padding: 10px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 24px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      background: white;
+    }
+    .input-chat-detalle input:focus {
+      border-color: #3b82f6;
+    }
+    .input-chat-detalle button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .input-chat-detalle button:hover {
+      background: #2563eb;
+      transform: scale(1.05);
+    }
+    .input-chat-detalle button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ===== MENSAJES RÁPIDOS EN EL CHAT ===== */
+    .mensajes-rapidos-detalle {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .mensajes-rapidos-detalle button {
+      padding: 4px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      background: #f9fafb;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #374151;
+    }
+    .mensajes-rapidos-detalle button:hover {
+      background: #10b981;
+      color: white;
+      border-color: #10b981;
+    }
+
+    @media (max-width:680px){
+      .cart-section{ left:12px; right:12px; width:auto; bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; }
+      .cart-buttons { grid-template-columns:1fr; }
+      .filtros-container { flex-direction: column; }
+      .search-container { max-width: 100%; }
+    }
+
+    .view-switch,.map-section,#tienda-chips-panel,#selector-tienda{display:none!important;}
+
+    /* ============================================================
+       🎯 TIENDA PICKER - BARRA PREMIUM
+       ============================================================ */
+    #tienda-picker {
+      background: linear-gradient(145deg, #0D9488 0%, #10B981 40%, #06B6D4 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 8px 32px rgba(13, 148, 136, 0.3);
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #tienda-picker::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    }
+
+    #tienda-picker::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
+
+    #tienda-picker h2 {
+      color: #FFFFFF !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #tienda-picker .btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      backdrop-filter: blur(8px);
+    }
+
+    #tienda-picker .btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    #tienda-picker .btn:active {
+      transform: scale(0.95);
+    }
+
+    #tienda-picker #tiendas-empty {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* ============================================================
+       TARJETAS DE TIENDAS DENTRO DE LA BARRA
+       ============================================================ */
+    #tienda-picker #tiendas-grid {
+      margin-top: 12px;
+    }
+
+    #tienda-picker .store-card-modern {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    #tienda-picker .store-card-modern:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    #tienda-picker .store-title-modern {
+      color: #0D9488;
+    }
+
+    #tienda-picker .btn-select-tienda {
+      background: linear-gradient(135deg, #FFFFFF, #F0FDF4);
+      color: #0D9488;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    #tienda-picker .btn-select-tienda:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    #tienda-picker .btn-select-tienda:active {
+      transform: scale(0.95);
+    }
+
+    /* ============================================================
+       🎯 PERFIL DE TIENDA - PREMIUM
+       ============================================================ */
+    #perfil-tienda {
+      margin: 12px 0 16px !important;
+    }
+
+    .perfil-tienda-premium {
+      background: #FFFFFF !important;
+      border-radius: 20px !important;
+      overflow: hidden !important;
+      box-shadow: 0 8px 32px rgba(13, 148, 136, 0.08) !important;
+      border: 1px solid rgba(13, 148, 136, 0.08) !important;
+    }
+
+    .perfil-tienda-banner {
+      height: 70px !important;
+      background: linear-gradient(135deg, #0D9488 0%, #10B981 40%, #06B6D4 100%) !important;
+      position: relative !important;
+    }
+
+    .perfil-tienda-banner::after {
+      content: '' !important;
+      position: absolute !important;
+      bottom: -18px !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 36px !important;
+      background: #FFFFFF !important;
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0 !important;
+    }
+
+    .perfil-tienda-content {
+      padding: 0 20px 16px !important;
+      display: flex !important;
+      gap: 16px !important;
+      align-items: flex-start !important;
+      flex-wrap: wrap !important;
+      position: relative !important;
+      margin-top: -28px !important;
+      z-index: 2 !important;
+    }
+
+    .perfil-tienda-avatar {
+      position: relative !important;
+      flex-shrink: 0 !important;
+    }
+
+    .perfil-tienda-avatar img {
+      width: 72px !important;
+      height: 72px !important;
+      border-radius: 50% !important;
+      object-fit: cover !important;
+      border: 4px solid #FFFFFF !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+      background: #f1f5f9 !important;
+    }
+
+    .perfil-tienda-status {
+      position: absolute !important;
+      bottom: 2px !important;
+      right: 2px !important;
+      background: #10B981 !important;
+      color: #FFFFFF !important;
+      font-size: 9px !important;
+      font-weight: 700 !important;
+      padding: 2px 10px !important;
+      border-radius: 999px !important;
+      border: 2px solid #FFFFFF !important;
+      white-space: nowrap !important;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+    }
+
+    .perfil-tienda-status.closed {
+      background: #EF4444 !important;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
+    }
+
+    .perfil-tienda-info {
+      flex: 1 !important;
+      min-width: 180px !important;
+    }
+
+    .perfil-tienda-header {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      flex-wrap: wrap !important;
+      margin-bottom: 4px !important;
+    }
+
+    .perfil-tienda-header h2 {
+      margin: 0 !important;
+      font-size: 1.2rem !important;
+      font-weight: 800 !important;
+      color: #0F172A !important;
+    }
+
+    .perfil-tienda-rating {
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
+
+    .perfil-tienda-rating .stars {
+      color: #F59E0B !important;
+      font-size: 0.8rem !important;
+      letter-spacing: 1px !important;
+    }
+
+    .perfil-tienda-rating .rating-count {
+      color: #64748B !important;
+      font-size: 0.7rem !important;
+      font-weight: 600 !important;
+    }
+
+    .perfil-tienda-detalles {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 6px 16px !important;
+    }
+
+    .perfil-tienda-detalles span {
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      font-size: 0.8rem !important;
+      color: #64748B !important;
+    }
+
+    .perfil-tienda-detalles i {
+      color: #0D9488 !important;
+      font-size: 0.75rem !important;
+      width: 16px !important;
+      text-align: center !important;
+    }
+
+    .perfil-tienda-actions {
+      display: flex !important;
+      gap: 6px !important;
+      flex-wrap: wrap !important;
+      align-items: center !important;
+      margin-left: auto !important;
+    }
+
+    .btn-action {
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 7px 14px !important;
+      border: none !important;
+      border-radius: 999px !important;
+      font-weight: 600 !important;
+      font-size: 0.75rem !important;
+      cursor: pointer !important;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+      background: #F1F5F9 !important;
+      color: #0F172A !important;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .btn-action:active {
+      transform: scale(0.95) !important;
+    }
+
+    .btn-action i {
+      font-size: 0.85rem !important;
+    }
+
+    .btn-chat {
+      background: linear-gradient(135deg, #8B5CF6, #7C3AED) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2) !important;
+    }
+
+    .btn-chat:hover {
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35) !important;
+    }
+
+    .btn-map {
+      background: linear-gradient(135deg, #0D9488, #10B981) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 16px rgba(13, 148, 136, 0.2) !important;
+    }
+
+    .btn-map:hover {
+      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.35) !important;
+    }
+
+    .btn-call {
+      background: linear-gradient(135deg, #06B6D4, #0891B2) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2) !important;
+    }
+
+    .btn-call:hover {
+      box-shadow: 0 8px 24px rgba(6, 182, 212, 0.35) !important;
+    }
+
+    .btn-change {
+      background: #F1F5F9 !important;
+      color: #0F172A !important;
+      border: 1px solid #E2E8F0 !important;
+    }
+
+    .btn-change:hover {
+      background: #E2E8F0 !important;
+    }
+
+    #bienvenida-tienda {
+      background: linear-gradient(135deg, #0D9488, #10B981) !important;
+      color: #FFFFFF !important;
+      border-radius: 12px !important;
+      padding: 10px 20px !important;
+      font-weight: 700 !important;
+      font-size: 0.95rem !important;
+      border: none !important;
+      box-shadow: 0 4px 16px rgba(13, 148, 136, 0.2) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+      text-align: center !important;
+      margin-bottom: 12px !important;
+    }
+
+    @media (max-width: 768px) {
+      .perfil-tienda-content {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 0 16px 16px !important;
+      }
+      
+      .perfil-tienda-avatar {
+        display: flex !important;
+        justify-content: center !important;
+        margin-top: -36px !important;
+      }
+      
+      .perfil-tienda-avatar img {
+        width: 64px !important;
+        height: 64px !important;
+      }
+      
+      .perfil-tienda-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 2px !important;
+      }
+      
+      .perfil-tienda-actions {
+        margin-left: 0 !important;
+        width: 100% !important;
+        justify-content: center !important;
+      }
+      
+      .btn-action {
+        padding: 6px 12px !important;
+        font-size: 0.7rem !important;
+      }
+      
+      .btn-action span {
+        display: inline !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .perfil-tienda-avatar img {
+        width: 56px !important;
+        height: 56px !important;
+      }
+      
+      .perfil-tienda-header h2 {
+        font-size: 1rem !important;
+      }
+      
+      .perfil-tienda-detalles {
+        flex-direction: column !important;
+        gap: 2px !important;
+      }
+      
+      .btn-action span {
+        display: none !important;
+      }
+    }
+
+    /* ============================================================
+       Ajuste para que las notificaciones no tapen el FAB en móvil
+       ============================================================ */
+    @media (max-width: 640px) {
+      body { padding-bottom: 90px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============================================================
+       🔔 NOTIFICACIÓN PERSISTENTE DE CONFIRMACIÓN
+       ============================================================ -->
+  <div id="notificacion-confirmacion" onclick="window.irAPorConfirmar()">
+    <div class="notif-icono">⚠️</div>
+    <div class="notif-contenido">
+      <div class="notif-titulo" id="notif-titulo">📦 Tienes pedidos por confirmar</div>
+      <div class="notif-subtitulo" id="notif-subtitulo">Haz clic aquí para revisarlos</div>
+    </div>
+    <button class="notif-boton" onclick="event.stopPropagation(); window.irAPorConfirmar()">
+      <i class="fas fa-check-circle"></i> <span id="notif-boton-texto">Ver pedidos</span>
+    </button>
+    <button class="notif-cerrar" onclick="event.stopPropagation(); window.ocultarNotificacionConfirmacion()" title="Cerrar por ahora">
+      ✕
+    </button>
+  </div>
+
+  <div class="container">
+    <!-- ============================================================ -->
+    <!-- HEADER RESPONSIVE (REORGANIZADO) -->
+    <!-- ============================================================ -->
+    <header class="page-hero">
+      <div class="header-left">
+        <!-- Logo -->
+        <span class="brand-bubble brand-bubble--sm" aria-hidden="true" title="Mi Tiendita Cercana">
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mi Tiendita">
+            <defs>
+              <linearGradient id="pinGradMini" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#10B7EE"/>
+                <stop offset="1" stop-color="#22C55E"/>
+              </linearGradient>
+            </defs>
+            <circle cx="32" cy="32" r="28" fill="#fff"/>
+            <rect x="26" y="6"  rx="6" width="12" height="12" fill="#22C55E"/>
+            <rect x="12" y="12" rx="6" width="14" height="14" fill="#10B7EE"/>
+            <rect x="38" y="12" rx="6" width="14" height="14" fill="#F59E0B"/>
+            <rect x="8"  y="26" rx="6" width="14" height="14" fill="#FF6B35"/>
+            <rect x="42" y="26" rx="6" width="14" height="14" fill="#FFA726"/>
+            <rect x="12" y="38" rx="6" width="14" height="14" fill="#22C55E"/>
+            <rect x="38" y="38" rx="6" width="14" height="14" fill="#10B7EE"/>
+            <path d="M32 16a12 12 0 0 0-12 12c0 8.3 8.5 13.8 11 15.7a2 2 0 0 0 2.4 0C36.9 41.8 44 37 44 28a12 12 0 0 0-12-12z" fill="url(#pinGradMini)"/>
+            <circle cx="32" cy="28" r="4.2" fill="#fff"/>
+          </svg>
+        </span>
+      </div>
+
+      <div class="header-center-title">
+        <h1 class="page-hero__title">
+          <i class="fas fa-shopping-bag"></i> <span class="hide-sm">Productos Disponibles</span>
+        </h1>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-cambiar-tienda" class="btn" type="button" title="Cambiar de tienda">
+          <i class="fas fa-location-dot"></i>
+          <span class="btn-label hide-md">Cambiar de tienda</span>
+        </button>
+
+        <div class="user-info">
+          <div class="user-avatar">U</div>
+          <span id="nombre-usuario">Usuario</span>
+        </div>
+
+        <button id="theme-toggle" class="btn" aria-label="Cambiar tema">
+          <i class="fas fa-moon"></i>
+          <span class="btn-label hide-md">Tema</span>
+        </button>
+
+        <button id="cerrar-sesion">
+          <i class="fas fa-sign-out-alt"></i>
+          <span class="btn-label hide-md">Cerrar sesión</span>
+        </button>
+      </div>
+
+      <div class="search-container">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Buscar productos..."
+          onkeydown="if(event.key==='Enter' && typeof window.buscarProductos==='function'){ window.buscarProductos(); }"
+          aria-label="Buscar productos"
+        />
+        <button id="search-btn" type="button" onclick="if(typeof window.buscarProductos==='function'){ window.buscarProductos(); }" aria-label="Buscar">
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- PERFIL DE TIENDA - PREMIUM -->
+    <!-- ============================================================ -->
+    <section id="perfil-tienda" style="display:none;margin:12px 0;">
+      <div id="bienvenida-tienda" style="display:none;"></div>
+      
+      <div class="perfil-tienda-premium" id="perfil-tienda-card">
+        <div class="perfil-tienda-banner"></div>
+        
+        <div class="perfil-tienda-content">
+          <div class="perfil-tienda-avatar">
+            <img id="perfil-tienda-logo" src="" alt="Logo tienda">
+            <span class="perfil-tienda-status" id="tienda-status">🟢 Abierto</span>
+          </div>
+          
+          <div class="perfil-tienda-info">
+            <div class="perfil-tienda-header">
+              <h2 id="perfil-tienda-nombre">Tienda</h2>
+              <div class="perfil-tienda-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">(4.5)</span>
+              </div>
+            </div>
+            
+            <div class="perfil-tienda-detalles">
+              <span class="perfil-tienda-direccion" id="perfil-tienda-direccion">
+                <i class="fas fa-map-pin"></i> <span id="perfil-tienda-detalles">Dirección • Horario</span>
+              </span>
+              <span class="perfil-tienda-telefono" id="perfil-tienda-telefono">
+                <i class="fas fa-phone"></i> <span id="perfil-tienda-tel">+57 300 000 0000</span>
+              </span>
+              <span class="perfil-tienda-dist" id="perfil-tienda-dist">
+                <i class="fas fa-location-dot"></i> <span id="perfil-tienda-distancia">2.5 km</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="perfil-tienda-actions">
+            <button id="perfil-chat" class="btn-action btn-chat" title="Chatear con la tienda">
+              <i class="fas fa-comments"></i>
+              <span>Chat</span>
+            </button>
+            <button id="perfil-ver-mapa" class="btn-action btn-map" title="Ver ubicación en el mapa">
+              <i class="fas fa-map"></i>
+              <span>Ubicación</span>
+            </button>
+           
+            </button>
+            <button id="perfil-cambiar-tienda" class="btn-action btn-change" title="Cambiar de tienda">
+              <i class="fas fa-arrow-rotate-left"></i>
+              <span>Cambiar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- PICKER DE TIENDAS -->
+    <!-- ============================================================ -->
+    <section id="tienda-picker" style="margin:12px 0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+        <h2 style="margin:0;font-size:18px;display:flex;align-items:center;gap:8px;">
+          <i class="fas fa-store" style="color:rgba(255,255,255,0.9);"></i> Elige tu tienda cercana
+        </h2>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button id="picker-geo" class="btn" style="padding:8px 12px;">
+            <i class="fas fa-location-crosshairs" aria-hidden="true"></i> Usar mi ubicación
+          </button>
+          
+        </div>
+      </div>
+
+      <div id="tiendas-empty" style="display:none; margin-top:10px;">
+        No hay tiendas disponibles por ahora.
+      </div>
+
+      <div id="tiendas-grid"></div>
+      <div id="tiendas-grid-skel" class="skeleton-grid" style="display:none" aria-hidden="true"></div>
+    </section>
+<!-- ============================================================ -->
+<!-- FILTROS -->
+<!-- ============================================================ -->
+<div id="filtros-productos" class="filtros-container">
+
+  
+
+  
+
+ 
+
+      
+
+      <div class="filtro-group">
+        <label for="filtro-orden">Ordenar por:</label>
+        <select id="filtro-orden" class="filtro">
+          <option value="defecto">Por defecto</option>
+          <option value="precio-asc">Precio: Menor a mayor</option>
+          <option value="precio-desc">Precio: Mayor a menor</option>
+          <option value="valoracion">Mejor valorados</option>
+          <option value="nombre-asc">Nombre: A-Z</option>
+          <option value="nombre-desc">Nombre: Z-A</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCTOS -->
+    <!-- ============================================================ -->
+    <div id="productos" class="productos"></div>
+    <div id="productos-skel" class="skeleton-grid" style="display:none" aria-hidden="true"></div>
+
+    <div class="pagination" id="pagination"></div>
+
+    <!-- ============================================================ -->
+    <!-- CARRITO -->
+    <!-- ============================================================ -->
+    <div class="cart-section">
+      <div class="cart-header">
+        <i class="fas fa-shopping-cart"></i>
+        <h2>Tu Carrito <span id="contador-carrito">(0)</span></h2>
+      </div>
+      
+      <div class="cart-content">
+        <div class="cart-items-preview" id="cart-preview"></div>
+        
+        <div class="cart-stats">
+          <div class="cart-stat"><span>Productos:</span><span id="cart-count">0</span></div>
+          <div class="cart-stat"><span>Subtotal:</span><span id="cart-subtotal">$0.00</span></div>
+          <div class="cart-stat"><span>Descuento:</span><span id="cart-discount">$0.00</span></div>
+          <div class="cart-stat"><strong>Total:</strong><strong id="cart-total">$0.00</strong></div>
+        </div>
+
+        <ul id="carrito">
+          <div class="empty-cart" id="empty-cart-message">
+            <i class="fas fa-shopping-cart"></i>
+            <p>Tu carrito está vacío</p>
+            <p style="font-size: 0.9rem; margin-top: 8px;">Agrega algunos productos para continuar</p>
+          </div>
+        </ul>
+      </div>
+
+      <div class="cart-footer">
+        <div class="cart-buttons">
+          <button id="vaciar-carrito"><i class="fas fa-trash"></i> Vaciar</button>
+          <button id="pagar"><i class="fas fa-credit-card"></i> Pagar ahora</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 🔥 FAB "MIS PEDIDOS" — AHORA FLOTANTE ABAJO A LA IZQUIERDA  -->
+    <!-- ============================================================ -->
+    <a href="./pedidos.html" class="fab-pedidos" type="button" aria-label="Mis Pedidos" title="Mis Pedidos">
+      <i class="fas fa-box" aria-hidden="true"></i>
+      <span class="fab-pedidos-text">Mis Pedidos</span>
+      <span class="fab-pedidos-badge" id="tracker-badge">0</span>
+    </a>
+
+    <!-- ============================================================ -->
+    <!-- FAB carrito (se mantiene abajo a la derecha) -->
+    <!-- ============================================================ -->
+    <button id="fab-cart" class="fab-cart" type="button" aria-label="Abrir carrito">
+      <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+      <span id="fab-count" class="fab-badge">0</span>
+    </button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 🚀 PEDIDO TRACKER - MODAL DE DETALLE CON CHAT INTEGRADO -->
+  <!-- ============================================================ -->
+
+  <!-- MODAL DE DETALLE DE PEDIDO CON CHAT -->
+  <div id="pedido-detalle-modal" style="display:none;">
+    <div class="modal-overlay-detalle" onclick="cerrarDetallePedido()"></div>
+    <div class="modal-content-pedido" id="detalle-contenido">
+      <!-- El contenido se genera dinámicamente -->
+    </div>
+  </div>
+
+  <!-- CONTENEDOR DEL TRACKER FLOTANTE -->
+  <div id="pedido-tracker-container"></div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL DE CHAT (standalone, se mantiene por compatibilidad) -->
+  <!-- ============================================================ -->
+  <div class="modal-backdrop" id="chat-modal" style="display:none;">
+    <div class="modal-content" style="max-width:800px;background:white;border-radius:16px;padding:20px;">
+      <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 id="chat-title"><i class="fas fa-comments"></i> Chat con la tienda</h3>
+        <span class="modal-close" id="close-chat" style="cursor:pointer;font-size:1.5rem;color:#6b7280;">&times;</span>
+      </div>
+
+      <div class="chat-container" style="display:grid;grid-template-columns:1fr;gap:0;">
+        <div class="messages-container" id="messages-container" style="min-height:280px;max-height:60vh;overflow:auto;padding:8px;">
+          <div class="no-chat-selected" style="text-align:center;color:#6b7280;padding:20px;">
+            <i class="fas fa-comment-slash"></i>
+            <p>El chat se habilita por pedido. Crea un pedido y se activará aquí.</p>
+          </div>
+        </div>
+
+        <div class="message-input" id="message-input-container" style="display:none;gap:8px;border-top:1px solid #e5e7eb;padding:8px;">
+          <input type="text" placeholder="Escribe un mensaje…" id="message-input" style="flex:1;padding:.6rem;border:1px solid #e5e7eb;border-radius:10px;">
+          <button id="send-message" class="btn" style="padding:.6rem 1rem;"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCRIPTS -->
+  <!-- ============================================================ -->
+
+  <!-- Firebase -->
+  <script type="module" src="./js/firebase-config.js?v=3"></script>
+
+  <!-- 🚀 PEDIDO TRACKER -->
+  <script type="module" src="./js/pedido-tracker.js?v=2"></script>
+
+  <!-- Autenticación y UI -->
+  <script type="module" src="./js/auth.js?v=3"></script>
+  <script type="module" src="./js/ui.js?v=3"></script>
+  <script type="module" src="./js/perfil.js?v=3"></script>
+
+  <!-- Lógica de productos -->
+  <script type="module" src="./js/productos.js?v=6"></script>
+
+  <!-- Chat del cliente -->
+  <script type="module" src="./js/chat-cliente.js?v=2"></script>
+
+  <script src="./js/env.js?v=2"></script>
+
+  <script type="module" src="./js/notifications.js?v=2"></script>
+  <script type="module" src="./js/cliente-notificaciones.js?v=2"></script>
+  
+  <script type="module" src="./js/tiendas-public.js?v=44"></script>
+  <script type="module" src="./js/checkout-client.js?v=2"></script>
+  <script type="module" src="./js/cliente-ux.js?v=2"></script>
+
+  <!-- ============================================================
+       CÓDIGO DEL TRACKER Y SISTEMA DE PEDIDOS
+       ============================================================ -->
+  <script type="module">
+    import { auth, db } from './js/firebase-config.js';
+    import { 
+      doc, getDoc, updateDoc, serverTimestamp,
+      collection, addDoc, onSnapshot, query, orderBy, limit,
+      where, getDocs
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+    console.log('✅ Sistema de pedidos cargado correctamente');
+    
+    // ============================================================
+    // FUNCIONES DEL SISTEMA DE PEDIDOS
+    // ============================================================
+    
+    window.abrirTrackerPedidos = function() {
+      console.log('📦 Abriendo centro de seguimiento de pedidos...');
+      
+      if (window.pedidoTracker) {
+        if (typeof window.pedidoTracker.showTracker === 'function') {
+          window.pedidoTracker.showTracker();
+        }
+        if (typeof window.pedidoTracker.refreshPedidos === 'function') {
+          window.pedidoTracker.refreshPedidos();
+        }
+        if (window.actualizarBadgeTracker) {
+          window.actualizarBadgeTracker();
+        }
+      } else {
+        console.warn('⚠️ PedidoTracker no inicializado');
+        setTimeout(() => {
+          if (window.pedidoTracker && typeof window.pedidoTracker.showTracker === 'function') {
+            window.pedidoTracker.showTracker();
+          }
+        }, 500);
+      }
+    };
+    
+    window.cerrarTrackerPedidos = function() {
+      if (window.pedidoTracker && typeof window.pedidoTracker.hideTracker === 'function') {
+        window.pedidoTracker.hideTracker();
+      }
+    };
+    
+        // Función legacy - desactivada para evitar conflicto con el nuevo sistema
+    window.actualizarBadgeTracker = function() {
+      // Ya no hace nada: el badge lo maneja el script de notificación global
+    };
+    
+    window.cerrarDetallePedido = function() {
+      const modal = document.getElementById('pedido-detalle-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        const contenido = document.getElementById('detalle-contenido');
+        if (contenido) contenido.innerHTML = '';
+      }
+      if (window.cerrarChatEnDetalle) {
+        window.cerrarChatEnDetalle();
+      }
+    };
+    
+    window.abrirDetallePedido = async function(pedidoId) {
+      if (!pedidoId) return;
+      
+      const modal = document.getElementById('pedido-detalle-modal');
+      const contenido = document.getElementById('detalle-contenido');
+      
+      if (!modal || !contenido) return;
+      
+      modal.style.display = 'flex';
+      contenido.innerHTML = `
+        <div style="text-align:center;padding:40px;">
+          <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#10b981;"></i>
+          <p style="margin-top:16px;color:#6b7280;">Cargando detalle del pedido...</p>
+        </div>
+      `;
+      
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          contenido.innerHTML = `<p style="color:#ef4444;">Debes iniciar sesión</p>`;
+          return;
+        }
+        
+        const pedidoRef = doc(db, 'pedidos', pedidoId);
+        const pedidoSnap = await getDoc(pedidoRef);
+        
+        if (!pedidoSnap.exists()) {
+          contenido.innerHTML = `<p style="color:#ef4444;">Pedido no encontrado</p>`;
+          return;
+        }
+        
+        const pedido = pedidoSnap.data();
+        
+        if (pedido.clienteId !== user.uid) {
+          contenido.innerHTML = `<p style="color:#ef4444;">No tienes acceso a este pedido</p>`;
+          return;
+        }
+        
+        const estado = pedido.estado || 'pendiente';
+        const estadosMap = {
+          'pendiente': { label: '⏳ Pendiente', color: '#f59e0b', bg: '#fffbeb' },
+          'aceptado': { label: '✅ Aceptado', color: '#3b82f6', bg: '#eff6ff' },
+          'en_preparacion': { label: '👨‍🍳 En preparación', color: '#3b82f6', bg: '#eff6ff' },
+          'proceso': { label: '🔄 En proceso', color: '#3b82f6', bg: '#eff6ff' },
+          'listo': { label: '🍽️ Listo para recoger', color: '#10b981', bg: '#ecfdf5' },
+          'entregado': { label: '📦 Entregado', color: '#10b981', bg: '#ecfdf5' },
+          'completado': { label: '✅ Completado', color: '#10b981', bg: '#ecfdf5' },
+          'envio': { label: '📦 En camino', color: '#8b5cf6', bg: '#f5f3ff' },
+          'cancelado': { label: '❌ Cancelado', color: '#ef4444', bg: '#fef2f2' }
+        };
+        const info = estadosMap[estado] || { label: estado, color: '#6b7280', bg: '#f3f4f6' };
+        
+        const total = pedido.total ? new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(pedido.total) : '$0';
+        const fecha = pedido.creadoEn?.toDate?.() || new Date();
+        const fechaStr = fecha.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        
+        let productosHtml = '';
+        if (pedido.items && Array.isArray(pedido.items)) {
+          productosHtml = pedido.items.map(p => `
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f3f4f6;font-size:0.85rem;">
+              <span>${p.nombre || 'Producto'} × ${p.cantidad || p.qty || 1}</span>
+              <span style="font-weight:600;">${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format((p.unitPrice || p.precio || 0) * (p.cantidad || p.qty || 1))}</span>
+            </div>
+          `).join('');
+        }
+        
+        contenido.innerHTML = `
+          <div class="modal-header-pedido">
+            <h2>📦 Pedido #${pedidoId.slice(-6).toUpperCase()}</h2>
+            <button class="modal-close-pedido" onclick="cerrarDetallePedido()">&times;</button>
+          </div>
+          
+          <div style="background:${info.bg};border-radius:12px;padding:12px 16px;margin-bottom:16px;border-left:4px solid ${info.color};">
+            <span style="font-weight:700;color:${info.color};font-size:1.1rem;">${info.label}</span>
+          </div>
+          
+          <div style="margin-bottom:16px;">
+            <p style="font-weight:600;margin:0 0 4px 0;font-size:0.9rem;">🏪 ${pedido.tiendaNombre || 'Tienda'}</p>
+            <p style="font-size:0.8rem;color:#6b7280;margin:0;">📅 ${fechaStr}</p>
+          </div>
+          
+          <div style="background:#f8fafc;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
+            <div style="font-weight:600;font-size:0.85rem;margin-bottom:8px;">Productos</div>
+            ${productosHtml || '<p style="font-size:0.8rem;color:#6b7280;">No hay productos</p>'}
+            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:2px solid #e5e7eb;margin-top:8px;font-weight:700;">
+              <span>Total</span>
+              <span style="color:#10b981;">${total}</span>
+            </div>
+          </div>
+          
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <button onclick="cerrarDetallePedido()" 
+                    style="flex:1;background:#6b7280;color:white;border:none;border-radius:10px;padding:10px;font-weight:600;cursor:pointer;">
+              Cerrar
+            </button>
+          </div>
+        `;
+        
+      } catch (error) {
+        console.error('Error cargando detalle:', error);
+        contenido.innerHTML = `
+          <p style="color:#ef4444;">Error al cargar el detalle del pedido</p>
+          <button onclick="cerrarDetallePedido()" style="margin-top:12px;padding:8px 20px;background:#6b7280;color:white;border:none;border-radius:8px;cursor:pointer;">Cerrar</button>
+        `;
+      }
+    };
+    
+    // ============================================================
+    // BOTONES DEL HEADER
+    // ============================================================
+    
+    document.getElementById('btn-cambiar-tienda')?.addEventListener('click', () => {
+      if (typeof window.goBackToStorePicker === 'function') window.goBackToStorePicker();
+    });
+    
+    document.getElementById('perfil-cambiar-tienda')?.addEventListener('click', () => {
+      if (typeof window.goBackToStorePicker === 'function') window.goBackToStorePicker();
+    });
+    
+    
+    
+    
+    document.getElementById('cerrar-sesion')?.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        try { localStorage.removeItem('selected_store_uid'); } catch {}
+        location.href = './index.html';
+      } catch (e) {
+        console.error('Error al cerrar sesión', e);
+        alert('No se pudo cerrar sesión. Intenta de nuevo.');
+      }
+    });
+    
+    
+    
+    console.log('✅ Sistema de pedidos completamente inicializado');
+  </script>
+
+  <!-- ============================================================
+       PERFIL DE TIENDA EN TIEMPO REAL
+       ============================================================ -->
+  <script type="module">
+    import { db } from './js/firebase-config.js';
+    import { doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const $ = (s)=>document.querySelector(s);
+
+    function getStoreId() {
+  try {
+    const u = new URL(location.href);
+    // 🔥 SOLO respetamos ?tienda=UID de la URL.
+    // NO leemos localStorage.getItem('selected_store_uid').
+    // Si el cliente no seleccionó una tienda, no se pinta perfil.
+    return u.searchParams.get('tienda') || null;
+  } catch {
+    return null;
+  }
+}
+
+    function pintarPerfil(t) {
+      const wrap = $('#perfil-tienda');
+      const msg  = $('#bienvenida-tienda');
+      if (!t) { wrap.style.display='none'; return; }
+
+      const nombre = t.nombre || 'Comercio';
+      const imgUrl = t.imageUrl || t.imagen || t.logoUrl || '';
+      const dir    = t.direccion || '';
+      const horario= t.horario || '';
+      const tel    = t.telefono || '';
+      const status = t.activo !== false ? '🟢 Abierto' : '🔴 Cerrado';
+      const statusClass = t.activo !== false ? '' : 'closed';
+
+      msg.textContent = `¡Bienvenido a ${nombre}!`;
+      msg.style.display = 'block';
+
+      $('#perfil-tienda-logo').src = imgUrl || 'https://placehold.co/150x150?text=🏪';
+      $('#perfil-tienda-nombre').textContent = nombre;
+
+      const statusEl = document.getElementById('tienda-status');
+      if (statusEl) {
+          statusEl.textContent = status;
+          statusEl.className = `perfil-tienda-status ${statusClass}`;
+      }
+
+      const detalles = [];
+      if (dir) detalles.push(dir);
+      if (horario) detalles.push(horario);
+      $('#perfil-tienda-detalles').textContent = detalles.join(' • ');
+
+      const telEl = document.getElementById('perfil-tienda-tel');
+      if (telEl) telEl.textContent = tel || '+57 300 000 0000';
+
+      wrap.style.display = 'block';
+      try { document.title = `${nombre} — Productos`; } catch {}
+
+      const picker = $('#tienda-picker');
+      if (picker) picker.style.display = 'none';
+    }
+
+        let unsubscribePerfilTienda = null;
+
+    function cargarPerfilTienda(tiendaId) {
+      if (!tiendaId) return;
+
+      try {
+        localStorage.setItem('selected_store_uid', tiendaId);
+      } catch {}
+
+      if (unsubscribePerfilTienda) {
+        try { unsubscribePerfilTienda(); } catch {}
+        unsubscribePerfilTienda = null;
+      }
+
+      const ref = doc(db, 'tiendas', tiendaId);
+
+      unsubscribePerfilTienda = onSnapshot(
+        ref,
+        (snap) => {
+          if (snap.exists()) {
+            pintarPerfil(snap.data());
+          } else {
+            console.warn('⚠️ No existe la tienda:', tiendaId);
+          }
+        },
+        (err) => console.warn('❌ Error escuchando perfil:', err)
+      );
+    }
+
+    (function initPerfilTienda() {
+      const tiendaId = getStoreId();
+      if (!tiendaId) return;
+      cargarPerfilTienda(tiendaId);
+    })();
+
+    window.cargarPerfilTienda = cargarPerfilTienda;
+  </script>
+
+  
+  <!-- ============================================================
+       🔔 SISTEMA DE NOTIFICACIÓN GLOBAL - PRODUCTOS.HTML
+       ============================================================ -->
+  <script type="module">
+    import { auth, db } from './js/firebase-config.js';
+    import { 
+        collection, query, where, orderBy, onSnapshot
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    console.log('🔔 Iniciando sistema de notificación global...');
+
+    let todosLosPedidos = [];
+    let notificacionVisible = false;
+
+    const notifContainer = document.getElementById('notificacion-confirmacion');
+    const notifTitulo = document.getElementById('notif-titulo');
+    const notifSubtitulo = document.getElementById('notif-subtitulo');
+    const notifBotonTexto = document.getElementById('notif-boton-texto');
+
+    if (!notifContainer) {
+        console.warn('⚠️ No se encontró #notificacion-confirmacion');
+    }
+
+    // ============================================================
+    // 🔥 FUNCIÓN PARA SABER SI UN PEDIDO ESTÁ PENDIENTE DE CONFIRMAR
+    // ============================================================
+    function esPedidoPendienteDeConfirmar(pedido) {
+        const estado = String(pedido.estado || '').toLowerCase().trim();
+        return (
+            pedido.clienteConfirmado !== true &&
+            ['en_camino', 'enviado', 'entregado', 'listo'].includes(estado)
+        );
+    }
+
+    // ============================================================
+    // 🔔 FUNCIÓN PARA ACTUALIZAR LA NOTIFICACIÓN
+    // ============================================================
+    function actualizarNotificacionConfirmacion() {
+        if (!notifContainer) return;
+
+        const pendientes = todosLosPedidos.filter(esPedidoPendienteDeConfirmar);
+        const cantidad = pendientes.length;
+
+        // Actualizar badge del tracker (Mis Pedidos) — ahora en el FAB
+        const badge = document.getElementById('tracker-badge');
+        if (badge) {
+            const activos = todosLosPedidos.filter(p => 
+                p.estado !== 'entregado' && 
+                p.estado !== 'completado' && 
+                p.estado !== 'cancelado' &&
+                p.estado !== 'recibido'
+            ).length;
+            badge.textContent = activos;
+            if (activos > 0) {
+                badge.style.display = 'grid';
+                badge.classList.add('visible');
+                badge.classList.add('pulse');
+            } else {
+                badge.style.display = 'none';
+                badge.classList.remove('visible');
+                badge.classList.remove('pulse');
+            }
+        }
+
+        // Mostrar/ocultar notificación
+        if (cantidad > 0 && !notificacionVisible) {
+            notifContainer.style.display = 'flex';
+            notifContainer.style.animation = 'notifSlideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            notificacionVisible = true;
+        } else if (cantidad === 0 && notificacionVisible) {
+            notifContainer.style.animation = 'none';
+            notifContainer.style.opacity = '0';
+            notifContainer.style.transform = 'translateY(-30px)';
+            setTimeout(() => {
+                notifContainer.style.display = 'none';
+                notifContainer.style.opacity = '1';
+                notifContainer.style.transform = 'translateY(0)';
+                notificacionVisible = false;
+            }, 300);
+        }
+
+        // Actualizar texto
+        if (cantidad > 0) {
+            const texto = cantidad === 1 
+                ? '📦 Tienes 1 pedido por confirmar' 
+                : `📦 Tienes ${cantidad} pedidos por confirmar`;
+            if (notifTitulo) notifTitulo.textContent = texto;
+            if (notifSubtitulo) {
+                notifSubtitulo.textContent = cantidad === 1 
+                    ? 'Tu pedido ya fue entregado. ¡Confírmalo!' 
+                    : `Tienes ${cantidad} pedidos pendientes de confirmación.`;
+            }
+            if (notifBotonTexto) {
+                notifBotonTexto.textContent = cantidad === 1 ? 'Ver pedido' : `Ver ${cantidad} pedidos`;
+            }
+        }
+    }
+
+    // ============================================================
+    // 🎯 FUNCIONES GLOBALES
+    // ============================================================
+    window.irAPorConfirmar = function() {
+        window.location.href = './pedidos.html?tab=por_confirmar';
+    };
+
+    window.ocultarNotificacionConfirmacion = function() {
+        if (notifContainer) {
+            notifContainer.style.display = 'none';
+            notificacionVisible = false;
+        }
+    };
+
+    // ============================================================
+    // 📡 ESCUCHAR PEDIDOS EN TIEMPO REAL
+    // ============================================================
+    function escucharPedidos() {
+        const user = auth.currentUser;
+        if (!user) {
+            console.log('⏳ Esperando autenticación...');
+            return;
+        }
+
+        console.log('👤 Usuario autenticado, escuchando pedidos...');
+
+        const pedidosRef = collection(db, 'pedidos');
+        const q = query(
+            pedidosRef,
+            where('uid', '==', user.uid),
+            orderBy('createdAt', 'desc')
+        );
+
+        onSnapshot(q, (snapshot) => {
+            todosLosPedidos = [];
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                todosLosPedidos.push({
+                    id: doc.id,
+                    ...data,
+                    fecha: data.createdAt?.toDate?.() || new Date(data.createdAt || Date.now())
+                });
+            });
+            console.log(`📦 ${todosLosPedidos.length} pedidos cargados`);
+            actualizarNotificacionConfirmacion();
+        }, (error) => {
+            console.error('❌ Error escuchando pedidos:', error);
+        });
+    }
+
+    // ============================================================
+    // 🚀 INICIAR
+    // ============================================================
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            escucharPedidos();
+            console.log('🔔 Sistema de notificación global ACTIVADO en productos.html');
+        } else {
+            console.log('⏳ Usuario no autenticado');
+        }
+    });
+
+    console.log('✅ Sistema de notificación global listo');
+  </script>
+
+</body>
+</html>

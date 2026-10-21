@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Mis Pedidos - Mi Tiendita Cercana</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="./pedidos.css"/>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='48' x='6' font-size='48'%3E🛒%3C/text%3E%3C/svg%3E">
+
+    <style>
+        #notificacion-confirmacion { position: fixed; top: 0; left: 0; right: 0; z-index: 99999; background: linear-gradient(135deg, #fef3c7, #fde68a); border-bottom: 3px solid #f59e0b; padding: 14px 20px; display: none; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25); animation: notifSlideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; transition: all 0.3s ease; }
+        #notificacion-confirmacion:hover { background: linear-gradient(135deg, #fde68a, #fcd34d); box-shadow: 0 6px 30px rgba(245, 158, 11, 0.35); }
+        #notificacion-confirmacion .notif-icono { font-size: 1.8rem; flex-shrink: 0; animation: notifPulse 2s ease-in-out infinite; }
+        #notificacion-confirmacion .notif-contenido { flex: 1; min-width: 0; }
+        #notificacion-confirmacion .notif-titulo { font-weight: 700; font-size: 1rem; color: #92400e; }
+        #notificacion-confirmacion .notif-subtitulo { font-size: 0.85rem; color: #78350f; opacity: 0.8; }
+        #notificacion-confirmacion .notif-boton { background: #f59e0b; color: white; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; flex-shrink: 0; box-shadow: 0 2px 12px rgba(245, 158, 11, 0.3); }
+        #notificacion-confirmacion .notif-boton:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(245, 158, 11, 0.4); background: #d97706; }
+        #notificacion-confirmacion .notif-cerrar { background: rgba(0,0,0,0.1); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1rem; cursor: pointer; color: #92400e; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        #notificacion-confirmacion .notif-cerrar:hover { background: rgba(0,0,0,0.2); transform: scale(1.1); }
+        @keyframes notifSlideDown { from { opacity: 0; transform: translateY(-30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes notifPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes bannerSlide { from { opacity: 0; transform: translateX(-50%) translateY(-30px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .mensaje-chat-modal { display: flex; flex-direction: column; margin: 6px 0; animation: fadeInMsg 0.3s ease; }
+        @keyframes fadeInMsg { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .mensaje-chat-modal.enviado { align-items: flex-end; }
+        .mensaje-chat-modal.recibido { align-items: flex-start; }
+        .mensaje-chat-modal .burbuja { max-width: 80%; padding: 10px 14px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .mensaje-chat-modal.enviado .burbuja { background: #dcfce7; border: 1px solid #86efac; border-radius: 12px 12px 4px 12px; }
+        .mensaje-chat-modal.recibido .burbuja { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 12px 12px 12px 4px; }
+        .mensaje-chat-modal .remitente { font-size: 0.7rem; font-weight: 600; color: #6b7280; margin-bottom: 2px; }
+        .mensaje-chat-modal .texto { font-size: 0.9rem; word-break: break-word; line-height: 1.4; }
+        .mensaje-chat-modal .hora { font-size: 0.6rem; color: #9ca3af; margin-top: 4px; text-align: right; }
+        .chat-unread-badge { background: #ef4444; color: white; border-radius: 50%; padding: 0 6px; font-size: 0.65rem; min-width: 18px; text-align: center; font-weight: 700; animation: badgePulse 1.5s infinite; }
+        @keyframes badgePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .btn-unificado-badge { background: #ef4444; color: white; border-radius: 50%; padding: 0 10px; font-size: 0.7rem; min-width: 22px; text-align: center; font-weight: 700; line-height: 22px; }
+        @keyframes modalSlideUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content-pedido { max-height: 95vh !important; animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important; }
+        .rol-badge-cliente { background: #dbeafe; color: #1e40af; padding: 2px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; }
+        .rol-badge-comerciante { background: #d1fae5; color: #065f46; padding: 2px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; }
+        .rol-badge-solicitud { background: #ede9fe; color: #5b21b6; padding: 2px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; }
+        .btn-detalle { position: relative; overflow: hidden; transition: all 0.3s ease !important; }
+        .btn-detalle:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 25px rgba(16,185,129,0.35) !important; }
+        .btn-detalle:active { transform: scale(0.97) !important; }
+        .pedido-card { transition: all 0.3s ease; cursor: pointer; }
+        .pedido-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        .pedido-card:active { transform: scale(0.98); }
+        .producto-tag { display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; color: #334155; margin: 2px 4px 2px 0; transition: all 0.2s ease; }
+        .producto-tag:hover { background: #e2e8f0; transform: scale(1.02); }
+        .modal-overlay-detalle { animation: fadeInModal 0.3s ease; }
+        .modal-content-pedido::-webkit-scrollbar { width: 6px; }
+        .modal-content-pedido::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        .modal-content-pedido::-webkit-scrollbar-track { background: transparent; }
+        @media (max-width: 640px) {
+            .modal-content-pedido { padding: 16px !important; width: 98vw !important; border-radius: 16px !important; }
+            .btn-detalle { font-size: 0.75rem !important; padding: 8px 10px !important; }
+            .modal-acciones-grid { grid-template-columns: 1fr !important; }
+            #notificacion-confirmacion { padding: 12px 16px; flex-direction: column; align-items: stretch; text-align: center; }
+            #notificacion-confirmacion .notif-boton { justify-content: center; width: 100%; }
+            #notificacion-confirmacion .notif-cerrar { position: absolute; top: 8px; right: 8px; }
+            #notificacion-confirmacion .notif-icono { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notificacion-confirmacion" onclick="window.irAPorConfirmar()">
+        <div class="notif-icono">⚠️</div>
+        <div class="notif-contenido">
+            <div class="notif-titulo" id="notif-titulo">📦 Tienes pedidos por confirmar</div>
+            <div class="notif-subtitulo" id="notif-subtitulo">Haz clic aquí para revisarlos</div>
+        </div>
+        <button class="notif-boton" onclick="event.stopPropagation(); window.irAPorConfirmar()">
+            <i class="fas fa-check-circle"></i> <span id="notif-boton-texto">Ver pedidos</span>
+        </button>
+        <button class="notif-cerrar" onclick="event.stopPropagation(); window.ocultarNotificacionConfirmacion()" title="Cerrar por ahora">
+            ✕
+        </button>
+    </div>
+
+    <header class="pedidos-header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="./productos.html" class="btn-volver">
+                    <i class="fas fa-arrow-left"></i> Volver a tienda
+                </a>
+                <h1><i class="fas fa-box"></i> Mis Pedidos</h1>
+            </div>
+            <div class="header-right">
+                <span id="usuario-nombre" class="usuario-nombre">Usuario</span>
+                <button id="btn-tracker" class="btn-tracker" onclick="abrirTrackerPedidos()" title="Seguimiento de pedidos" style="background:transparent;border:none;color:#10b981;font-size:1.2rem;cursor:pointer;position:relative;padding:8px;">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="pedidos-badge" class="pedidos-badge" style="display:none;position:absolute;top:-2px;right:-2px;background:#ef4444;color:white;border-radius:50%;font-size:0.6rem;min-width:18px;text-align:center;padding:0 4px;font-weight:700;">0</span>
+                </button>
+                <button id="cerrar-sesion-header" class="btn-cerrar-sesion" title="Cerrar sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pedidos-main">
+
+        <section class="resumen-pedidos">
+            <div class="resumen-card">
+                <div class="resumen-icon">📦</div>
+                <div class="resumen-info">
+                    <span class="resumen-numero" id="total-pedidos">0</span>
+                    <span class="resumen-label">Total de pedidos</span>
+                </div>
+            </div>
+            <div class="resumen-card activos">
+                <div class="resumen-icon">🔄</div>
+                <div class="resumen-info">
+                    <span class="resumen-numero" id="activos-count">0</span>
+                    <span class="resumen-label">Pedidos activos</span>
+                </div>
+            </div>
+            <div class="resumen-card entregados">
+                <div class="resumen-icon">✅</div>
+                <div class="resumen-info">
+                    <span class="resumen-numero" id="entregados-count">0</span>
+                    <span class="resumen-label">Entregados</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="tabs-container">
+            <button class="tab-btn activo" data-tab="todos" onclick="cambiarTab('todos')">
+                <i class="fas fa-list"></i> Todos
+            </button>
+            <button class="tab-btn" data-tab="activos" onclick="cambiarTab('activos')">
+                <i class="fas fa-spinner"></i> Activos
+                <span class="tab-badge" id="badge-activos">0</span>
+            </button>
+            <button class="tab-btn" data-tab="por_confirmar" onclick="cambiarTab('por_confirmar')" style="background:#fffbeb; color:#92400e;">
+                <i class="fas fa-exclamation-triangle"></i> Por Confirmar
+                <span class="tab-badge" id="badge-por-confirmar" style="background:#ef4444; color:white;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="solicitudes" onclick="cambiarTab('solicitudes')" style="background:#f5f3ff; color:#5b21b6;">
+                <i class="fas fa-comments"></i> Solicitudes
+                <span class="tab-badge" id="badge-solicitudes" style="background:#8b5cf6; color:white;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="entregados" onclick="cambiarTab('entregados')">
+                <i class="fas fa-check-circle"></i> Entregados
+            </button>
+        </div>
+
+        <div id="lista-pedidos" class="lista-pedidos">
+            <div class="cargando">
+                <i class="fas fa-spinner fa-spin"></i> Cargando pedidos...
+            </div>
+        </div>
+
+    </main>
+
+    <div id="pedido-detalle-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">
+    </div>
+
+    <script type="module">
+        import { auth, db } from './js/firebase-config.js';
+        import {
+            collection, query, where, orderBy, onSnapshot, doc, updateDoc, serverTimestamp,
+            addDoc, limit, getDocs, getDoc
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        const VALOR_SERVICIO = 800;
+
+        // ============================================================
+        // 🌐 CONFIGURACIÓN DE LA FUNCTION (confirmar-recibido)
+        // ============================================================
+        const REGION_FUNCTIONS = 'southamerica-east1';
+        const PROJECT_ID = auth?.app?.options?.projectId
+            || auth?.app?.options?.authDomain?.split('.')[0]
+            || null;
+        const NOMBRE_EXPORT_FUNCTION = 'api';
+
+        function construirUrlConfirmarRecibido(pedidoId) {
+            if (!PROJECT_ID) {
+                throw new Error('No se pudo detectar el projectId de Firebase. Revisa firebase-config.js');
+            }
+            return `https://${REGION_FUNCTIONS}-${PROJECT_ID}.cloudfunctions.net/${NOMBRE_EXPORT_FUNCTION}/pedidos/${pedidoId}/confirmar-recibido`;
+        }
+
+        let todosLosPedidos = [];
+        let tabActual = 'todos';
+        let mensajesNoLeidos = {};
+        let usuarioActual = null;
+        let notificacionVisible = false;
+
+        const listaPedidos = document.getElementById('lista-pedidos');
+        const totalPedidosEl = document.getElementById('total-pedidos');
+        const activosCountEl = document.getElementById('activos-count');
+        const entregadosCountEl = document.getElementById('entregados-count');
+        const badgeActivos = document.getElementById('badge-activos');
+        const badgePorConfirmar = document.getElementById('badge-por-confirmar');
+        const badgeSolicitudes = document.getElementById('badge-solicitudes');
+        const usuarioNombre = document.getElementById('usuario-nombre');
+
+        const notifContainer = document.getElementById('notificacion-confirmacion');
+        const notifTitulo = document.getElementById('notif-titulo');
+        const notifSubtitulo = document.getElementById('notif-subtitulo');
+        const notifBotonTexto = document.getElementById('notif-boton-texto');
+
+        let unsubscribeModalChat = null;
+        let pedidoModalActual = null;
+
+        if ('Notification' in window && Notification.permission === 'default') {
+            try { Notification.requestPermission(); } catch (e) {}
+        }
+
+        function actualizarNotificacionConfirmacion() {
+            const pendientes = todosLosPedidos.filter(esPedidoPendienteDeConfirmar);
+            const cantidad = pendientes.length;
+
+            if (cantidad > 0 && !notificacionVisible) {
+                notifContainer.style.display = 'flex';
+                notifContainer.style.animation = 'notifSlideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                notificacionVisible = true;
+            } else if (cantidad === 0 && notificacionVisible) {
+                notifContainer.style.animation = 'none';
+                notifContainer.style.opacity = '0';
+                notifContainer.style.transform = 'translateY(-30px)';
+                setTimeout(() => {
+                    notifContainer.style.display = 'none';
+                    notifContainer.style.opacity = '1';
+                    notifContainer.style.transform = 'translateY(0)';
+                    notificacionVisible = false;
+                }, 300);
+            }
+
+            if (cantidad > 0) {
+                notifTitulo.textContent = cantidad === 1
+                    ? '📦 Tienes 1 pedido por confirmar'
+                    : `📦 Tienes ${cantidad} pedidos por confirmar`;
+                notifSubtitulo.textContent = cantidad === 1
+                    ? 'Tu pedido ya fue entregado. ¡Confírmalo!'
+                    : `Tienes ${cantidad} pedidos pendientes de confirmación.`;
+                notifBotonTexto.textContent = cantidad === 1 ? 'Ver pedido' : `Ver ${cantidad} pedidos`;
+            }
+
+            if (badgePorConfirmar) {
+                badgePorConfirmar.textContent = cantidad;
+                badgePorConfirmar.style.display = cantidad > 0 ? 'inline-flex' : 'none';
+            }
+        }
+
+        window.irAPorConfirmar = function() {
+            cambiarTab('por_confirmar');
+            document.querySelector('.pedidos-main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        window.ocultarNotificacionConfirmacion = function() {
+            notifContainer.style.display = 'none';
+            notificacionVisible = false;
+        };
+
+        const __estadosPrevios = {};
+
+        function detectarCambiosDeEstado() {
+            todosLosPedidos.forEach(pedido => {
+                const anterior = __estadosPrevios[pedido.id];
+                const actual = pedido.estado;
+
+                if (anterior && anterior !== actual) {
+                    const user = auth.currentUser;
+                    const esCliente = user && (pedido.clienteId === user.uid || pedido.uid === user.uid);
+                    if (esCliente) {
+                        dispararNotificacionCambioEstado(pedido, anterior, actual);
+                    }
+                }
+
+                __estadosPrevios[pedido.id] = actual;
+            });
+        }
+
+        function dispararNotificacionCambioEstado(pedido, anterior, actual) {
+            const mensajes = {
+                'aceptado':   { titulo: '✅ Pedido aceptado',        body: `${pedido.tiendaNombre || 'El comerciante'} aceptó tu pedido.` },
+                'preparando': { titulo: '👨‍🍳 Pedido en preparación',  body: 'Tu pedido está siendo preparado.' },
+                'en_camino':  { titulo: '🚚 Pedido en camino',        body: 'Tu pedido ya salió. ¡Atento a la entrega!' },
+                'entregado':  { titulo: '📦 Pedido entregado',        body: 'Confirma la recepción para completar el proceso.' },
+                'rechazado':  { titulo: '❌ Pedido rechazado',         body: 'El comerciante rechazó tu pedido.' },
+                'cancelado':  { titulo: '❌ Pedido cancelado',         body: 'El pedido fue cancelado.' },
+                'recibido':   { titulo: '🎉 ¡Pedido completado!',      body: 'Gracias por tu compra.' }
+            };
+
+            const info = mensajes[actual];
+            if (!info) return;
+
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    const n = new Notification(info.titulo, {
+                        body: info.body,
+                        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Ctext y="48" x="6" font-size="48"%3E🛒%3C/text%3E%3C/svg%3E',
+                        tag: `pedido-${pedido.id}`,
+                        requireInteraction: true
+                    });
+                    n.onclick = () => {
+                        window.focus();
+                        window.abrirDetallePedido(pedido.id);
+                        n.close();
+                    };
+                } catch (e) { console.warn('Error notificación:', e); }
+            }
+
+            reproducirSonidoNotificacion();
+            mostrarBannerCambioEstado(info.titulo, info.body, pedido.id);
+        }
+
+        function reproducirSonidoNotificacion() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 880;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.25, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.6);
+            } catch (e) { }
+        }
+
+        function mostrarBannerCambioEstado(titulo, body, pedidoId) {
+            const banner = document.createElement('div');
+            banner.style.cssText = `
+                position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+                background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                color: white; padding: 16px 24px; border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(139, 92, 246, 0.4);
+                z-index: 999999; max-width: 90%; text-align: center;
+                animation: bannerSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+                cursor: pointer;
+            `;
+            banner.innerHTML = `
+                <div style="font-weight: 700; font-size: 1rem;">${titulo}</div>
+                <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;">${body}</div>
+            `;
+            banner.onclick = () => {
+                window.abrirDetallePedido(pedidoId);
+                banner.remove();
+            };
+            document.body.appendChild(banner);
+
+            setTimeout(() => {
+                if (banner.parentNode) {
+                    banner.style.transition = 'opacity 0.5s';
+                    banner.style.opacity = '0';
+                    setTimeout(() => banner.remove(), 500);
+                }
+            }, 15000);
+        }
+
+        function escucharPedidos() {
+            const user = auth.currentUser;
+            if (!user) return;
+            usuarioActual = user;
+
+            const pedidosRef = collection(db, 'pedidos');
+            const q = query(pedidosRef, where('uid', '==', user.uid));
+
+            onSnapshot(q, (snapshot) => {
+                todosLosPedidos = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    todosLosPedidos.push({
+                        id: doc.id,
+                        ...data,
+                        fecha: data.createdAt?.toDate?.() || new Date(data.createdAt || Date.now())
+                    });
+                });
+
+                todosLosPedidos.sort((a, b) => {
+                    const ta = a.fecha?.getTime?.() || 0;
+                    const tb = b.fecha?.getTime?.() || 0;
+                    return tb - ta;
+                });
+
+                contarMensajesNoLeidos();
+                actualizarResumen();
+                actualizarBadgeTracker();
+                actualizarNotificacionConfirmacion();
+                renderizarPedidos();
+                detectarCambiosDeEstado();
+
+                if (window.__pedidoPendienteDeAbrir) {
+                    const idPendiente = window.__pedidoPendienteDeAbrir;
+                    if (todosLosPedidos.find(p => p.id === idPendiente)) {
+                        window.__pedidoPendienteDeAbrir = null;
+                        setTimeout(() => window.abrirDetallePedido(idPendiente), 150);
+                    }
+                }
+
+            }, (error) => {
+                console.error('Error escuchando pedidos:', error);
+                listaPedidos.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error al cargar los pedidos</p>
+                    </div>
+                `;
+            });
+        }
+
+        async function contarMensajesNoLeidos() {
+            const user = auth.currentUser;
+            if (!user) return;
+            mensajesNoLeidos = {};
+
+            for (const pedido of todosLosPedidos) {
+                try {
+                    const msgsRef = collection(db, 'pedidos', pedido.id, 'mensajes');
+                    const q = query(msgsRef, where('uid', '!=', user.uid), where('leido', '==', false));
+                    const snapshot = await getDocs(q);
+                    mensajesNoLeidos[pedido.id] = snapshot.size;
+                } catch (e) {
+                    mensajesNoLeidos[pedido.id] = 0;
+                }
+            }
+        }
+
+        async function marcarMensajesLeidos(pedidoId, uid) {
+            try {
+                const msgsRef = collection(db, 'pedidos', pedidoId, 'mensajes');
+                const q = query(msgsRef, where('uid', '!=', uid), where('leido', '==', false));
+                const snapshot = await getDocs(q);
+
+                const promises = [];
+                snapshot.forEach((doc) => {
+                    promises.push(updateDoc(doc.ref, { leido: true }));
+                });
+
+                await Promise.all(promises);
+
+                if (mensajesNoLeidos[pedidoId]) {
+                    mensajesNoLeidos[pedidoId] = 0;
+                    renderizarPedidos();
+                }
+            } catch (error) {
+                console.warn('Error marcando mensajes como leídos:', error);
+            }
+        }
+
+        function esPedidoPendienteDeConfirmar(pedido) {
+            const estado = String(pedido.estado || '').toLowerCase().trim();
+            return (
+                pedido.clienteConfirmado !== true &&
+                ['en_camino', 'enviado', 'entregado', 'listo'].includes(estado)
+            );
+        }
+
+        function esSolicitudPorChat(pedido) {
+            return String(pedido.estado || '').toLowerCase().trim() === 'solicitud_por_chat';
+        }
+
+        function actualizarResumen() {
+            const total = todosLosPedidos.length;
+            const activos = todosLosPedidos.filter(p =>
+                p.estado !== 'entregado' &&
+                p.estado !== 'completado' &&
+                p.estado !== 'cancelado' &&
+                p.estado !== 'recibido' &&
+                p.estado !== 'solicitud_por_chat'
+            ).length;
+            const entregados = todosLosPedidos.filter(p =>
+                p.estado === 'entregado' || p.estado === 'completado' || p.estado === 'recibido'
+            ).length;
+
+            const pendientesConfirmar = todosLosPedidos.filter(esPedidoPendienteDeConfirmar).length;
+            const solicitudes = todosLosPedidos.filter(esSolicitudPorChat).length;
+
+            totalPedidosEl.textContent = total;
+            activosCountEl.textContent = activos;
+            entregadosCountEl.textContent = entregados;
+            badgeActivos.textContent = activos;
+            badgeActivos.style.display = activos > 0 ? 'inline-flex' : 'none';
+
+            if (badgePorConfirmar) {
+                badgePorConfirmar.textContent = pendientesConfirmar;
+                badgePorConfirmar.style.display = pendientesConfirmar > 0 ? 'inline-flex' : 'none';
+            }
+            if (badgeSolicitudes) {
+                badgeSolicitudes.textContent = solicitudes;
+                badgeSolicitudes.style.display = solicitudes > 0 ? 'inline-flex' : 'none';
+            }
+        }
+
+        function actualizarBadgeTracker() {
+            const badge = document.getElementById('pedidos-badge');
+            if (!badge) return;
+            const activos = todosLosPedidos.filter(p =>
+                p.estado !== 'entregado' &&
+                p.estado !== 'completado' &&
+                p.estado !== 'cancelado' &&
+                p.estado !== 'recibido' &&
+                p.estado !== 'solicitud_por_chat'
+            ).length;
+            badge.textContent = activos;
+            badge.style.display = activos > 0 ? 'inline-block' : 'none';
+        }
+
+        function renderizarPedidos() {
+            let pedidosFiltrados = [];
+
+            if (tabActual === 'todos') {
+                pedidosFiltrados = todosLosPedidos;
+            } else if (tabActual === 'activos') {
+                pedidosFiltrados = todosLosPedidos.filter(p =>
+                    p.estado !== 'entregado' &&
+                    p.estado !== 'completado' &&
+                    p.estado !== 'cancelado' &&
+                    p.estado !== 'recibido' &&
+                    p.estado !== 'solicitud_por_chat'
+                );
+            } else if (tabActual === 'por_confirmar') {
+                pedidosFiltrados = todosLosPedidos.filter(esPedidoPendienteDeConfirmar);
+            } else if (tabActual === 'solicitudes') {
+                pedidosFiltrados = todosLosPedidos.filter(esSolicitudPorChat);
+            } else if (tabActual === 'entregados') {
+                pedidosFiltrados = todosLosPedidos.filter(p =>
+                    p.estado === 'entregado' || p.estado === 'completado' || p.estado === 'recibido'
+                );
+            }
+
+            if (pedidosFiltrados.length === 0) {
+                const mensajesVacio = {
+                    por_confirmar: '🎉 ¡No tienes pedidos pendientes de confirmar!',
+                    solicitudes: '💬 No tienes solicitudes por chat activas',
+                    activos: 'No tienes pedidos activos',
+                    entregados: 'No tienes pedidos entregados',
+                    todos: 'No tienes pedidos aún'
+                };
+                listaPedidos.innerHTML = `
+                    <div class="vacio">
+                        <i class="fas ${tabActual === 'por_confirmar' ? 'fa-check-circle' : tabActual === 'solicitudes' ? 'fa-comments' : 'fa-inbox'}"></i>
+                        <p>${mensajesVacio[tabActual] || 'No tienes pedidos en esta categoría'}</p>
+                        <a href="./productos.html" class="btn-comprar">
+                            <i class="fas fa-shopping-bag"></i> Ir a comprar
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            listaPedidos.innerHTML = pedidosFiltrados.map(pedido => {
+                const noLeidos = mensajesNoLeidos[pedido.id] || 0;
+                const pendienteConfirmar = esPedidoPendienteDeConfirmar(pedido);
+                const esSolicitud = esSolicitudPorChat(pedido);
+
+                const nombreComercio = pedido.comercianteNombre ||
+                                       pedido.tiendaNombre ||
+                                       pedido.comercioNombre ||
+                                       pedido.nombreComercio ||
+                                       pedido.nombreTienda ||
+                                       'Tienda';
+
+                let bordeTarjeta = '';
+                let fondoInfo = '';
+                let textoInfo = '';
+                let colorInfo = '';
+
+                if (pendienteConfirmar) {
+                    bordeTarjeta = 'border: 2px solid #f59e0b; background:#fffbeb;';
+                    fondoInfo = '#fef3c7'; colorInfo = '#92400e';
+                    textoInfo = '⚠️ Pedido entregado - Falta confirmar recepción';
+                } else if (esSolicitud) {
+                    bordeTarjeta = 'border: 2px solid #8b5cf6; background:#f5f3ff;';
+                    fondoInfo = '#ede9fe'; colorInfo = '#5b21b6';
+                    textoInfo = '💬 Solicitud por chat - Acuerda los productos con el comerciante';
+                }
+
+                return `
+                <div class="pedido-card" style="${bordeTarjeta}">
+                    <div class="pedido-card-header">
+                        <div class="pedido-id">
+                            #${pedido.id.slice(-6).toUpperCase()}
+                            <span>· ${nombreComercio}</span>
+                        </div>
+                        <span class="pedido-estado estado-${pedido.estado}">
+                            ${getEstadoIcon(pedido.estado)} ${getEstadoLabel(pedido.estado)}
+                        </span>
+                    </div>
+
+                    ${textoInfo ? `
+                        <div style="background:${fondoInfo}; color:${colorInfo}; padding:8px 12px; border-radius:8px; margin-bottom:10px; font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:8px;">
+                            <span>${textoInfo}</span>
+                        </div>
+                    ` : ''}
+
+                    <div class="pedido-card-body">
+                        <div class="pedido-productos">
+                            ${(pedido.items || []).length > 0 ? (pedido.items || []).slice(0, 3).map(item => {
+                                let nombre = item.nombre || item.title || '';
+                                if (!nombre && window.cacheProductos) {
+                                    const encontrado = window.cacheProductos.find(p => p.id === item.productoId || p.id === item.id);
+                                    if (encontrado) nombre = encontrado.nombre || encontrado.nombreBase || 'Producto';
+                                }
+                                if (!nombre) nombre = item.productoId || 'Producto';
+                                return `<span class="producto-tag">${nombre} × ${item.qty || 1}</span>`;
+                            }).join('') : `<span style="color:#9ca3af;font-size:0.85rem;font-style:italic;">Sin productos aún — conversa por el chat</span>`}
+                            ${(pedido.items || []).length > 3 ? `<span class="producto-tag">+${(pedido.items || []).length - 3} más</span>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="pedido-card-footer">
+                        <div class="pedido-fecha">
+                            <i class="far fa-calendar-alt"></i> ${formatearFecha(pedido.fecha)}
+                        </div>
+                        <div class="pedido-total">
+                            ${esSolicitud
+                                ? `<span style="color:#8b5cf6;font-style:italic;font-size:0.85rem;">Por acordar</span>`
+                                : `<i class="fas fa-coin"></i> $${Number(pedido.total || 0).toLocaleString('es-CO')}`
+                            }
+                        </div>
+                        <div style="margin-top:4px;width:100%;">
+                            <button class="btn-detalle" onclick="event.stopPropagation(); abrirDetallePedido('${pedido.id}')"
+                                    style="width:100%;background:${
+                                        pendienteConfirmar
+                                            ? '#f59e0b'
+                                            : esSolicitud
+                                                ? 'linear-gradient(135deg,#8b5cf6,#7c3aed)'
+                                                : 'linear-gradient(135deg,#10b981,#0ea5e9)'
+                                    };color:white;border:none;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 8px rgba(16,185,129,0.25);">
+                                ${
+                                    pendienteConfirmar
+                                        ? '📦 Confirmar recepción'
+                                        : esSolicitud
+                                            ? '💬 Continuar conversación'
+                                            : '💬 Ver pedido y chatear'
+                                }
+                                ${noLeidos > 0 ? `<span class="btn-unificado-badge">${noLeidos}</span>` : ''}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // ============================================================
+        // 💬 ABRIR DETALLE DE PEDIDO
+        // ============================================================
+        window.abrirDetallePedido = async function(pedidoId) {
+            console.log('🔍 Abriendo detalle del pedido:', pedidoId);
+            pedidoModalActual = pedidoId;
+
+            let pedido = todosLosPedidos.find(p => p.id === pedidoId);
+
+            if (!pedido) {
+                console.warn('⚠️ Pedido no en memoria, trayendo de Firestore:', pedidoId);
+                try {
+                    const snap = await getDoc(doc(db, 'pedidos', pedidoId));
+                    if (!snap.exists()) {
+                        console.error('❌ Pedido no existe en Firestore:', pedidoId);
+                        return;
+                    }
+                    const data = snap.data();
+                    pedido = {
+                        id: snap.id,
+                        ...data,
+                        fecha: data.createdAt?.toDate?.() || new Date(data.createdAt || Date.now())
+                    };
+                    todosLosPedidos.push(pedido);
+                    console.log('✅ Pedido recuperado de Firestore:', pedido.id);
+                } catch (e) {
+                    console.error('❌ Error trayendo pedido:', e);
+                    return;
+                }
+            }
+
+            let tiendaInfo = {
+                nombre: 'Comercio',
+                direccion: 'No especificada',
+                telefono: 'No especificado',
+                descripcion: '',
+                horario: '',
+                imagen: '',
+                ubicacion: '',
+                calificacion: 0
+            };
+
+            const tiendaId = pedido.tiendaId || pedido.comercioId;
+            if (tiendaId) {
+                try {
+                    const tiendaDoc = await getDoc(doc(db, 'tiendas', tiendaId));
+                    if (tiendaDoc.exists()) {
+                        const data = tiendaDoc.data();
+                        tiendaInfo = {
+                            nombre: data.nombre || data.nombreComercio || 'Comercio',
+                            direccion: data.direccion || data.direccionComercio || 'No especificada',
+                            telefono: data.telefono || data.telefonoComercio || 'No especificado',
+                            descripcion: data.descripcion || '',
+                            horario: data.horario || 'No especificado',
+                            imagen: data.imagen || data.foto || data.logo || '',
+                            ubicacion: data.ubicacion || '',
+                            calificacion: data.calificacion || 0
+                        };
+                    }
+                } catch (error) {
+                    console.error('Error al cargar la información de la tienda:', error);
+                }
+            } else {
+                tiendaInfo.nombre = pedido.tiendaNombre || 'Comercio';
+                tiendaInfo.direccion = pedido.direccion || pedido.tiendaDireccion || 'No especificada';
+                tiendaInfo.telefono = pedido.telefono || pedido.tiendaTelefono || 'No especificado';
+            }
+
+            const items = pedido.items || [];
+            const subtotal = items.reduce((sum, item) => {
+                const precio = Number(item.unitPrice || item.precio || item.price || 0);
+                const cantidad = Number(item.qty || item.cantidad || 1);
+                return sum + (precio * cantidad);
+            }, 0);
+
+            const envio = Number(pedido.envio || 0);
+            const servicio = Number(pedido.servicio || 0);
+            const descuento = Number(pedido.descuento || 0);
+            const total = Number(pedido.total || subtotal + envio + servicio - descuento);
+
+            const metodoPago = pedido.metodoPago || pedido.paymentMethod || 'Efectivo';
+            const estado = pedido.estado || 'pendiente';
+            const noLeidos = mensajesNoLeidos[pedidoId] || 0;
+
+            const user = auth.currentUser;
+            const esCliente = user && (pedido.clienteId === user.uid || pedido.uid === user.uid);
+            const esComerciante = user && (pedido.comercianteId === user.uid || pedido.tiendaId === user.uid);
+            const esSolicitudChat = String(estado).toLowerCase().trim() === 'solicitud_por_chat';
+
+            const modal = document.getElementById('pedido-detalle-modal');
+            if (!modal) return;
+
+            const clienteDebeVerSoloBienvenida = esSolicitudChat && esCliente;
+
+            let botonesHTML = '';
+
+            const puedeConfirmar = esCliente && pedido.clienteConfirmado !== true && ['en_camino', 'enviado', 'entregado', 'listo'].includes(String(estado).toLowerCase());
+
+            // ============================================================
+            // 💜 SOLICITUD POR CHAT — CLIENTE
+            // ============================================================
+            if (esSolicitudChat && esCliente) {
+                botonesHTML = `
+                    <div style="grid-column: span 2; background:#f5f3ff; color:#5b21b6; padding:14px; border-radius:10px; margin-bottom:10px; font-size:0.9rem; text-align:center; border-left:4px solid #8b5cf6;">
+                        💜 <strong>Cuéntale al comerciante lo que necesitas.</strong><br>
+                        <span style="font-size:0.85rem; opacity:0.85;">
+                            Al escribir lo que necesitas, presiona "Confirmar pedido".
+                        </span>
+                    </div>
+                    <button onclick="window.confirmarSolicitudPorChat('${pedido.id}')"
+                            class="btn-accion"
+                            style="grid-column: span 2; background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:white; font-size:1rem; padding:14px;">
+                        🛒 Confirmar pedido
+                    </button>
+                `;
+
+            } else if (esComerciante) {
+                if (estado === 'pendiente') {
+                    botonesHTML = `
+                        <button onclick="window.abrirFormularioAgregarItem('${pedido.id}')"
+                                class="btn-accion"
+                                style="grid-column: span 2; background:#3b82f6; color:white;">
+                            ➕ Agregar / editar productos
+                        </button>
+                        <button onclick="cambiarEstadoPedido('${pedido.id}','aceptado')"
+                                class="btn-accion btn-aceptar">
+                            ✅ Aceptar pedido
+                        </button>
+                        <button onclick="cambiarEstadoPedido('${pedido.id}','rechazado')"
+                                class="btn-accion btn-rechazar">
+                            ❌ Rechazar
+                        </button>
+                    `;
+                } else if (estado === 'aceptado' || estado === 'preparando') {
+                    botonesHTML = `
+                        <button onclick="cambiarEstadoPedido('${pedido.id}','en_camino')"
+                                class="btn-accion btn-enviar">
+                            🚚 Marcar como enviado
+                        </button>
+                        <button onclick="cambiarEstadoPedido('${pedido.id}','rechazado')"
+                                class="btn-accion btn-rechazar">
+                            ❌ Cancelar pedido
+                        </button>
+                    `;
+                } else if (estado === 'en_camino' || estado === 'enviado' || estado === 'entregado') {
+                    botonesHTML = `
+                        <div class="mensaje-info mensaje-espera" style="grid-column:span 2;">
+                            📦 Pedido en camino - ${pedido.clienteConfirmado === true ? 'Cliente ya confirmó recepción' : 'Esperando que el cliente confirme la recepción'}
+                        </div>
+                    `;
+                } else if (estado === 'recibido' || estado === 'completado') {
+                    botonesHTML = `
+                        <div class="mensaje-info mensaje-completado" style="grid-column:span 2;">
+                            ✅ Pedido completado
+                        </div>
+                    `;
+                } else if (estado === 'rechazado' || estado === 'cancelado') {
+                    botonesHTML = `
+                        <div class="mensaje-info mensaje-cancelado" style="grid-column:span 2;">
+                            ❌ Pedido cancelado
+                        </div>
+                    `;
+                }
+            } else if (esCliente) {
+                if (puedeConfirmar) {
+                    botonesHTML = `
+                        <div style="grid-column: span 2; background:#fffbeb; color:#92400e; padding:12px; border-radius:8px; margin-bottom:10px; font-size:0.9rem; text-align:center;">
+                            ⚠️ <strong>Este pedido ya te fue entregado o enviado.</strong><br>
+                            Por favor confirma que lo recibiste para completar el proceso.
+                        </div>
+                        <button onclick="confirmarRecibidoCliente('${pedido.id}')"
+                                class="btn-accion btn-recibir" style="grid-column: span 2; background:#f59e0b;">
+                            📦 Confirmar que recibí el pedido
+                        </button>
+                    `;
+                } else if (estado === 'pendiente') {
+                    botonesHTML = `
+                        <div class="mensaje-info mensaje-espera" style="grid-column:span 2;">
+                            ⏳ Esperando que el comercio acepte tu pedido
+                        </div>
+                    `;
+                } else if (estado === 'aceptado' || estado === 'preparando') {
+                    botonesHTML = `
+                        <div class="mensaje-info mensaje-preparando" style="grid-column:span 2;">
+                            👨‍🍳 El comercio está preparando tu pedido
+                        </div>
+                    `;
+                } else if (estado === 'recibido' || estado === 'completado') {
+                    botonesHTML = `
+                        <div class="mensaje-info mensaje-completado" style="grid-column:span 2;">
+                            ✅ ¡Pedido completado! Gracias por tu compra
+                        </div>
+                    `;
+                } else if (estado === 'rechazado' || estado === 'cancelado') {
+                    botonesHTML = `
+                        <div class="mensaje-info mensaje-cancelado" style="grid-column:span 2;">
+                            ❌ El pedido fue cancelado
+                        </div>
+                    `;
+                }
+            } else {
+                botonesHTML = `
+                    <div class="mensaje-info mensaje-neutral" style="grid-column:span 2;">
+                        👀 Solo puedes ver este pedido
+                    </div>
+                `;
+            }
+
+            const mostrarBloqueChat = !clienteDebeVerSoloBienvenida;
+
+            const bloqueChatHTML = mostrarBloqueChat ? `
+                <div id="seccion-chat-modal" style="border-top:2px solid #e5e7eb;padding-top:16px;margin-top:8px;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+                        <span style="font-size:1.2rem;">💬</span>
+                        <h3 style="margin:0;font-size:0.95rem;color:#1f2937;font-weight:600;">Conversación con ${esComerciante ? 'el cliente' : 'la tienda'}</h3>
+                        <span id="chat-estado-modal" style="font-size:0.65rem;background:#dbeafe;color:#1e40af;padding:2px 12px;border-radius:12px;font-weight:500;">Activo</span>
+                        ${noLeidos > 0 ? `<span class="chat-unread-badge" style="font-size:0.7rem;padding:2px 8px;">${noLeidos} nuevos</span>` : ''}
+                    </div>
+
+                    <div id="mensajes-rapidos-modal" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+                        <button onclick="window.enviarMensajeRapidoModal('¿Cuánto falta?')" style="padding:4px 12px;border:1px solid #e5e7eb;border-radius:16px;background:#f9fafb;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:#374151;">⏱️ ¿Cuánto falta?</button>
+                        <button onclick="window.enviarMensajeRapidoModal('¿Ya salió?')" style="padding:4px 12px;border:1px solid #e5e7eb;border-radius:16px;background:#f9fafb;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:#374151;">🚗 ¿Ya salió?</button>
+                        <button onclick="window.enviarMensajeRapidoModal('Estoy en la portería')" style="padding:4px 12px;border:1px solid #e5e7eb;border-radius:16px;background:#f9fafb;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:#374151;">🏠 Estoy en la portería</button>
+                        <button onclick="window.enviarMensajeRapidoModal('¿Puedes llamarme?')" style="padding:4px 12px;border:1px solid #e5e7eb;border-radius:16px;background:#f9fafb;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:#374151;">📞 ¿Puedes llamarme?</button>
+                        <button onclick="window.enviarMensajeRapidoModal('Gracias')" style="padding:4px 12px;border:1px solid #e5e7eb;border-radius:16px;background:#f9fafb;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:#374151;">🙏 Gracias</button>
+                    </div>
+
+                    <div id="mensajes-detalle-modal" style="max-height:220px;overflow-y:auto;background:#f9fafb;border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid #e5e7eb;">
+                        <div style="text-align:center;padding:16px;color:#9ca3af;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p style="font-size:0.85rem;">Cargando mensajes...</p>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <input id="input-mensaje-modal" type="text" placeholder="Escribe un mensaje..."
+                               style="flex:1;padding:10px 16px;border:2px solid #e5e7eb;border-radius:24px;font-size:0.9rem;outline:none;transition:border-color 0.2s;background:white;"
+                               onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e5e7eb'"/>
+                        <button id="btn-enviar-modal" onclick="window.enviarMensajeDesdeModal()"
+                                style="background:#3b82f6;color:white;border:none;border-radius:50%;width:44px;height:44px;font-size:1.2rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            📤
+                        </button>
+                    </div>
+                </div>
+            ` : `
+                <div id="seccion-bienvenida-modal" style="border-top:2px solid #e5e7eb;padding-top:16px;margin-top:8px;">
+                    <div style="text-align:center;padding:16px 20px;background:#f5f3ff;border-radius:12px;margin-bottom:12px;border:1px solid #ddd6fe;">
+                        <div style="font-size:2rem;margin-bottom:6px;">💬</div>
+                        <div style="font-weight:700;color:#5b21b6;font-size:1rem;margin-bottom:4px;">
+                            Bienvenido a ${tiendaInfo.nombre}
+                        </div>
+                        <div style="font-size:0.85rem;color:#7c3aed;">
+                            Cuéntale al comerciante lo que necesitas.<br>
+                            Al escribir lo que necesitas, presiona "Confirmar pedido".
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:12px;">
+                        <input id="input-mensaje-modal" type="text" placeholder="Escribe aquí lo que necesitas..."
+                               style="width:100%;padding:14px 18px;border:2px solid #ddd6fe;border-radius:14px;font-size:0.95rem;outline:none;transition:border-color 0.2s;background:white;box-sizing:border-box;"
+                               onfocus="this.style.borderColor='#8b5cf6'" onblur="this.style.borderColor='#ddd6fe'"/>
+                    </div>
+                </div>
+            `;
+
+            modal.innerHTML = `
+                <div class="modal-overlay-detalle" onclick="cerrarDetallePedido()" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:10001;"></div>
+                <div class="modal-content-pedido" style="position:relative;z-index:10002;background:white;max-width:640px;width:95vw;max-height:95vh;overflow-y:auto;border-radius:20px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalSlideUp 0.3s ease;">
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f1f5f9;">
+                        <div>
+                            <h2 style="margin:0;font-size:1.3rem;display:flex;align-items:center;gap:10px;">
+                                <i class="fas fa-receipt" style="color:#10b981;"></i>
+                                Pedido #${pedido.id.slice(-6).toUpperCase()}
+                                ${esComerciante ? '<span class="rol-badge-comerciante">👨‍💼 Comerciante</span>' : ''}
+                                ${esCliente ? '<span class="rol-badge-cliente">👤 Cliente</span>' : ''}
+                                ${esSolicitudChat ? '<span class="rol-badge-solicitud">💬 Solicitud</span>' : ''}
+                            </h2>
+                            <span style="font-size:0.85rem;color:#6b7280;">
+                                <i class="far fa-calendar-alt"></i> ${formatearFecha(pedido.fecha)}
+                            </span>
+                        </div>
+                        <button onclick="cerrarDetallePedido()" style="background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:#6b7280;padding:4px 8px;border-radius:8px;transition:all 0.2s ease;">
+                            ✕
+                        </button>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#f8fafc;border-radius:12px;margin-bottom:16px;">
+                        <span style="font-weight:600;">Estado del pedido</span>
+                        <span class="pedido-estado estado-${estado}" style="padding:4px 16px;border-radius:999px;font-size:0.8rem;font-weight:700;color:white;display:inline-flex;align-items:center;gap:6px;">
+                            ${getEstadoIcon(estado)} ${getEstadoLabel(estado)}
+                        </span>
+                    </div>
+
+                    ${esComerciante ? `
+                        <div style="margin-bottom:16px;padding:12px 16px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:12px;border-left:4px solid #3b82f6;">
+                            <h3 style="margin:0 0 8px 0;font-size:1rem;display:flex;align-items:center;gap:8px;">
+                                <i class="fas fa-user" style="color:#3b82f6;"></i> Información del cliente
+                            </h3>
+                            <div style="display:grid;grid-template-columns:1fr;gap:4px;font-size:0.9rem;">
+                                <div><strong>Cliente:</strong> ${pedido.clienteNombre || 'Cliente'}</div>
+                                <div><strong>Teléfono:</strong> ${pedido.clienteTelefono || 'No especificado'}</div>
+                                <div><strong>Dirección:</strong> ${pedido.direccion || 'No especificada'}</div>
+                                <div><strong>Email:</strong> ${pedido.clienteEmail || 'No especificado'}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${esCliente ? `
+                        <div style="margin-bottom:16px;padding:12px 16px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border-radius:12px;border-left:4px solid #10b981;">
+                            <h3 style="margin:0 0 8px 0;font-size:1rem;display:flex;align-items:center;gap:8px;">
+                                <i class="fas fa-store" style="color:#10b981;"></i> Información del comercio
+                            </h3>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                ${tiendaInfo.imagen ? `<div style="display:flex;justify-content:center;"><img src="${tiendaInfo.imagen}" alt="Logo" style="width:70px;height:70px;border-radius:12px;object-fit:cover;border:1px solid #e5e7eb;"></div>` : ''}
+                                <div style="display:grid;grid-template-columns:1fr;gap:4px;font-size:0.9rem;">
+                                    <div><strong>🏪 Comercio:</strong> ${tiendaInfo.nombre}</div>
+                                    ${tiendaInfo.descripcion ? `<div><strong>📝 Descripción:</strong> ${tiendaInfo.descripcion}</div>` : ''}
+                                    <div><strong>📍 Dirección:</strong> ${tiendaInfo.direccion}</div>
+                                    <div><strong>📞 Teléfono:</strong> ${tiendaInfo.telefono}</div>
+                                    ${tiendaInfo.horario ? `<div><strong>🕒 Horario:</strong> ${tiendaInfo.horario}</div>` : ''}
+                                    ${tiendaInfo.calificacion > 0 ? `<div><strong>⭐ Calificación:</strong> ${'★'.repeat(Math.round(tiendaInfo.calificacion))}${'☆'.repeat(5 - Math.round(tiendaInfo.calificacion))} (${tiendaInfo.calificacion.toFixed(1)})</div>` : ''}
+                                </div>
+                                <!-- 🔥 CAJITA DE DATOS BANCARIOS -->
+                                <div id="datos-transferencia-pedido" style="display:none; margin-top:10px; padding:10px; background:white; border:1px solid #bbf7d0; border-radius:8px;">
+                                    <p style="font-size:0.8rem; color:#166534; margin:0 0 4px 0; font-weight:700;">💳 Datos para transferencia:</p>
+                                    <div id="lista-datos-pedido" style="font-size:0.85rem; color:#374151; display:flex; flex-direction:column; gap:2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <h3 style="font-size:1rem;margin:0 0 8px 0;display:flex;align-items:center;gap:8px;">
+                        <i class="fas fa-shopping-bag" style="color:#10b981;"></i> Productos
+                    </h3>
+                    <div style="margin-bottom:16px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                        ${items.length === 0 ? `
+                            <div style="padding:20px;text-align:center;color:#9ca3af;">
+                                <i class="fas fa-comments" style="font-size:1.5rem;opacity:0.5;display:block;margin-bottom:8px;"></i>
+                                <p style="font-size:0.9rem;">Aún no hay productos en esta solicitud.</p>
+                                <p style="font-size:0.8rem;color:#cbd5e1;">Acuerda los productos por el chat.</p>
+                            </div>
+                        ` : `
+                            <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+                                <thead style="background:#f8fafc;">
+                                    <tr>
+                                        <th style="text-align:left;padding:10px 12px;font-weight:600;color:#475569;">Producto</th>
+                                        <th style="text-align:center;padding:10px 12px;font-weight:600;color:#475569;">Cant.</th>
+                                        <th style="text-align:right;padding:10px 12px;font-weight:600;color:#475569;">Precio</th>
+                                        <th style="text-align:right;padding:10px 12px;font-weight:600;color:#475569;">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${items.map((item, idx) => {
+                                        let nombre = item.nombre || item.title || item.name || '';
+                                        if (!nombre && window.cacheProductos) {
+                                            const encontrado = window.cacheProductos.find(p => p.id === item.productoId || p.id === item.id);
+                                            if (encontrado) nombre = encontrado.nombre || encontrado.nombreBase || 'Producto';
+                                        }
+                                        if (!nombre) nombre = item.productoId || item.id || 'Producto sin nombre';
+
+                                        const precio = Number(item.unitPrice || item.precio || item.price || 0);
+                                        const qty = Number(item.qty || item.cantidad || 1);
+                                        const subtotalItem = precio * qty;
+                                        const unitLabel = item.unitLabel || item.unit || 'und.';
+
+                                        return `
+                                            <tr style="${idx % 2 === 0 ? 'background:#ffffff;' : 'background:#fafafa;'} border-bottom:1px solid #f1f5f9;">
+                                                <td style="padding:10px 12px;">${nombre}</td>
+                                                <td style="text-align:center;padding:10px 12px;">${qty} ${unitLabel}</td>
+                                                <td style="text-align:right;padding:10px 12px;">$${precio.toLocaleString('es-CO')}</td>
+                                                <td style="text-align:right;padding:10px 12px;font-weight:600;color:#10b981;">$${subtotalItem.toLocaleString('es-CO')}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        `}
+                    </div>
+
+                    ${items.length > 0 ? `
+                        <div style="margin-bottom:16px;padding:12px 16px;background:#f8fafc;border-radius:12px;">
+                            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.9rem;">
+                                <span style="color:#64748b;">📦 Subtotal</span>
+                                <span>$${subtotal.toLocaleString('es-CO')}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.9rem;">
+                                <span style="color:#64748b;">🚚 Envío</span>
+                                <span>${envio === 0 ? 'GRATIS' : `$${envio.toLocaleString('es-CO')}`}</span>
+                            </div>
+                            ${descuento > 0 ? `
+                                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.9rem;color:#ef4444;">
+                                    <span>🎯 Descuento</span>
+                                    <span>-$${descuento.toLocaleString('es-CO')}</span>
+                                </div>
+                            ` : ''}
+                            <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:2px solid #e5e7eb;margin-top:4px;font-size:1.1rem;font-weight:700;">
+                                <span>💰 Total</span>
+                                <span style="color:#10b981;">$${total.toLocaleString('es-CO')}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.85rem;color:#64748b;border-top:1px solid #e5e7eb;margin-top:4px;">
+                                <span><i class="fas fa-credit-card"></i> Método de pago</span>
+                                <span>${metodoPago}</span>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${bloqueChatHTML}
+
+                    <div class="modal-acciones-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;">
+                        ${botonesHTML}
+                    </div>
+
+                    <div style="margin-top:16px;padding:12px 16px;background:#f8fafc;border-radius:12px;">
+                        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#64748b;position:relative;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+                                <span style="font-size:1.2rem;">⏳</span>
+                                <span>Pendiente</span>
+                                ${estado === 'pendiente' ? '<span style="color:#10b981;font-size:0.65rem;">← Actual</span>' : ''}
+                            </div>
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+                                <span style="font-size:1.2rem;">✅</span>
+                                <span>Aceptado</span>
+                                ${estado === 'aceptado' || estado === 'preparando' ? '<span style="color:#10b981;font-size:0.65rem;">← Actual</span>' : ''}
+                            </div>
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+                                <span style="font-size:1.2rem;">🚚</span>
+                                <span>En camino</span>
+                                ${estado === 'en_camino' ? '<span style="color:#10b981;font-size:0.65rem;">← Actual</span>' : ''}
+                            </div>
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+                                <span style="font-size:1.2rem;">📦</span>
+                                <span>Recibido</span>
+                                ${estado === 'recibido' || estado === 'entregado' || estado === 'completado' ? '<span style="color:#10b981;font-size:0.65rem;">← Actual</span>' : ''}
+                            </div>
+                        </div>
+                        <div style="height:4px;background:#e5e7eb;border-radius:2px;margin:8px 0;position:relative;overflow:hidden;">
+                            ${estado === 'solicitud_por_chat' ? `
+                                <div style="width:5%;height:100%;background:linear-gradient(90deg,#8b5cf6,#a78bfa);border-radius:2px;"></div>
+                            ` : estado === 'pendiente' ? `
+                                <div style="width:10%;height:100%;background:linear-gradient(90deg,#F59E0B,#FCD34D);border-radius:2px;"></div>
+                            ` : estado === 'aceptado' || estado === 'preparando' ? `
+                                <div style="width:40%;height:100%;background:linear-gradient(90deg,#3B82F6,#60A5FA);border-radius:2px;"></div>
+                            ` : estado === 'en_camino' ? `
+                                <div style="width:70%;height:100%;background:linear-gradient(90deg,#8B5CF6,#A78BFA);border-radius:2px;"></div>
+                            ` : estado === 'recibido' || estado === 'entregado' || estado === 'completado' ? `
+                                <div style="width:100%;height:100%;background:linear-gradient(90deg,#10b981,#34D399);border-radius:2px;"></div>
+                            ` : estado === 'rechazado' || estado === 'cancelado' ? `
+                                <div style="width:100%;height:100%;background:#EF4444;border-radius:2px;"></div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <style>
+                        .btn-accion {
+                            padding: 12px;
+                            border: none;
+                            border-radius: 10px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                            font-size: 0.95rem;
+                        }
+                        .btn-accion:hover {
+                            transform: translateY(-2px);
+                            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+                        }
+                        .btn-accion:active { transform: scale(0.97); }
+                        .btn-aceptar { background: #10b981; color: white; }
+                        .btn-aceptar:hover { background: #059669; }
+                        .btn-rechazar { background: #ef4444; color: white; }
+                        .btn-rechazar:hover { background: #dc2626; }
+                        .btn-enviar { background: #3b82f6; color: white; }
+                        .btn-enviar:hover { background: #2563eb; }
+                        .btn-recibir { background: #10b981; color: white; }
+                        .btn-recibir:hover { background: #059669; }
+
+                        .mensaje-info {
+                            padding: 16px;
+                            border-radius: 10px;
+                            text-align: center;
+                            font-weight: 600;
+                            font-size: 0.95rem;
+                            grid-column: span 2;
+                        }
+                        .mensaje-espera { background: #fffbeb; color: #92400e; }
+                        .mensaje-preparando { background: #eff6ff; color: #1e40af; }
+                        .mensaje-completado { background: #d1fae5; color: #065f46; }
+                        .mensaje-cancelado { background: #fee2e2; color: #991b1b; }
+                        .mensaje-neutral { background: #f3f4f6; color: #6b7280; }
+                    </style>
+
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+
+            if (tiendaId) {
+                setTimeout(() => {
+                    mostrarDatosPagoComerciante(tiendaId, 'lista-datos-pedido');
+                }, 100);
+            }
+
+            if (mostrarBloqueChat) {
+                setTimeout(() => {
+                    window.iniciarChatEnModal(pedido.id);
+                }, 300);
+            } else {
+                setTimeout(() => {
+                    const input = document.getElementById('input-mensaje-modal');
+                    if (input) {
+                        input.focus();
+                    }
+                }, 300);
+            }
+        };
+
+        // ============================================================
+        // 🔥 FUNCIÓN PARA PINTAR LOS MÉTODOS DE PAGO DEL COMERCIANTE
+        // ============================================================
+        async function mostrarDatosPagoComerciante(tiendaId, contenedorId) {
+            const contenedor = document.getElementById(contenedorId);
+            if (!contenedor || !tiendaId) return;
+
+            try {
+                const tiendaRef = doc(db, 'tiendas', tiendaId);
+                const snap = await getDoc(tiendaRef);
+
+                if (snap.exists()) {
+                    const data = snap.data();
+                    const metodos = data.metodosPago || {};
+                    
+                    let html = '';
+
+                    // Validamos qué métodos están activos y tienen datos
+                    if (metodos.nequi && metodos.nequi.activo && metodos.nequi.numero) {
+                        html += `<div><strong>📱 Nequi:</strong> ${metodos.nequi.numero} (${metodos.nequi.titular || 'Sin titular'})</div>`;
+                    }
+                    if (metodos.breb && metodos.breb.activo && metodos.breb.llave) {
+                        html += `<div><strong>📱 Bre-B:</strong> ${metodos.breb.llave} (${metodos.breb.titular || 'Sin titular'})</div>`;
+                    }
+                    if (metodos.transferencia && metodos.transferencia.activo && metodos.transferencia.numero) {
+                        html += `<div><strong>🏦 ${metodos.transferencia.banco || 'Banco'}:</strong> ${metodos.transferencia.numero} (${metodos.transferencia.titular || 'Sin titular'})</div>`;
+                    }
+
+                    if (html) {
+                        contenedor.innerHTML = html;
+                        const caja = document.getElementById('datos-transferencia-pedido');
+                        if (caja) caja.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando datos de pago:', error);
+            }
+        }
+
+        // ============================================================
+        // 🛒 CONFIRMAR SOLICITUD POR CHAT (CLIENTE) — CORREGIDO
+        // ============================================================
+        // 🔥 El texto que escribe el cliente se guarda como
+        // PRIMER MENSAJE REAL del chat. Luego el pedido pasa a
+        // 'pendiente' para que el comerciante lo vea y responda.
+        // NO se muestra confirm() previo, NO se genera mensaje
+        // artificial de sistema.
+        // ============================================================
+        window.confirmarSolicitudPorChat = async function(pedidoId) {
+
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Debes iniciar sesión para solicitar un pedido.');
+                return;
+            }
+
+            const input = document.getElementById('input-mensaje-modal');
+            const texto = input?.value?.trim();
+
+            // --------------------------------------------------------
+            // Validar que el cliente haya escrito algo
+            // --------------------------------------------------------
+            if (!texto) {
+                alert('✍️ Primero escribe lo que necesitas solicitar.');
+                input?.focus();
+                return;
+            }
+
+            const pedido = todosLosPedidos.find(p => p.id === pedidoId);
+            if (!pedido) {
+                alert('❌ No se pudo encontrar la solicitud.');
+                return;
+            }
+
+            try {
+                const pedidoRef = doc(db, 'pedidos', pedidoId);
+                const mensajesRef = collection(db, 'pedidos', pedidoId, 'mensajes');
+
+                // ====================================================
+                // 1️⃣ GUARDAR EL MENSAJE REAL DEL CLIENTE
+                // ====================================================
+                await addDoc(mensajesRef, {
+                    texto: texto,
+                    uid: user.uid,
+                    nombre: user.displayName || user.email || 'Cliente',
+                    creadoEn: serverTimestamp(),
+                    leido: false
+                });
+
+                console.log('💬 Primer mensaje enviado:', texto);
+
+                // ====================================================
+                // 2️⃣ CONVERTIR LA SOLICITUD EN PEDIDO PENDIENTE
+                // ====================================================
+                const items = pedido.items || [];
+                const subtotal = items.reduce((s, i) => {
+                    const p = Number(i.unitPrice || i.precio || 0);
+                    const q = Number(i.qty || i.cantidad || 1);
+                    return s + p * q;
+                }, 0);
+                const envio = Number(pedido.envio || 0);
+                const servicio = Number(pedido.servicio || 0);
+                const total = subtotal + envio + servicio;
+
+                await updateDoc(pedidoRef, {
+                    estado: 'pendiente',
+                    origenPedido: 'chat',
+                    items,
+                    subtotal,
+                    envio,
+                    servicio,
+                    total,
+                    clienteConfirmado: false,
+                    lastMsg: texto.slice(0, 120),
+                    lastTs: serverTimestamp(),
+                    fechaConfirmacionSolicitud: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+
+                console.log('📦 Solicitud convertida en pedido pendiente');
+
+                // ====================================================
+                // 3️⃣ ACTUALIZAR COPIA LOCAL
+                // ====================================================
+                const index = todosLosPedidos.findIndex(p => p.id === pedidoId);
+                if (index !== -1) {
+                    todosLosPedidos[index] = {
+                        ...todosLosPedidos[index],
+                        estado: 'pendiente',
+                        origenPedido: 'chat',
+                        items,
+                        subtotal,
+                        envio,
+                        servicio,
+                        total,
+                        lastMsg: texto
+                    };
+                }
+
+                // ====================================================
+                // 4️⃣ CERRAR EL MODAL Y REFRESCAR LISTA
+                // ====================================================
+                cerrarDetallePedido();
+                renderizarPedidos();
+                actualizarNotificacionConfirmacion();
+
+                // ====================================================
+                // 5️⃣ REABRIR LA CONVERSACIÓN NORMAL
+                // ====================================================
+                setTimeout(() => {
+                    console.log('💬 Abriendo conversación:', pedidoId);
+                    window.abrirDetallePedido(pedidoId);
+                }, 200);
+
+            } catch (error) {
+                console.error('❌ Error confirmando solicitud por chat:', error);
+                alert('❌ No se pudo enviar la solicitud.\n\n' + error.message);
+            }
+        };
+
+        // ============================================================
+        // ➕ AGREGAR ITEM A SOLICITUD (COMERCIANTE)
+        // ============================================================
+        window.abrirFormularioAgregarItem = function(pedidoId) {
+            const nombre = prompt('Nombre del producto:');
+            if (!nombre) return;
+            const precioStr = prompt('Precio unitario (sin puntos):', '0');
+            if (precioStr === null) return;
+            const precio = Number(precioStr.replace(/[^0-9]/g, '')) || 0;
+            const qtyStr = prompt('Cantidad:', '1');
+            if (qtyStr === null) return;
+            const qty = Number(qtyStr) || 1;
+
+            window.agregarItemASolicitud(pedidoId, {
+                nombre: nombre.trim(),
+                unitPrice: precio,
+                qty: qty,
+                unitLabel: 'und.'
+            });
+        };
+
+        window.agregarItemASolicitud = async function(pedidoId, item) {
+            try {
+                const user = auth.currentUser;
+                if (!user) return;
+
+                const pedidoRef = doc(db, 'pedidos', pedidoId);
+                const snap = await getDoc(pedidoRef);
+                if (!snap.exists()) return;
+
+                const data = snap.data();
+                const items = [...(data.items || []), item];
+                const subtotal = items.reduce((s, i) => s + Number(i.unitPrice || 0) * Number(i.qty || 1), 0);
+                const envio = Number(data.envio || 0);
+                const servicio = Number(data.servicio || 0);
+
+                await updateDoc(pedidoRef, {
+                    items,
+                    subtotal,
+                    servicio,
+                    total: subtotal + envio + servicio,
+                    updatedAt: serverTimestamp()
+                });
+
+                await addDoc(collection(db, 'pedidos', pedidoId, 'mensajes'), {
+                    texto: `➕ Producto agregado: ${item.nombre} × ${item.qty} — $${(item.unitPrice * item.qty).toLocaleString('es-CO')}`,
+                    uid: user.uid,
+                    nombre: user.displayName || user.email || 'Comerciante',
+                    creadoEn: serverTimestamp(),
+                    sistema: true
+                });
+
+                cerrarDetallePedido();
+                setTimeout(() => window.abrirDetallePedido(pedidoId), 200);
+            } catch (e) {
+                console.error('Error agregando item:', e);
+                alert('❌ Error al agregar producto');
+            }
+        };
+
+        // ============================================================
+        // 📤 ENVIAR RESUMEN AL CLIENTE (COMERCIANTE)
+        // ============================================================
+        window.enviarResumenSolicitud = async function(pedidoId) {
+            const pedido = todosLosPedidos.find(p => p.id === pedidoId);
+            if (!pedido) return;
+            const items = pedido.items || [];
+            if (items.length === 0) {
+                alert('⚠️ No hay productos en la solicitud todavía.');
+                return;
+            }
+
+            const user = auth.currentUser;
+            const subtotal = items.reduce((s, i) => s + Number(i.unitPrice || 0) * Number(i.qty || 1), 0);
+            const envio = Number(pedido.envio || 0);
+            const total = subtotal + envio;
+
+            const resumen = items.map(i => `• ${i.nombre} × ${i.qty} — $${(i.unitPrice * i.qty).toLocaleString('es-CO')}`).join('\n');
+
+            const texto = `📋 Resumen del pedido:\n${resumen}\n\nSubtotal: $${subtotal.toLocaleString('es-CO')}\nEnvío: ${envio === 0 ? 'GRATIS' : '$' + envio.toLocaleString('es-CO')}\n\nSi estás de acuerdo con los productos y precios, confirma el pedido para enviarlo formalmente.`;
+
+            try {
+                await addDoc(collection(db, 'pedidos', pedidoId, 'mensajes'), {
+                    texto,
+                    uid: user.uid,
+                    nombre: user.displayName || user.email || 'Comerciante',
+                    creadoEn: serverTimestamp(),
+                    sistema: true
+                });
+                alert('✅ Resumen enviado al cliente por el chat.');
+            } catch (e) {
+                console.error('Error enviando resumen:', e);
+                alert('❌ Error al enviar resumen');
+            }
+        };
+
+        // ============================================================
+        // 🔥 CONFIRMAR RECIBIDO DESDE EL CLIENTE (LLAMA A LA FUNCTION)
+        // ============================================================
+        window.confirmarRecibidoCliente = async function(pedidoId) {
+            const confirmacion = confirm(
+                '¿Confirmas que recibiste este pedido?\n\n' +
+                'Al confirmar, le llegará un mensaje al comerciante ' +
+                'informando que recibiste tu pedido.'
+            );
+            if (!confirmacion) return;
+
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    alert('Debes iniciar sesión para confirmar la recepción');
+                    return;
+                }
+
+                const token = await user.getIdToken();
+                const url = construirUrlConfirmarRecibido(pedidoId);
+                console.log('📡 Llamando Function:', url);
+
+                let response;
+                try {
+                    response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                } catch (netErr) {
+                    console.error('🌐 Error de red al llamar la Function:', netErr);
+                    console.error('   URL intentada:', url);
+                    console.error('   PROJECT_ID detectado:', PROJECT_ID);
+                    console.error('   REGION configurada:', REGION_FUNCTIONS);
+                    console.error('   NOMBRE_EXPORT configurado:', NOMBRE_EXPORT_FUNCTION);
+                    throw new Error(
+                        'No se pudo contactar al servidor. Revisa la consola (F12) para más detalles. ' +
+                        'Posibles causas: la URL de la Function es incorrecta, la Function no está desplegada, o hay un bloqueo de CORS.'
+                    );
+                }
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    const detalle = errData.error || errData.message || `Error HTTP ${response.status}`;
+                    console.error('❌ Respuesta de la Function con error:', response.status, errData);
+                    throw new Error(detalle);
+                }
+
+                const data = await response.json().catch(() => ({}));
+                console.log('✅ confirmar-recibido OK:', data);
+
+                alert('✅ ¡Pedido confirmado como recibido!');
+                cerrarDetallePedido();
+                renderizarPedidos();
+                actualizarNotificacionConfirmacion();
+            } catch (error) {
+                console.error('❌ Error confirmando pedido:', error);
+                alert('❌ No se pudo confirmar el pedido.\n\n' + error.message);
+            }
+        };
+
+        // ============================================================
+        // 💬 INICIAR CHAT EN EL MODAL
+        // ============================================================
+        window.iniciarChatEnModal = function(pedidoId) {
+            if (!pedidoId) return;
+            pedidoModalActual = pedidoId;
+
+            const pedido = todosLosPedidos.find(p => p.id === pedidoId);
+            if (!pedido) return;
+
+            const estado = pedido.estado || 'pendiente';
+            const input = document.getElementById('input-mensaje-modal');
+            const btn = document.getElementById('btn-enviar-modal');
+            const estadoBadge = document.getElementById('chat-estado-modal');
+            const container = document.getElementById('mensajes-detalle-modal');
+
+            if (!input || !btn || !container) return;
+
+            if (unsubscribeModalChat) {
+                unsubscribeModalChat();
+                unsubscribeModalChat = null;
+            }
+
+            if (estado === 'cancelado' || estado === 'rechazado') {
+                input.disabled = true;
+                btn.disabled = true;
+                input.placeholder = '❌ Pedido cancelado';
+                if (estadoBadge) {
+                    estadoBadge.textContent = 'Cancelado';
+                    estadoBadge.style.background = '#fee2e2';
+                    estadoBadge.style.color = '#991b1b';
+                }
+                container.innerHTML = `
+                    <div style="text-align:center;padding:20px;color:#991b1b;">
+                        <i class="fas fa-ban" style="font-size:1.5rem;opacity:0.5;display:block;margin-bottom:8px;"></i>
+                        <p style="font-size:0.85rem;">Este pedido fue cancelado</p>
+                        <p style="font-size:0.75rem;color:#d1d5db;">No se pueden enviar mensajes</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (estado === 'recibido' || estado === 'entregado' || estado === 'completado') {
+                input.disabled = true;
+                btn.disabled = true;
+                input.placeholder = '📦 Pedido completado - Solo lectura';
+                if (estadoBadge) {
+                    estadoBadge.textContent = 'Completado';
+                    estadoBadge.style.background = '#d1fae5';
+                    estadoBadge.style.color = '#065f46';
+                }
+            } else {
+                input.disabled = false;
+                btn.disabled = false;
+                input.placeholder = 'Escribe un mensaje...';
+                if (estadoBadge) {
+                    const estadosMap = {
+                        'solicitud_por_chat': { label: '💬 Solicitud', color: '#5b21b6', bg: '#ede9fe' },
+                        'pendiente': { label: '⏳ Pendiente', color: '#f59e0b', bg: '#fffbeb' },
+                        'aceptado': { label: '✅ Aceptado', color: '#3b82f6', bg: '#eff6ff' },
+                        'preparando': { label: '👨‍🍳 Preparando', color: '#3b82f6', bg: '#eff6ff' },
+                        'en_camino': { label: '🚚 En camino', color: '#8B5CF6', bg: '#f3e8ff' }
+                    };
+                    const info = estadosMap[estado] || { label: estado, color: '#6b7280', bg: '#f3f4f6' };
+                    estadoBadge.textContent = info.label;
+                    estadoBadge.style.background = info.bg;
+                    estadoBadge.style.color = info.color;
+                }
+            }
+
+            const messagesRef = collection(db, 'pedidos', pedidoId, 'mensajes');
+            const q = query(messagesRef, orderBy('creadoEn', 'asc'), limit(200));
+
+            unsubscribeModalChat = onSnapshot(q, (snapshot) => {
+                if (!container) return;
+
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div style="text-align:center;padding:20px;color:#9ca3af;">
+                            <i class="fas fa-comment-slash" style="font-size:1.5rem;opacity:0.5;display:block;margin-bottom:8px;"></i>
+                            <p style="font-size:0.85rem;">No hay mensajes aún</p>
+                            <p style="font-size:0.75rem;color:#d1d5db;">Envía un mensaje para comenzar</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const user = auth.currentUser;
+                container.innerHTML = '';
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const esMio = data.uid === user?.uid;
+
+                    const mensajeDiv = document.createElement('div');
+                    mensajeDiv.className = `mensaje-chat-modal ${esMio ? 'enviado' : 'recibido'}`;
+
+                    let nombreRemitente = data.nombre || 'Usuario';
+                    if (esMio) nombreRemitente = 'Tú';
+
+                    mensajeDiv.innerHTML = `
+                        <div class="burbuja" ${data.sistema ? 'style="background:#ede9fe;border-color:#c4b5fd;"' : ''}>
+                            <div class="remitente">${nombreRemitente}${data.sistema ? ' · 🤖' : ''}</div>
+                            <div class="texto">${escapeHTML(data.texto || data.mensaje || '')}</div>
+                            <div class="hora">${formatearHora(data.creadoEn)}</div>
+                        </div>
+                    `;
+
+                    container.appendChild(mensajeDiv);
+                });
+
+                container.scrollTop = container.scrollHeight;
+
+                if (user) {
+                    marcarMensajesLeidos(pedidoId, user.uid);
+                }
+
+            }, (error) => {
+                console.error('Error escuchando mensajes:', error);
+                container.innerHTML = `
+                    <div style="text-align:center;padding:20px;color:#ef4444;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p style="font-size:0.85rem;">Error al cargar mensajes</p>
+                    </div>
+                `;
+            });
+        };
+
+        // ============================================================
+        // 📤 ENVIAR MENSAJE
+        // ============================================================
+        window.enviarMensajeDesdeModal = async function() {
+            const input = document.getElementById('input-mensaje-modal');
+            const texto = input?.value?.trim();
+            if (!texto) return;
+
+            if (!pedidoModalActual) {
+                alert('⚠️ No se pudo identificar el pedido. Cierra y vuelve a abrir el detalle.');
+                return;
+            }
+
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Debes iniciar sesión para enviar mensajes');
+                return;
+            }
+
+            if (input.disabled) {
+                alert('No puedes enviar mensajes en este pedido');
+                return;
+            }
+
+            try {
+                const messagesRef = collection(db, 'pedidos', pedidoModalActual, 'mensajes');
+                await addDoc(messagesRef, {
+                    texto: texto,
+                    uid: user.uid,
+                    nombre: user.displayName || user.email || 'Usuario',
+                    creadoEn: serverTimestamp(),
+                    leido: false
+                });
+
+                input.value = '';
+                input.focus();
+
+                await updateDoc(doc(db, 'pedidos', pedidoModalActual), {
+                    lastMsg: texto.slice(0, 120),
+                    lastTs: serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error enviando mensaje:', error);
+                alert('Error al enviar el mensaje: ' + error.message);
+            }
+        };
+
+        window.enviarMensajeRapidoModal = function(texto) {
+            const input = document.getElementById('input-mensaje-modal');
+            if (input) {
+                input.value = texto;
+                window.enviarMensajeDesdeModal();
+            }
+        };
+
+        // ============================================================
+        // 🛠️ UTILIDADES
+        // ============================================================
+        function escapeHTML(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatearHora(timestamp) {
+            try {
+                if (!timestamp) return '';
+                const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+                return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            } catch { return ''; }
+        }
+
+        function formatearFecha(fecha) {
+            if (!fecha) return 'Fecha no disponible';
+            return fecha.toLocaleDateString('es-CO', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        window.cerrarDetallePedido = function() {
+            if (unsubscribeModalChat) {
+                unsubscribeModalChat();
+                unsubscribeModalChat = null;
+            }
+            pedidoModalActual = null;
+            const modal = document.getElementById('pedido-detalle-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.innerHTML = '';
+            }
+        };
+
+        // ============================================================
+        // 🔄 CAMBIAR ESTADO
+        // ============================================================
+        window.cambiarEstadoPedido = async function(pedidoId, nuevoEstado) {
+            const estadoLabels = {
+                'solicitud_por_chat': 'Solicitud por chat',
+                'pendiente': 'Pendiente',
+                'aceptado': 'Aceptado',
+                'preparando': 'En preparación',
+                'en_camino': 'En camino',
+                'recibido': 'Recibido',
+                'entregado': 'Entregado',
+                'completado': 'Completado',
+                'rechazado': 'Rechazado',
+                'cancelado': 'Cancelado'
+            };
+
+            const confirmMsg = `¿Estás seguro de cambiar a "${estadoLabels[nuevoEstado] || nuevoEstado}"?`;
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                const user = auth.currentUser;
+                if (!user) { alert('Debes iniciar sesión'); return; }
+
+                const pedidoRef = doc(db, 'pedidos', pedidoId);
+                const pedidoSnap = await getDoc(pedidoRef);
+                if (!pedidoSnap.exists()) { alert('Pedido no encontrado'); return; }
+
+                const pedido = pedidoSnap.data();
+                const uid = user.uid;
+
+                const esComerciante = pedido.comercianteId === uid || pedido.tiendaId === uid;
+                const esCliente = pedido.clienteId === uid || pedido.uid === uid;
+
+                const estadosComerciante = ['aceptado', 'rechazado', 'en_camino', 'pendiente'];
+                const estadosCliente = ['recibido'];
+
+                let permitido = false;
+                if (esComerciante && estadosComerciante.includes(nuevoEstado)) permitido = true;
+                else if (esCliente && estadosCliente.includes(nuevoEstado)) permitido = true;
+
+                if (!permitido) {
+                    alert(`❌ No tienes permiso para cambiar a "${estadoLabels[nuevoEstado]}"`);
+                    return;
+                }
+
+                const transicionesValidas = {
+                    'solicitud_por_chat': ['pendiente', 'rechazado'],
+                    'pendiente': ['aceptado', 'rechazado'],
+                    'aceptado': ['en_camino', 'preparando', 'rechazado'],
+                    'preparando': ['en_camino', 'rechazado'],
+                    'en_camino': ['recibido', 'rechazado'],
+                    'recibido': [],
+                    'entregado': ['recibido'],
+                    'completado': [],
+                    'rechazado': [],
+                    'cancelado': []
+                };
+
+                const estadoActual = pedido.estado || 'pendiente';
+                if (!transicionesValidas[estadoActual]?.includes(nuevoEstado)) {
+                    alert(`❌ No puedes cambiar de "${estadoLabels[estadoActual]}" a "${estadoLabels[nuevoEstado]}"`);
+                    return;
+                }
+
+                const updateData = {
+                    estado: nuevoEstado,
+                    [`historial.${nuevoEstado}`]: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                };
+
+                // ✅ Al aceptar un pedido de chat, cargamos el servicio de $800 (misma regla que Tipo 1)
+                if (estadoActual === 'pendiente' && nuevoEstado === 'aceptado' && pedido.origenPedido === 'chat') {
+                    const items = pedido.items || [];
+                    const subtotal = items.reduce((s, i) => s + Number(i.unitPrice || 0) * Number(i.qty || 1), 0);
+                    const envio = Number(pedido.envio || 0);
+                    const servicio = VALOR_SERVICIO;
+                    updateData.subtotal = subtotal;
+                    updateData.envio = envio;
+                    updateData.servicio = servicio;
+                    updateData.total = subtotal + envio + servicio;
+                }
+
+                await updateDoc(pedidoRef, updateData);
+
+                console.log('✅ Estado actualizado a:', nuevoEstado);
+                alert(`✅ Pedido actualizado a "${estadoLabels[nuevoEstado]}"`);
+                cerrarDetallePedido();
+                renderizarPedidos();
+                actualizarNotificacionConfirmacion();
+            } catch (error) {
+                console.error('❌ Error al actualizar:', error);
+                alert('❌ Error al actualizar el pedido');
+            }
+        };
+
+        // ============================================================
+        // 🛠️ ESTADO — ICONOS Y LABELS
+        // ============================================================
+        function getEstadoIcon(estado) {
+            const map = {
+                'solicitud_por_chat': '💬',
+                'pendiente': '⏳',
+                'aceptado': '✅',
+                'preparando': '👨‍🍳',
+                'en_camino': '🚚',
+                'recibido': '📦',
+                'entregado': '✅',
+                'completado': '✅',
+                'rechazado': '❌',
+                'cancelado': '❌'
+            };
+            return map[estado] || '📦';
+        }
+
+        function getEstadoLabel(estado) {
+            const map = {
+                'solicitud_por_chat': 'Solicitud por chat',
+                'pendiente': 'Pendiente',
+                'aceptado': 'Aceptado',
+                'preparando': 'Preparando',
+                'en_camino': 'En camino',
+                'recibido': 'Recibido',
+                'entregado': 'Entregado',
+                'completado': 'Completado',
+                'rechazado': 'Rechazado',
+                'cancelado': 'Cancelado'
+            };
+            return map[estado] || estado;
+        }
+
+        // ============================================================
+        // 🔄 CAMBIAR TAB
+        // ============================================================
+        window.cambiarTab = function(tab) {
+            tabActual = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('activo', btn.dataset.tab === tab);
+            });
+            renderizarPedidos();
+        };
+
+        window.recargarMisPedidos = function() {
+            renderizarPedidos();
+            actualizarNotificacionConfirmacion();
+        };
+
+        window.abrirTrackerPedidos = function() {
+            actualizarBadgeTracker();
+            if (window.pedidoTracker) {
+                window.pedidoTracker.showTracker();
+                window.pedidoTracker.refreshPedidos();
+                return;
+            }
+            window.location.href = './productos.html';
+        };
+
+        // ============================================================
+        // 🚪 CERRAR SESIÓN
+        // ============================================================
+        document.getElementById('cerrar-sesion-header')?.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = './index.html';
+            } catch (e) {
+                console.error('Error al cerrar sesión:', e);
+            }
+        });
+
+        // ============================================================
+        // 🚀 INICIAR
+        // ============================================================
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                usuarioNombre.textContent = user.displayName || user.email || 'Usuario';
+                escucharPedidos();
+            } else {
+                window.location.href = './index.html';
+            }
+        });
+
+        // ============================================================
+        // 💜 SOLICITUD POR CHAT — ?origen=chat&tienda=XXX
+        // ============================================================
+        (async function detectarSolicitudPorChat() {
+            const params = new URLSearchParams(location.search);
+            const origen = params.get('origen');
+            const tiendaId = params.get('tienda');
+
+            if (origen !== 'chat' || !tiendaId) return;
+
+            console.log('💜 Solicitud por chat detectada:', tiendaId);
+
+            const user = await new Promise(res => {
+                const unsub = auth.onAuthStateChanged(u => {
+                    if (u) { unsub(); res(u); }
+                });
+            });
+
+            if (!user) return;
+
+            const pedidosRef = collection(db, 'pedidos');
+            const q = query(
+                pedidosRef,
+                where('uid', '==', user.uid),
+                where('tiendaId', '==', tiendaId),
+                where('estado', '==', 'solicitud_por_chat'),
+                orderBy('createdAt', 'desc'),
+                limit(1)
+            );
+
+            let snap;
+            try {
+                snap = await getDocs(q);
+            } catch (e) {
+                console.warn('⚠️ Query con orderBy falló, reintentando sin orderBy:', e);
+                const q2 = query(
+                    pedidosRef,
+                    where('uid', '==', user.uid),
+                    where('tiendaId', '==', tiendaId),
+                    where('estado', '==', 'solicitud_por_chat'),
+                    limit(1)
+                );
+                snap = await getDocs(q2);
+            }
+
+            let pedidoId;
+
+            if (!snap.empty) {
+                pedidoId = snap.docs[0].id;
+                console.log('♻️ Reutilizando solicitud:', pedidoId);
+            } else {
+                const tiendaSnap = await getDoc(doc(db, 'tiendas', tiendaId));
+                const t = tiendaSnap.exists() ? tiendaSnap.data() : {};
+
+                // 🔥 IMPORTANTE: ya NO creamos el mensaje automático de bienvenida.
+                // El primer mensaje del chat será el que escriba el cliente
+                // al pulsar "Confirmar pedido".
+                const nueva = await addDoc(pedidosRef, {
+                    tiendaId: tiendaId,
+                    tiendaNombre: t.nombre || '',
+                    comercianteId: t.uid || t.comercianteId || null,
+
+                    uid: user.uid,
+                    clienteId: user.uid,
+                    clienteEmail: user.email || '',
+                    clienteNombre: user.displayName || user.email || 'Cliente',
+
+                    estado: 'solicitud_por_chat',
+                    origenPedido: 'chat',
+
+                    items: [],
+                    subtotal: 0,
+                    envio: 0,
+                    servicio: 0,
+                    total: 0,
+
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+
+                pedidoId = nueva.id;
+                console.log('✅ Solicitud creada (sin mensaje automático):', pedidoId);
+            }
+
+            try {
+                const url = new URL(location.href);
+                url.searchParams.delete('origen');
+                url.searchParams.delete('tienda');
+                history.replaceState({}, '', url);
+            } catch {}
+
+            window.__pedidoPendienteDeAbrir = pedidoId;
+            console.log('🎯 Solicitud de chat lista:', pedidoId);
+
+            // Abrir la conversación inmediatamente
+            if (typeof window.abrirDetallePedido === 'function') {
+                window.__pedidoPendienteDeAbrir = null;
+                window.abrirDetallePedido(pedidoId);
+            }
+        })();
+
+        console.log('🚀 Página de pedidos cargada correctamente');
+        console.log('💜 Sistema de solicitud por chat ACTIVADO (flujo corregido)');
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes modalSlideUp {
+                from { opacity: 0; transform: translateY(30px) scale(0.95); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            @keyframes fadeInModal {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+    </script>
+</body>
+</html>

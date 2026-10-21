@@ -1,0 +1,1036 @@
+/* ================================================================
+   styles.css - Mi Tiendita Cercana
+   VERSIÓN MODO OSCURO PREMIUM
+   ================================================================ */
+
+:root {
+  /* Colores de marca */
+  --brand: #22C55E;
+  --brand-rgb: 34, 197, 94;
+  --accent: #38BDF8;
+  --accent-strong: #0ea5e9;
+  --radius: 16px;
+
+  /* Neutros - MODO OSCURO */
+  --neutral-bg: #0f172a;
+  --neutral-card: #111827;
+  --neutral-border: rgba(255, 255, 255, 0.1);
+  --neutral-text: #f1f5f9;
+  --neutral-muted: #94a3b8;
+  --neutral-hover: rgba(255, 255, 255, 0.05);
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 16px;
+  /* Fondo negro elegante FORZADO */
+  background: #0a0a0a !important;
+  background-color: #0a0a0a !important;
+  color-scheme: dark;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ================================================================
+   PARTÍCULAS DECORATIVAS SUTILES
+   ================================================================ */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 15% 25%, rgba(34, 197, 94, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 40%);
+  background-repeat: no-repeat;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 10% 20%, rgba(34, 197, 94, 0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 90% 30%, rgba(56, 189, 248, 0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 20% 80%, rgba(16, 185, 129, 0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 50%, rgba(34, 197, 94, 0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 70%, rgba(56, 189, 248, 0.3) 0%, transparent 100%);
+  background-size: 300px 300px;
+  background-repeat: repeat;
+  opacity: 0.5;
+}
+
+/* ================================================================
+   CONTENEDOR PRINCIPAL
+   ================================================================ */
+
+.container {
+  max-width: 420px;
+  width: 100%;
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 28px 24px 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(16, 185, 129, 0.05);
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ================================================================
+   LOGO
+   ================================================================ */
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 16px 0;
+  padding: 0;
+  background: transparent;
+}
+
+.brand-logo {
+  width: clamp(120px, 35vw, 200px);
+  height: auto;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.15));
+  padding: 4px;
+}
+
+.brand-logo:hover {
+  transform: scale(1.02);
+}
+
+.brand-logo.mini {
+  width: clamp(75px, 20vw, 130px);
+  margin: 0 auto 6px;
+  padding: 4px;
+}
+
+.logo-wrapper.mini {
+  margin: 0 0 6px 0;
+  background: transparent;
+}
+
+/* ================================================================
+   TEXTO DE MARCA
+   ================================================================ */
+
+.brand-text {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: clamp(28px, 6vw, 44px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.brand-text .verde {
+  color: #22c55e;
+}
+
+.brand-text h2 {
+  margin: 2px 0;
+  font-size: clamp(12px, 2.5vw, 18px);
+  letter-spacing: 6px;
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.brand-text p {
+  margin: 0;
+  font-size: clamp(9px, 1.8vw, 12px);
+  color: #94a3b8;
+  letter-spacing: 1.5px;
+}
+
+/* ================================================================
+   FORMULARIO
+   ================================================================ */
+
+.form-box {
+  margin-top: 2px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.form-title {
+  color: #ffffff;
+  text-align: center;
+  font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin: 0 0 2px 0;
+}
+
+.form-subtitle {
+  text-align: center;
+  color: #94a3b8;
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  margin: 0 0 14px 0;
+  font-weight: 400;
+}
+
+/* ================================================================
+   INPUTS
+   ================================================================ */
+
+.form-group {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.input-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon i {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  transition: color 0.2s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.input-icon input,
+.input-icon select {
+  width: 100%;
+  padding: clamp(10px, 2.2vh, 14px) 14px clamp(10px, 2.2vh, 14px) 38px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: clamp(14px, 2vw, 16px);
+  background: rgba(30, 41, 59, 0.6);
+  color: #f1f5f9;
+  font-family: inherit;
+  transition: all 0.25s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 42px;
+}
+
+.input-icon select {
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+}
+
+.input-icon select option {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+.input-icon input:focus,
+.input-icon select:focus {
+  outline: none;
+  border-color: #22c55e;
+  background: rgba(30, 41, 59, 0.9);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+.input-icon input::placeholder {
+  color: #64748b;
+  font-size: clamp(13px, 1.8vw, 15px);
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(30px, 5vw, 38px);
+  height: clamp(30px, 5vw, 38px);
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.toggle-password i {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+}
+
+.toggle-password:hover {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.toggle-password:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+/* ================================================================
+   FILAS
+   ================================================================ */
+
+.form-row {
+  display: flex;
+  gap: 10px;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 10px;
+}
+
+.form-group.half {
+  flex: 1;
+}
+
+/* ================================================================
+   BOTONES
+   ================================================================ */
+
+.btn-primary {
+  width: 100%;
+  padding: clamp(12px, 2.5vh, 16px);
+  border: none;
+  border-radius: 12px;
+  font-size: clamp(15px, 2.2vw, 17px);
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(135deg, #22C55E 0%, #38BDF8 100%);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+.btn-primary i {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  filter: brightness(1.05);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: clamp(12px, 2.5vh, 16px);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  font-size: clamp(15px, 2.2vw, 17px);
+  font-weight: 600;
+  color: #f1f5f9;
+  cursor: pointer;
+  background: rgba(30, 41, 59, 0.6);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+.btn-secondary i {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+}
+
+.btn-secondary:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ================================================================
+   MENSAJES
+   ================================================================ */
+
+.message {
+  display: none;
+  margin: 0 0 10px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+  font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+  animation: slideIn 0.3s ease;
+}
+
+.message.err,
+.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  display: block;
+  border-left: 4px solid #ef4444;
+}
+
+.message.ok,
+.success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  display: block;
+  border-left: 4px solid #22c55e;
+}
+
+.warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fcd34d;
+  display: block;
+  border-left: 4px solid #f59e0b;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================================
+   LINKS
+   ================================================================ */
+
+.switch-form {
+  text-align: center;
+  margin-top: 14px;
+  font-size: clamp(13px, 1.8vw, 15px);
+  color: #94a3b8;
+  line-height: 1.8;
+}
+
+.switch-form span {
+  color: #94a3b8;
+}
+
+.switch-form a {
+  color: #22c55e;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.switch-form a:hover {
+  color: #38bdf8;
+  text-decoration: underline;
+}
+
+.forgot-link {
+  font-weight: 500 !important;
+  font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+  color: #94a3b8 !important;
+}
+
+.forgot-link:hover {
+  color: #22c55e !important;
+}
+
+/* ================================================================
+   UBICACIÓN
+   ================================================================ */
+
+.location-map {
+  margin-top: 10px;
+  padding: clamp(12px, 2.5vh, 18px);
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.location-map:hover {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.location-map:active {
+  transform: scale(0.98);
+}
+
+.location-map i {
+  font-size: clamp(20px, 4vw, 26px);
+  color: #22c55e;
+}
+
+.map-title {
+  font-weight: 700;
+  color: #f1f5f9;
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+}
+
+.location-map small {
+  font-size: clamp(0.65rem, 1.4vw, 0.75rem);
+  color: #94a3b8;
+}
+
+/* ================================================================
+   MAPA DEL REGISTRO
+   ================================================================ */
+
+#wrapper-ubicacion-comerciante {
+  margin-top: 8px;
+  padding: 0;
+}
+
+#wrapper-ubicacion-comerciante .location-map {
+  margin-top: 0;
+  cursor: default;
+  border-style: dashed;
+}
+
+#wrapper-ubicacion-comerciante .location-map:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(30, 41, 59, 0.5);
+}
+
+#wrapper-ubicacion-comerciante .btn-ubicacion-primary,
+#btn-usar-mi-ubicacion-reg,
+#btn-limpiar-ubicacion-reg {
+  min-height: 44px;
+  transition: all 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#btn-usar-mi-ubicacion-reg:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+#btn-usar-mi-ubicacion-reg:active {
+  transform: scale(0.98);
+}
+
+#btn-limpiar-ubicacion-reg:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #f1f5f9 !important;
+}
+
+#btn-limpiar-ubicacion-reg:active {
+  transform: scale(0.96);
+}
+
+#mapa-registro {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: #0f172a;
+  transition: border-color 0.25s ease;
+}
+
+#mapa-registro:hover {
+  border-color: #22c55e;
+}
+
+#mapa-registro.leaflet-container {
+  border-radius: 12px;
+  font-family: inherit;
+}
+
+#ubicacion-status-reg {
+  margin-top: 8px;
+  font-size: clamp(11px, 1.6vw, 12px);
+  color: #94a3b8;
+  text-align: center;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+/* ================================================================
+   CHAT FLOTANTE
+   ================================================================ */
+
+#toggle-chat {
+  position: fixed;
+  right: clamp(16px, 3vw, 24px);
+  bottom: clamp(16px, 3vw, 24px);
+  background: linear-gradient(135deg, #22C55E 0%, #38BDF8 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: clamp(48px, 9vw, 60px);
+  height: clamp(48px, 9vw, 60px);
+  box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#toggle-chat:hover {
+  transform: scale(1.06);
+  box-shadow: 0 10px 32px rgba(34, 197, 94, 0.5);
+}
+
+#toggle-chat:active {
+  transform: scale(0.92);
+}
+
+#toggle-chat i {
+  font-size: clamp(20px, 3.5vw, 24px);
+}
+
+#chat-container {
+  position: fixed;
+  right: clamp(16px, 3vw, 24px);
+  bottom: clamp(76px, 11vh, 92px);
+  width: clamp(300px, 80vw, 360px);
+  max-width: 92vw;
+  height: clamp(340px, 55vh, 420px);
+  background: #111827;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+/* ================================================================
+   LOADER
+   ================================================================ */
+
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+}
+
+.pin-loader {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pin {
+  width: clamp(44px, 8vw, 58px);
+  height: clamp(44px, 8vw, 58px);
+  animation: bounce 1.2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+.loader-text {
+  color: #f1f5f9;
+  font-weight: 600;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+}
+
+/* ================================================================
+   UTILIDADES
+   ================================================================ */
+
+.hidden {
+  display: none !important;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+/* --- MÓVILES PEQUEÑOS --- */
+@media (max-width: 400px) {
+  body { padding: 8px; }
+
+  .container {
+    padding: 18px 12px 16px;
+    border-radius: 18px;
+    max-width: 100%;
+  }
+
+  .brand-logo { width: clamp(100px, 32vw, 150px); }
+  .brand-logo.mini { width: clamp(65px, 18vw, 90px); }
+
+  .brand-text h1 { font-size: 1.6rem; }
+  .brand-text h2 { font-size: 0.7rem; letter-spacing: 4px; }
+  .brand-text p { font-size: 0.55rem; }
+
+  .form-title { font-size: 1.1rem; }
+  .form-subtitle { font-size: 0.7rem; margin-bottom: 10px; }
+
+  .input-icon input,
+  .input-icon select {
+    padding: 8px 10px 8px 32px;
+    font-size: 13px;
+    min-height: 36px;
+    border-radius: 10px;
+  }
+
+  .input-icon i { left: 10px; font-size: 0.75rem; }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 10px;
+    font-size: 13px;
+    min-height: 36px;
+    border-radius: 10px;
+  }
+
+  .form-group { margin-bottom: 8px; }
+
+  .switch-form {
+    font-size: 12px;
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+
+  .location-map { padding: 10px; margin-top: 8px; }
+  .location-map i { font-size: 18px; }
+  .map-title { font-size: 0.75rem; }
+  .location-map small { font-size: 0.6rem; }
+
+  .form-row { gap: 6px; }
+
+  #mapa-registro { height: 180px !important; }
+  #wrapper-ubicacion-comerciante { margin-top: 6px; }
+
+  #btn-usar-mi-ubicacion-reg,
+  #btn-limpiar-ubicacion-reg {
+    font-size: 12px !important;
+    padding: 8px !important;
+    min-height: 40px !important;
+  }
+
+  #chat-container { height: 300px; bottom: 66px; }
+  #toggle-chat { width: 44px; height: 44px; bottom: 12px; right: 12px; }
+  #toggle-chat i { font-size: 18px; }
+}
+
+/* --- MÓVILES MEDIANOS --- */
+@media (min-width: 401px) and (max-width: 600px) {
+  body { padding: 10px; }
+
+  .container { padding: 24px 18px 18px; border-radius: 20px; }
+
+  .brand-logo { width: clamp(120px, 32vw, 170px); }
+  .brand-logo.mini { width: clamp(75px, 20vw, 110px); }
+
+  .brand-text h1 { font-size: 2rem; }
+
+  .form-title { font-size: 1.3rem; }
+  .form-subtitle { font-size: 0.8rem; margin-bottom: 12px; }
+
+  .input-icon input,
+  .input-icon select {
+    padding: 10px 12px 10px 36px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .form-row { flex-direction: column; gap: 0; }
+  .form-group.half { flex: none; }
+
+  #mapa-registro { height: 200px !important; }
+
+  #chat-container { height: 330px; }
+  #toggle-chat { width: 48px; height: 48px; }
+}
+
+/* --- TABLETS --- */
+@media (min-width: 601px) and (max-width: 900px) {
+  .container { max-width: 440px; padding: 32px 28px 24px; }
+
+  .brand-logo { width: clamp(150px, 28vw, 200px); }
+  .brand-logo.mini { width: clamp(85px, 16vw, 115px); }
+
+  .brand-text h1 { font-size: 2.6rem; }
+
+  .form-title { font-size: 1.5rem; }
+
+  #mapa-registro { height: 220px !important; }
+
+  #chat-container { width: 340px; height: 380px; }
+}
+
+/* --- ESCRITORIO --- */
+@media (min-width: 901px) and (max-width: 1200px) {
+  body { padding: 24px; }
+
+  .container {
+    max-width: 440px;
+    padding: 32px 28px 26px;
+    transition: all 0.3s ease;
+  }
+
+  .brand-logo { width: clamp(180px, 28vw, 230px); }
+  .brand-logo.mini { width: clamp(95px, 15vw, 120px); }
+
+  .brand-text h1 { font-size: 2.8rem; }
+
+  #chat-container { width: 360px; height: 420px; }
+}
+
+/* --- PANTALLAS GRANDES --- */
+@media (min-width: 1201px) {
+  body { padding: 32px; }
+
+  .container {
+    max-width: 460px;
+    padding: 36px 32px 28px;
+    border-radius: 28px;
+  }
+
+  .brand-logo { width: clamp(200px, 25vw, 260px); }
+  .brand-logo.mini { width: clamp(100px, 14vw, 130px); }
+
+  .brand-text h1 { font-size: 3rem; }
+  .brand-text h2 { font-size: 1rem; letter-spacing: 8px; }
+
+  .form-title { font-size: 1.7rem; }
+  .form-subtitle { font-size: 0.95rem; }
+
+  .input-icon input,
+  .input-icon select {
+    padding: 14px 16px 14px 44px;
+    font-size: 16px;
+    min-height: 48px;
+    border-radius: 14px;
+  }
+
+  .input-icon i { left: 14px; font-size: 1rem; }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 14px;
+    font-size: 16px;
+    min-height: 48px;
+    border-radius: 14px;
+  }
+
+  #chat-container { width: 380px; height: 440px; }
+  #toggle-chat { width: 60px; height: 60px; }
+  #toggle-chat i { font-size: 24px; }
+}
+
+/* ================================================================
+   ORIENTACIÓN HORIZONTAL
+   ================================================================ */
+
+@media (max-height: 600px) and (orientation: landscape) {
+  body {
+    padding: 6px;
+    align-items: flex-start;
+    padding-top: 8px;
+  }
+
+  .container { padding: 12px 16px; border-radius: 14px; max-width: 480px; }
+
+  .logo-wrapper { margin: 0 0 6px 0; }
+
+  .brand-logo { width: clamp(80px, 20vw, 120px); }
+  .brand-logo.mini { width: clamp(55px, 14vw, 80px); margin: 0 auto 2px; }
+
+  .brand-text { margin-bottom: 6px; }
+  .brand-text h1 { font-size: 1.3rem; }
+  .brand-text h2 { font-size: 0.6rem; letter-spacing: 3px; }
+  .brand-text p { font-size: 0.5rem; }
+
+  .form-title { font-size: 0.95rem; }
+  .form-subtitle { font-size: 0.65rem; margin-bottom: 8px; }
+
+  .form-group { margin-bottom: 6px; }
+
+  .input-icon input,
+  .input-icon select {
+    padding: 6px 8px 6px 28px;
+    font-size: 12px;
+    min-height: 30px;
+    border-radius: 8px;
+  }
+
+  .input-icon i { left: 8px; font-size: 0.7rem; }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 7px;
+    font-size: 12px;
+    min-height: 30px;
+    border-radius: 8px;
+    margin-top: 2px;
+  }
+
+  .switch-form { font-size: 11px; margin-top: 6px; line-height: 1.4; }
+
+  .location-map { padding: 6px; margin-top: 6px; border-radius: 8px; }
+  .location-map i { font-size: 16px; }
+  .map-title { font-size: 0.7rem; }
+  .location-map small { font-size: 0.55rem; }
+
+  .form-row { gap: 4px; }
+
+  #mapa-registro { height: 160px !important; }
+
+  #btn-usar-mi-ubicacion-reg,
+  #btn-limpiar-ubicacion-reg {
+    font-size: 11px !important;
+    padding: 6px !important;
+    min-height: 36px !important;
+  }
+
+  #chat-container { height: 260px; bottom: 62px; width: 280px; }
+  #toggle-chat { width: 40px; height: 40px; bottom: 10px; right: 10px; }
+  #toggle-chat i { font-size: 16px; }
+}
+
+/* ================================================================
+   ANIMACIONES
+   ================================================================ */
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.loading-active .btn-primary {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ================================================================
+   MEJORAS PARA TOUCH
+   ================================================================ */
+
+@media (hover: none) {
+  .btn-primary:hover { transform: none; filter: none; }
+  .btn-secondary:hover { transform: none; }
+  .brand-logo:hover { transform: none; }
+  #toggle-chat:hover { transform: none; }
+
+  .location-map:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(30, 41, 59, 0.5);
+  }
+
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-secondary:active { transform: scale(0.97); }
+
+  #btn-usar-mi-ubicacion-reg:hover,
+  #btn-limpiar-ubicacion-reg:hover { transform: none; }
+}
+
+/* ================================================================
+   SOPORTE SAFARI
+   ================================================================ */
+
+@supports (-webkit-touch-callout: none) {
+  .container {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ================================================================
+   LOGO DE LOGIN (FALLBACK)
+   ================================================================ */
+
+.logo-login {
+  width: 170px;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+/* ================================================================
+   FIN
+   ================================================================ */

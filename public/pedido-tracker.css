@@ -1,0 +1,1033 @@
+/* ============================================================
+   PEDIDO TRACKER - Estilos Premium v7.0
+   🔥 CON HISTORIAL COMPLETO
+   ============================================================ */
+
+/* ============================================================
+   CONTENEDOR PRINCIPAL (Tracker flotante)
+   ============================================================ */
+
+#pedido-tracker-container {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    width: 100%;
+    pointer-events: none;
+}
+
+/* ============================================================
+   TARJETA PRINCIPAL
+   ============================================================ */
+
+.tracker-card {
+    pointer-events: auto;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: none;
+    border: 1px solid rgba(16, 185, 129, 0.1);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tracker-card.visible {
+    display: block;
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================================
+   HEADER DEL TRACKER
+   ============================================================ */
+
+.tracker-header {
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tracker-header .tracker-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.tracker-header .tracker-title span:first-child {
+    font-size: 1.2rem;
+}
+
+.tracker-header .tracker-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.tracker-header .tracker-actions button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.tracker-header .tracker-actions button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05);
+}
+
+.tracker-header .tracker-actions button:active {
+    transform: scale(0.9);
+}
+
+/* ============================================================
+   BODY DEL TRACKER (scroll)
+   ============================================================ */
+
+#tracker-body {
+    padding: 16px 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    background: #ffffff;
+}
+
+#tracker-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+#tracker-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 999px;
+}
+
+#tracker-body::-webkit-scrollbar-thumb {
+    background: #10b981;
+    border-radius: 999px;
+}
+
+#tracker-body::-webkit-scrollbar-thumb:hover {
+    background: #059669;
+}
+
+/* ============================================================
+   CONTENIDO DEL TRACKER
+   ============================================================ */
+
+#tracker-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ============================================================
+   SECCIÓN DE HISTORIAL (separador)
+   ============================================================ */
+
+.tracker-separator {
+    margin: 16px 0 12px;
+    border-top: 2px solid #e5e7eb;
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tracker-separator span {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.tracker-separator .badge-count {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 999px;
+}
+
+/* ============================================================
+   TARJETA DE PEDIDO (individual)
+   ============================================================ */
+
+.tracker-pedido {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.tracker-pedido:last-child {
+    margin-bottom: 0;
+}
+
+.tracker-pedido:hover {
+    border-color: #10b981 !important;
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1);
+}
+
+/* Tarjeta de pedido activo */
+.tracker-pedido.activo {
+    background: #f8fafc;
+    border: 2px solid rgba(16, 185, 129, 0.25);
+}
+
+/* Tarjeta de pedido en historial */
+.tracker-pedido.historial {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    opacity: 0.85;
+}
+
+.tracker-pedido.historial:hover {
+    opacity: 1;
+}
+
+/* ============================================================
+   HEADER DE LA TARJETA
+   ============================================================ */
+
+.tracker-pedido .pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tracker-pedido .pedido-id {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tracker-pedido .pedido-id .numero {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #0f172a;
+}
+
+.tracker-pedido .pedido-id .fecha {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* ============================================================
+   BADGE DE ESTADO
+   ============================================================ */
+
+.pedido-estado-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+    color: white;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ============================================================
+   CUERPO DE LA TARJETA
+   ============================================================ */
+
+.tracker-pedido .pedido-body {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.tracker-pedido .pedido-body .tienda {
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tracker-pedido .pedido-body .total {
+    font-weight: 700;
+    color: #10b981;
+}
+
+/* ============================================================
+   BARRA DE PROGRESO
+   ============================================================ */
+
+.tracker-pedido .progreso {
+    margin: 8px 0;
+}
+
+.tracker-pedido .progreso .barra {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.tracker-pedido .progreso .barra .relleno {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tracker-pedido .progreso .info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* ============================================================
+   ESTADO COMPLETADO / CANCELADO
+   ============================================================ */
+
+.tracker-pedido .estado-final {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.tracker-pedido .estado-final .icono {
+    font-size: 1.1rem;
+}
+
+.tracker-pedido .estado-final .texto {
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.tracker-pedido .estado-final .texto.entregado {
+    color: #10b981;
+}
+
+.tracker-pedido .estado-final .texto.cancelado {
+    color: #ef4444;
+}
+
+.tracker-pedido .estado-final .fecha {
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+/* ============================================================
+   BOTÓN VER DETALLE
+   ============================================================ */
+
+.btn-ver-detalle {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-ver-detalle:hover {
+    transform: scale(1.02);
+}
+
+.btn-ver-detalle:active {
+    transform: scale(0.95);
+}
+
+/* ============================================================
+   ESTADO VACÍO
+   ============================================================ */
+
+.tracker-empty {
+    text-align: center;
+    padding: 30px 10px;
+    color: #6b7280;
+}
+
+.tracker-empty .icono {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.tracker-empty .titulo {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+}
+
+.tracker-empty .subtitulo {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin: 0;
+}
+
+/* ============================================================
+   BOTÓN FLOTANTE (mini)
+   ============================================================ */
+
+#tracker-float-btn {
+    pointer-events: auto;
+    display: none;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.4rem;
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.35);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+}
+
+#tracker-float-btn:hover {
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 12px 48px rgba(16, 185, 129, 0.5);
+}
+
+#tracker-float-btn:active {
+    transform: scale(0.9);
+}
+
+#tracker-float-btn .badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+/* ============================================================
+   MODAL DE DETALLE
+   ============================================================ */
+
+#pedido-detalle-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+#pedido-detalle-modal .modal-contenido {
+    background: white;
+    border-radius: 24px;
+    max-width: 480px;
+    width: 92%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#pedido-detalle-modal .modal-contenido::-webkit-scrollbar {
+    width: 5px;
+}
+
+#pedido-detalle-modal .modal-contenido::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 999px;
+}
+
+#pedido-detalle-modal .modal-contenido::-webkit-scrollbar-thumb {
+    background: #10b981;
+    border-radius: 999px;
+}
+
+/* Header del modal */
+#pedido-detalle-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#pedido-detalle-modal .modal-header .titulo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+#pedido-detalle-modal .modal-header .fecha {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+#pedido-detalle-modal .modal-header .btn-cerrar {
+    background: #f1f5f9;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#pedido-detalle-modal .modal-header .btn-cerrar:hover {
+    background: #e5e7eb;
+    transform: rotate(90deg);
+}
+
+/* Estado en el modal */
+#pedido-detalle-modal .modal-estado {
+    background: rgba(16, 185, 129, 0.08);
+    border: 2px solid rgba(16, 185, 129, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#pedido-detalle-modal .modal-estado .icono {
+    font-size: 2rem;
+}
+
+#pedido-detalle-modal .modal-estado .label {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+#pedido-detalle-modal .modal-estado .progreso-texto {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Barra de progreso en el modal */
+#pedido-detalle-modal .modal-progreso {
+    margin-bottom: 16px;
+}
+
+#pedido-detalle-modal .modal-progreso .barra {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+#pedido-detalle-modal .modal-progreso .barra .relleno {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Timeline en el modal */
+#pedido-detalle-modal .modal-timeline {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+#pedido-detalle-modal .modal-timeline .titulo {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #0f172a;
+}
+
+#pedido-detalle-modal .modal-timeline .item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+#pedido-detalle-modal .modal-timeline .item .dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+#pedido-detalle-modal .modal-timeline .item .label {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #0f172a;
+}
+
+#pedido-detalle-modal .modal-timeline .item .badge-actual {
+    font-size: 0.7rem;
+    color: #10b981;
+}
+
+/* Info de tienda en el modal */
+#pedido-detalle-modal .modal-tienda {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+#pedido-detalle-modal .modal-tienda .fila {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+}
+
+#pedido-detalle-modal .modal-tienda .fila .label {
+    color: #6b7280;
+}
+
+#pedido-detalle-modal .modal-tienda .fila .valor {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+#pedido-detalle-modal .modal-tienda .fila .valor.total {
+    color: #10b981;
+    font-weight: 700;
+}
+
+/* Productos en el modal */
+#pedido-detalle-modal .modal-productos {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+#pedido-detalle-modal .modal-productos .titulo {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #0f172a;
+}
+
+#pedido-detalle-modal .modal-productos .item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+#pedido-detalle-modal .modal-productos .item:last-child {
+    border-bottom: none;
+}
+
+#pedido-detalle-modal .modal-productos .item .nombre {
+    color: #0f172a;
+}
+
+#pedido-detalle-modal .modal-productos .item .precio {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+#pedido-detalle-modal .modal-productos .total-linea {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 2px solid #e5e7eb;
+    font-weight: 700;
+}
+
+#pedido-detalle-modal .modal-productos .total-linea .valor {
+    color: #10b981;
+}
+
+/* Acciones del modal */
+#pedido-detalle-modal .modal-acciones {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#pedido-detalle-modal .modal-acciones .btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    min-width: 120px;
+}
+
+#pedido-detalle-modal .modal-acciones .btn-chat {
+    background: #10b981;
+    color: white;
+}
+
+#pedido-detalle-modal .modal-acciones .btn-chat:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
+#pedido-detalle-modal .modal-acciones .btn-cerrar {
+    background: white;
+    color: #0f172a;
+    border: 1px solid #e5e7eb;
+}
+
+#pedido-detalle-modal .modal-acciones .btn-cerrar:hover {
+    background: #f1f5f9;
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   ANIMACIONES
+   ============================================================ */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.5);
+    }
+}
+
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+
+[data-theme="dark"] .tracker-card {
+    background: #0f172a;
+    border-color: #1e293b;
+}
+
+[data-theme="dark"] .tracker-header {
+    background: linear-gradient(135deg, #0D9488, #0891B2);
+}
+
+[data-theme="dark"] #tracker-body {
+    background: #0f172a;
+}
+
+[data-theme="dark"] .tracker-pedido {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .tracker-pedido.activo {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .tracker-pedido.historial {
+    border-color: #334155;
+}
+
+[data-theme="dark"] .tracker-pedido .pedido-id .numero {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .tracker-pedido .pedido-body .tienda {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .tracker-pedido .pedido-body .total {
+    color: #34d399;
+}
+
+[data-theme="dark"] .tracker-separator {
+    border-color: #334155;
+}
+
+[data-theme="dark"] .tracker-separator span {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .tracker-separator .badge-count {
+    background: #1e293b;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .tracker-empty .titulo {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .tracker-empty .subtitulo {
+    color: #64748b;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-contenido {
+    background: #0f172a;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-header .titulo {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-header .btn-cerrar {
+    background: #1e293b;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-header .btn-cerrar:hover {
+    background: #334155;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-timeline {
+    background: #1e293b;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-timeline .item .label {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-tienda {
+    background: #1e293b;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-tienda .fila .label {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-tienda .fila .valor {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-productos {
+    background: #1e293b;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-productos .item .nombre {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-productos .item .precio {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-acciones .btn-cerrar {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #334155;
+}
+
+[data-theme="dark"] #pedido-detalle-modal .modal-acciones .btn-cerrar:hover {
+    background: #334155;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 640px) {
+    #pedido-tracker-container {
+        bottom: 80px;
+        left: 12px;
+        right: 12px;
+        max-width: 100%;
+    }
+
+    .tracker-pedido {
+        padding: 14px !important;
+    }
+
+    .tracker-pedido .pedido-header {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    #pedido-detalle-modal .modal-contenido {
+        width: 96%;
+        padding: 16px;
+    }
+
+    #pedido-detalle-modal .modal-acciones .btn {
+        min-width: 80px;
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    #tracker-float-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+        bottom: 20px;
+        right: 20px;
+    }
+
+    #tracker-float-btn .badge {
+        width: 20px;
+        height: 20px;
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 400px) {
+    #tracker-body {
+        padding: 12px 14px;
+        max-height: 350px;
+    }
+
+    .tracker-pedido .pedido-id .fecha {
+        font-size: 0.65rem;
+    }
+
+    .pedido-estado-badge {
+        font-size: 0.6rem;
+        padding: 3px 8px;
+    }
+}
+
+/* ============================================================
+   UTILIDADES PARA EL BADGE DEL HEADER
+   ============================================================ */
+
+.pedidos-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ef4444;
+    color: white;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    border: 2px solid white;
+}
+
+.pedidos-badge.pulse {
+    animation: badgePulse 1.5s infinite;
+}
+
+/* ============================================================
+   NOTIFICACIONES FLOTANTES
+   ============================================================ */
+
+.tracker-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+}
+
+.tracker-notification.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+.tracker-notification .icono {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.tracker-notification .titulo {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #0f172a;
+}
+
+.tracker-notification .mensaje {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+[data-theme="dark"] .tracker-notification {
+    background: #0f172a;
+    border-color: #1e293b;
+}
+
+[data-theme="dark"] .tracker-notification .titulo {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .tracker-notification .mensaje {
+    color: #94a3b8;
+}

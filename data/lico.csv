@@ -1,0 +1,28 @@
+﻿categoria;subcategoria;marca;nombreBase;variante;presentacion;unidadBase;precio;imagenUrl;activo;volumenMl;pesoKg
+LICORES;CERVEZA;Aguila;Cerveza Aguila Light Lata 330ml;330ml;Lata;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783019347/Cerveza_Aguila_Light_Lata_330_ml_mu4kq7.webp;TRUE;330;
+LICORES;CERVEZA;Aguila;Cerveza Aguila Light Botella 330ml;330ml;Botella;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783019465/Cerveza_Aguila_Light_Botella_330ml_pf2roe.jpg;TRUE;330;
+LICORES;CERVEZA;Aguila;Cerveza Aguila Negra Lata 330ml;330ml;Lata;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783019543/Cerveza_Aguila_Negra_Lata_330ml_lyurm2.jpg;TRUE;330;
+LICORES;CERVEZA;Poker;Cerveza Poker Lata 330ml;330ml;Lata;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783019618/Cerveza_Poker_Lata_330ml_ajommw.jpg;TRUE;330;
+LICORES;CERVEZA;Poker;Cerveza Poker Botella 330ml;330ml;Botella;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783019698/Cerveza_Poker_Botella_330ml_w9ofnn.webp;TRUE;330;
+LICORES;CERVEZA;Costeñita;Cerveza Costeñita Botella 175ml;175ml;Botella;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783019778/Cerveza_Costeñita_Botella_175ml_xpbgfs.jpg;TRUE;175;
+LICORES;CERVEZA;Costeña;Cerveza Costeña Lata 330ml;330ml;Lata;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783019845/Cerveza_Costeña_Lata_330ml_ogddiq.jpg;TRUE;330;
+LICORES;CERVEZA;Costeña;Cerveza Costeña Botella 330ml;330ml;Botella;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783019925/Cerveza_Costeña_Botella_vfmvuf.jpg;TRUE;330;
+LICORES;CERVEZA;Colombia;Club Colombia Dorada 330ml;330ml;;ml;3000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783020007/Club_Colombia_Dorada_330ml_p1z6wp.png;TRUE;330;
+LICORES;RON;Extra;Corona Extra Botella 355ml;355ml;Botella;ml;3000;corona-extra-botella-355.jpg;TRUE;355;
+LICORES;CERVEZA;Ultra;Michelob Ultra Botella 330ml;330ml;Botella;ml;3000;michelob-ultra-botella-330.jpg;TRUE;330;
+LICORES;CERVEZA;Botella;Heineken Botella 330ml;330ml;Botella;ml;3000;heineken-botella-330.jpg;TRUE;330;
+LICORES;CERVEZA;Lata;Budweiser Lata 330ml;330ml;Lata;ml;3000;budweiser-lata-330.jpg;TRUE;330;
+LICORES;AGUARDIENTE;Antioqueño;Aguardiente Antioqueño 750ml;750ml;;ml;22000;aguardiente-antioqueno-750.jpg;TRUE;750;
+LICORES;AGUARDIENTE;Amarillo;Aguardiente Amarillo 750ml;750ml;;ml;48000;aguardiente-amarillo-750.jpg;TRUE;750;
+LICORES;RON;Medellin;Ron Medellin 750ml;750ml;;ml;65000;ron-medellin-750.jpg;TRUE;750;
+LICORES;RON;Viejo;Ron Viejo de Caldas 750ml;750ml;;ml;62000;ron-viejo-de-caldas-750.jpg;TRUE;750;
+LICORES;WHISKY;Parr;Old Parr 750ml;750ml;;ml;145000;old-parr-750.jpg;TRUE;750;
+LICORES;WHISKY;Deluxe;Buchanans Deluxe 750ml;750ml;;ml;180000;buchanans-deluxe-750.jpg;TRUE;750;
+LICORES;CERVEZA;and;Black and White 700ml;700ml;;ml;95000;black-and-white-700.jpg;TRUE;700;
+LICORES;WHISKY;Label;Red Label 700ml;700ml;;ml;120000;red-label-700.jpg;TRUE;700;
+LICORES;WHISKY;Daniels;Jack Daniels 700ml;700ml;;ml;170000;https://res.cloudinary.com/dc2pnkcvc/image/upload/v1783528169/Jack_Daniels_700ml_nzulk9.jpg;TRUE;700;
+LICORES;VODKA;Red;Smirnoff Red 750ml;750ml;;ml;85000;smirnoff-red-750.jpg;TRUE;750;
+LICORES;VODKA;Vodka;Absolut Vodka 750ml;750ml;;ml;115000;absolut-vodka-750.jpg;TRUE;750;
+LICORES;CERVEZA;Original;Baileys Original 750ml;750ml;;ml;95000;baileys-original-750.jpg;TRUE;750;
+LICORES;TEQUILA;Jose;Tequila Jose Cuervo 750ml;750ml;;ml;125000;tequila-jose-cuervo-750.jpg;TRUE;750;
+LICORES;VINO;Gato;Vino Gato Negro 750ml;750ml;;ml;45000;vino-gato-negro-750.jpg;TRUE;750;

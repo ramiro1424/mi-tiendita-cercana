@@ -1,0 +1,13 @@
+{
+  "name": "mi-tienda-cercana",
+  "private": true,
+  "scripts": {
+    "preview": "firebase hosting:channel:deploy prueba -m \"preview\"",
+    "deploy": "firebase deploy --only hosting"
+  },
+  "dependencies": {
+    "csv-parser": "^3.2.1",
+    "dotenv": "^17.2.2",
+    "firebase-admin": "^13.5.0"
+  }
+}

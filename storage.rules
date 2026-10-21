@@ -1,0 +1,54 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+    
+    function isValidImage() {
+      return request.resource.contentType.matches('image/(png|jpeg|jpg|webp|gif|svg)');
+    }
+    
+    function isValidSize() {
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+
+    // 📁 PRODUCTOS - Imágenes de productos
+    match /productos/{comercianteId}/{productoId}/{imagen} {
+      allow read: if true;
+      allow write: if isOwner(comercianteId) && isValidImage() && isValidSize();
+      allow delete: if isOwner(comercianteId);
+    }
+
+    // 👤 COMERCIANTES - Logos y portadas
+    match /comerciantes/{comercianteId}/{archivo} {
+      allow read: if true;
+      allow write: if isOwner(comercianteId) && isValidImage() && isValidSize();
+      allow delete: if isOwner(comercianteId);
+    }
+
+    // 👤 USUARIOS - Avatares
+    match /usuarios/{usuarioId}/avatar/{archivo} {
+      allow read: if true;
+      allow write: if isOwner(usuarioId) && isValidImage() && request.resource.size < 1 * 1024 * 1024;
+      allow delete: if isOwner(usuarioId);
+    }
+
+    // 📦 TEMPORALES
+    match /temp/{usuarioId}/{archivo} {
+      allow read: if isOwner(usuarioId);
+      allow write: if isOwner(usuarioId) && isValidImage() && isValidSize();
+      allow delete: if isOwner(usuarioId);
+    }
+
+    // 🛡️ DENEGAR TODO LO DEMÁS
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

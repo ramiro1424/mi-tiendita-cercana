@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Acceso Administrativo | Mi Tiendita Cercana</title>
+
+    <link
+        rel="stylesheet"
+        href="./acceso-administrador.css"
+    >
+
+</head>
+
+
+<body>
+
+    <main class="admin-login-page">
+
+        <section class="admin-login-card">
+
+            <div class="admin-icon">
+                🏢
+            </div>
+
+            <div class="admin-brand">
+                Mi Tiendita Cercana
+            </div>
+
+            <h1>
+                Torre de Control
+            </h1>
+
+            <p class="subtitle">
+                Acceso administrativo interno
+            </p>
+
+
+            <form id="admin-login-form">
+
+                <!-- =====================================================
+                     CORREO
+                ====================================================== -->
+
+                <div class="form-group">
+
+                    <label for="admin-email">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        id="admin-email"
+                        type="email"
+                        autocomplete="username"
+                        placeholder="Correo administrativo"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- =====================================================
+                     CONTRASEÑA
+                ====================================================== -->
+
+                <div class="form-group">
+
+                    <label for="admin-password">
+                        Contraseña
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            id="admin-password"
+                            type="password"
+                            autocomplete="current-password"
+                            placeholder="Contraseña"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="btn-mostrar-password"
+                            class="password-toggle"
+                            aria-label="Mostrar contraseña"
+                        >
+                            👁️
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+                     INGRESAR
+                ====================================================== -->
+
+                <button
+                    type="submit"
+                    id="btn-admin-login"
+                    class="btn-login"
+                >
+                    🔐 Ingresar a Torre de Control
+                </button>
+
+
+                <!-- =====================================================
+                     RECUPERAR CONTRASEÑA
+                ====================================================== -->
+
+                <button
+                    type="button"
+                    id="btn-recuperar-password"
+                    class="btn-recuperar"
+                >
+                    ¿Olvidaste tu contraseña?
+                </button>
+
+
+                <!-- =====================================================
+                     MENSAJES
+                ====================================================== -->
+
+                <div
+                    id="admin-login-status"
+                    class="login-status"
+                    role="alert"
+                ></div>
+
+            </form>
+
+
+            <!-- =========================================================
+                 AVISO DE SEGURIDAD
+            ========================================================== -->
+
+            <div class="security-note">
+
+                🔒 Área administrativa privada
+
+                <span>
+                    Este acceso no pertenece al área de clientes
+                    ni al área de comerciantes.
+                </span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =============================================================
+         JAVASCRIPT
+    ============================================================== -->
+
+    <script
+        type="module"
+        src="./acceso-administrador.js"
+    ></script>
+
+</body>
+
+</html>

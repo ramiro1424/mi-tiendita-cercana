@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mi Perfil - Mi Tiendita Cercana</title>
+
+  <meta name="theme-color" content="#0A7A70">
+  <meta name="description" content="Administra tu perfil en Mi Tiendita Cercana">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Leaflet CSS para el mapa -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    /* =========================================================
+       BASE
+    ========================================================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --verde-oscuro: #0A7A70;
+      --verde: #059669;
+      --verde-2: #10b981;
+      --verde-claro: #d1fae5;
+      --verde-suave: #ecfdf5;
+      --blanco: #ffffff;
+      --texto: #0f172a;
+      --texto-2: #475569;
+      --texto-3: #64748b;
+      --borde: #e2e8f0;
+      --sombra: 0 12px 40px rgba(10, 122, 112, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    html {
+      min-height: 100%;
+      background: #f8fafc;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--texto);
+      background: linear-gradient(145deg, #f0fdf4 0%, #ecfdf5 48%, #ecfeff 100%);
+      padding: 24px;
+      position: relative;
+    }
+
+    button, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    .hidden { display: none !important; }
+
+    /* =========================================================
+       CONTENEDOR
+    ========================================================= */
+    .perfil-page {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: calc(100vh - 48px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .perfil-container {
+      width: 100%;
+      max-width: 620px;
+      padding: 34px 30px;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 28px;
+      box-shadow: var(--sombra);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      position: relative;
+    }
+
+    .perfil-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #0A7A70, #10b981, #0A7A70);
+      border-radius: 28px 28px 0 0;
+    }
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+    .perfil-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 16px;
+    }
+
+    .perfil-avatar {
+      width: 92px;
+      height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0A7A70, #10b981);
+      color: white;
+      font-size: 2.2rem;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(10, 122, 112, 0.25);
+      transition: transform 0.2s;
+    }
+
+    .perfil-avatar:hover {
+      transform: scale(1.02);
+    }
+
+    .avatar-status {
+      position: absolute;
+      right: 2px;
+      bottom: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 3px solid white;
+      box-shadow: 0 2px 6px rgba(34,197,94,0.25);
+    }
+
+    .logo-text {
+      margin-bottom: 4px;
+    }
+
+    .logo-text .mi {
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: #0A7A70;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text .tiendita {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0A7A70;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text .cercana {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #10b981;
+      letter-spacing: 0.3em;
+      margin-top: -4px;
+    }
+
+    .perfil-header p {
+      color: var(--texto-3);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    .perfil-tipo {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: var(--verde-suave);
+      color: #0A7A70;
+      border: 1px solid rgba(16,185,129,0.12);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .perfil-tipo i {
+      font-size: 0.8rem;
+    }
+
+    /* =========================================================
+       MENSAJES
+    ========================================================= */
+    .mensaje {
+      display: none;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      animation: aparecer .25s ease;
+    }
+
+    .mensaje-exito {
+      background: var(--verde-claro);
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    .mensaje-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================================
+       SECCIONES
+    ========================================================= */
+    .perfil-section {
+      margin-bottom: 20px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.6);
+      transition: border-color 0.2s;
+    }
+
+    .perfil-section:hover {
+      border-color: rgba(16, 185, 129, 0.15);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: #0A7A70;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .section-title i {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--verde-claro);
+      color: #0A7A70;
+      font-size: 0.9rem;
+    }
+
+    /* =========================================================
+       DATOS (VISTA)
+    ========================================================= */
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(203, 213, 225, 0.3);
+    }
+
+    .data-row:last-child {
+      border-bottom: none;
+    }
+
+    .data-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--texto-2);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .data-label i {
+      width: 18px;
+      color: #10b981;
+      font-size: 0.9rem;
+    }
+
+    .data-value {
+      max-width: 55%;
+      text-align: right;
+      color: var(--texto);
+      font-size: 0.92rem;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .email-lock-icon {
+      margin-left: 4px;
+      color: #94a3b8;
+      font-size: 0.7rem;
+    }
+
+    /* =========================================================
+       FORMULARIO (EDICIÓN)
+    ========================================================= */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--texto-2);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .form-group label i {
+      width: 18px;
+      margin-right: 4px;
+      color: #10b981;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: var(--texto);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #10b981;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-group input[readonly] {
+      background: #f1f5f9;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    .form-group textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    .helper-text {
+      margin-top: 6px;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    /* =========================================================
+       UBICACIÓN CON MAPA Y CONTROLES
+    ========================================================= */
+    .location-card {
+      position: relative;
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--verde-suave);
+      border: 1px solid rgba(16, 185, 129, 0.12);
+      overflow: hidden;
+    }
+
+    .location-deco {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      opacity: 0.12;
+    }
+
+    .location-deco span {
+      position: absolute;
+      font-size: 2.2rem;
+      color: #0A7A70;
+      user-select: none;
+      animation: flotarDeco 18s infinite ease-in-out;
+    }
+
+    .location-deco span:nth-child(1) { top: 5%; left: 5%; animation-delay: 0s; font-size: 2.8rem; }
+    .location-deco span:nth-child(2) { top: 8%; right: 8%; animation-delay: -3s; font-size: 2.4rem; }
+    .location-deco span:nth-child(3) { bottom: 12%; left: 8%; animation-delay: -6s; font-size: 3rem; }
+    .location-deco span:nth-child(4) { bottom: 18%; right: 5%; animation-delay: -9s; font-size: 2.6rem; }
+    .location-deco span:nth-child(5) { top: 45%; left: 2%; animation-delay: -12s; font-size: 2rem; }
+    .location-deco span:nth-child(6) { top: 55%; right: 2%; animation-delay: -15s; font-size: 2.2rem; }
+    .location-deco span:nth-child(7) { top: 25%; left: 45%; animation-delay: -5s; font-size: 2rem; opacity: 0.06; }
+    .location-deco span:nth-child(8) { bottom: 30%; right: 45%; animation-delay: -10s; font-size: 2.2rem; opacity: 0.06; }
+    .location-deco span:nth-child(9) { top: 70%; left: 20%; animation-delay: -7s; font-size: 1.8rem; opacity: 0.08; }
+    .location-deco span:nth-child(10) { bottom: 5%; left: 30%; animation-delay: -13s; font-size: 2rem; opacity: 0.08; }
+    .location-deco span:nth-child(11) { top: 15%; left: 70%; animation-delay: -2s; font-size: 1.8rem; }
+    .location-deco span:nth-child(12) { bottom: 40%; left: 55%; animation-delay: -8s; font-size: 1.8rem; }
+
+    @keyframes flotarDeco {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-8px) rotate(4deg); }
+      50% { transform: translateY(6px) rotate(-3deg); }
+      75% { transform: translateY(-4px) rotate(2deg); }
+    }
+
+    .location-main {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .location-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: #10b981;
+      color: white;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+
+    .location-text strong {
+      display: block;
+      color: #065f46;
+      font-size: 0.88rem;
+    }
+
+    .location-text span {
+      color: var(--texto-3);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    /* Controles de ubicación */
+    .location-controls {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .btn-ubicacion {
+      width: 100%;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid #10b981;
+      border-radius: 12px;
+      background: white;
+      color: #0A7A70;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-ubicacion:hover {
+      background: #10b981;
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.15);
+    }
+
+    .btn-ubicacion:disabled {
+      opacity: 0.6;
+      cursor: wait;
+      transform: none;
+    }
+
+    .btn-ubicacion.btn-secondary-location {
+      border-color: #94a3b8;
+      color: #475569;
+    }
+
+    .btn-ubicacion.btn-secondary-location:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+      border-color: #64748b;
+    }
+
+    /* Mapa dentro del perfil */
+    .map-wrapper {
+      position: relative;
+      z-index: 1;
+      margin-top: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #e2e8f0;
+      height: 220px;
+      display: none;
+    }
+
+    .map-wrapper.visible {
+      display: block;
+    }
+
+    #map-perfil {
+      width: 100%;
+      height: 100%;
+      min-height: 220px;
+    }
+
+    .ubicacion-estado {
+      display: none;
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      color: #0A7A70;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .coordenadas {
+      display: none;
+      position: relative;
+      z-index: 1;
+      margin-top: 6px;
+      color: #94a3b8;
+      font-size: 0.7rem;
+      text-align: center;
+    }
+
+    .ubicacion-guardada {
+      display: none;
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: var(--verde-claro);
+      color: #065f46;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    /* =========================================================
+       BOTONES
+    ========================================================= */
+    .btn-primary,
+    .btn-secondary {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .btn-primary {
+      width: 100%;
+      border: none;
+      background: linear-gradient(135deg, #0A7A70, #10b981);
+      color: white;
+      box-shadow: 0 6px 20px rgba(10, 122, 112, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(10, 122, 112, 0.25);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: wait;
+      transform: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background: white;
+      color: #475569;
+    }
+
+    .btn-secondary:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .acciones {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 12px;
+    }
+
+    .btn-volver {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 12px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all .2s ease;
+    }
+
+    .btn-volver:hover {
+      color: #0A7A70;
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    /* =========================================================
+       PRIVACIDAD
+    ========================================================= */
+    .privacy-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+
+    .privacy-note i {
+      margin-top: 2px;
+      color: #10b981;
+    }
+
+    /* =========================================================
+       LOADING
+    ========================================================= */
+    .perfil-loading {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(6px);
+    }
+
+    .loading-card {
+      padding: 24px 28px;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
+      text-align: center;
+    }
+
+    .spinner {
+      width: 38px;
+      height: 38px;
+      margin: 0 auto 12px;
+      border: 3px solid #d1fae5;
+      border-top-color: #0A7A70;
+      border-radius: 50%;
+      animation: girar .7s linear infinite;
+    }
+
+    .loading-card strong {
+      color: #334155;
+      font-size: 0.85rem;
+    }
+
+    @keyframes girar {
+      to { transform: rotate(360deg); }
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      .perfil-page { min-height: calc(100vh - 24px); }
+      .perfil-container { padding: 22px 16px; border-radius: 24px; }
+      .logo-text .mi,
+      .logo-text .tiendita { font-size: 1.3rem; }
+      .logo-text .cercana { font-size: 1rem; letter-spacing: 0.2em; }
+      .perfil-avatar,
+      .avatar-wrapper { width: 72px; height: 72px; }
+      .perfil-avatar { font-size: 1.7rem; }
+      .perfil-section { padding: 14px 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: auto; }
+      .data-row { align-items: flex-start; }
+      .data-value { max-width: 55%; }
+      .acciones { grid-template-columns: 1fr; }
+      .location-deco span { font-size: 1.6rem !important; opacity: 0.08 !important; }
+      .location-deco span:nth-child(7),
+      .location-deco span:nth-child(8),
+      .location-deco span:nth-child(11),
+      .location-deco span:nth-child(12) { display: none; }
+      .map-wrapper { height: 180px; }
+      #map-perfil { min-height: 180px; }
+    }
+
+    @media (max-width: 390px) {
+      .perfil-container { padding: 16px 12px; }
+      .perfil-section { padding: 12px; }
+      .data-label { font-size: 0.78rem; }
+      .data-value { font-size: 0.82rem; }
+      .location-deco span { font-size: 1.2rem !important; }
+      .map-wrapper { height: 150px; }
+      #map-perfil { min-height: 150px; }
+    }
+
+    /* =========================================================
+       ADMINISTRACIÓN DE CUENTA  ← NUEVO
+    ========================================================= */
+    .admin-cuenta {
+      border: 1px solid rgba(239, 68, 68, 0.18);
+      background: #fffafa;
+    }
+
+    .admin-cuenta .section-title i {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .admin-cuenta-texto {
+      color: var(--texto-3);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .btn-peligro {
+      width: 100%;
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid #ef4444;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #b91c1c;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .btn-peligro:hover {
+      background: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-peligro:active {
+      transform: scale(0.98);
+    }
+
+    .btn-peligro:disabled {
+      opacity: 0.6;
+      cursor: wait;
+      transform: none;
+    }
+
+    /* Modal de confirmación */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      animation: aparecer .2s ease;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 26px 22px 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+      animation: aparecer .25s ease;
+    }
+
+    .modal-card .modal-icono {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 1.5rem;
+    }
+
+    .modal-card h3 {
+      text-align: center;
+      color: #0f172a;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .modal-card p {
+      text-align: center;
+      color: #475569;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+
+    .modal-acciones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .modal-acciones .btn-secondary,
+    .modal-acciones .btn-confirmar-eliminar {
+      min-height: 44px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all .2s ease;
+    }
+
+    .modal-acciones .btn-secondary {
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #475569;
+    }
+
+    .modal-acciones .btn-secondary:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .btn-confirmar-eliminar {
+      border: none;
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    .btn-confirmar-eliminar:hover {
+      background: #dc2626;
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-confirmar-eliminar:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    @media (max-width: 480px) {
+      .modal-acciones { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       LOADING
+  ====================================================== -->
+  <div id="perfil-loading" class="perfil-loading">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <strong>Cargando tu perfil…</strong>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       PÁGINA
+  ====================================================== -->
+  <main class="perfil-page">
+
+    <section class="perfil-container">
+
+      <!-- HEADER -->
+      <header class="perfil-header">
+
+        <div class="avatar-wrapper">
+          <div id="perfil-avatar" class="perfil-avatar">U</div>
+          <div class="avatar-status"></div>
+        </div>
+
+        <!-- Logo estilizado -->
+        <div class="logo-text">
+          <span class="mi">Mi</span><span class="tiendita">Tiendita</span>
+          <span class="cercana">CERCANA</span>
+        </div>
+
+        <p>Administra la información con la que utilizas Mi Tiendita Cercana.</p>
+
+        <div id="perfil-tipo" class="perfil-tipo">
+          <i class="fas fa-user"></i>
+          <span>Usuario</span>
+        </div>
+
+      </header>
+
+      <!-- MENSAJES -->
+      <div id="mensaje-exito" class="mensaje mensaje-exito" role="status" aria-live="polite"></div>
+      <div id="mensaje-error" class="mensaje mensaje-error" role="alert" aria-live="assertive"></div>
+
+      <!-- =================================================
+           MODO VISTA
+      ================================================== -->
+      <div id="viewMode">
+
+        <section class="perfil-section">
+          <div class="section-title"><i class="fas fa-user"></i> Información personal</div>
+
+          <div class="data-row">
+            <span class="data-label"><i class="fas fa-user"></i> Nombres</span>
+            <span class="data-value" id="view-nombres">—</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label"><i class="fas fa-user"></i> Apellidos</span>
+            <span class="data-value" id="view-apellidos">—</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label"><i class="fas fa-phone"></i> Teléfono</span>
+            <span class="data-value" id="view-telefono">—</span>
+          </div>
+        </section>
+
+        <section class="perfil-section">
+          <div class="section-title"><i class="fas fa-envelope"></i> Cuenta</div>
+
+          <div class="data-row">
+            <span class="data-label"><i class="fas fa-envelope"></i> Correo electrónico</span>
+            <span class="data-value" id="view-email">
+              — <i class="fas fa-lock email-lock-icon" title="Correo de acceso"></i>
+            </span>
+          </div>
+        </section>
+
+        <!-- =============================================
+             UBICACIÓN CON DECORACIÓN DE MERCADO
+        ============================================= -->
+        <section class="perfil-section">
+          <div class="section-title"><i class="fas fa-location-dot"></i> Mi ubicación</div>
+
+          <div class="location-card">
+            <!-- Emojis decorativos -->
+            <div class="location-deco">
+              <span>🛒</span><span>🍾</span><span>🍎</span><span>🥫</span>
+              <span>🧃</span><span>📦</span><span>🥬</span><span>🧺</span>
+              <span>🍇</span><span>🥩</span><span>🧴</span><span>🏷️</span>
+            </div>
+
+            <div class="location-main">
+              <div class="location-icon"><i class="fas fa-location-crosshairs"></i></div>
+              <div class="location-text">
+                <strong>Ubicación registrada</strong>
+                <span id="view-ubicacion">No has guardado tu ubicación aún.</span>
+              </div>
+            </div>
+
+            <div id="view-ubicacion-detalle" class="ubicacion-guardada"></div>
+          </div>
+        </section>
+
+        <button type="button" id="btnEditar" class="btn-primary">
+          <i class="fas fa-pen"></i> Editar mi perfil
+        </button>
+
+        <!-- =============================================
+             ADMINISTRACIÓN DE CUENTA  ← NUEVO
+        ============================================= -->
+        <section class="perfil-section admin-cuenta" style="margin-top:20px;">
+          <div class="section-title">
+            <i class="fas fa-gear"></i> Administración de cuenta
+          </div>
+
+          <p class="admin-cuenta-texto">
+            Si ya no deseas utilizar Mi Tiendita Cercana, puedes eliminar
+            permanentemente tu cuenta y los datos personales asociados.
+          </p>
+
+          <button type="button" id="btnEliminarCuenta" class="btn-peligro">
+            <i class="fas fa-trash-can"></i> Eliminar mi cuenta
+          </button>
+        </section>
+
+      </div>
+
+      <!-- =================================================
+           MODO EDICIÓN
+      ================================================== -->
+      <div id="editMode" class="hidden">
+
+        <form id="formPerfil" autocomplete="off" novalidate>
+
+          <section class="perfil-section">
+            <div class="section-title"><i class="fas fa-pencil-alt"></i> Editar información</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="nombres"><i class="fas fa-user"></i> Nombres</label>
+                <input type="text" id="nombres" placeholder="Tus nombres" autocomplete="given-name" maxlength="80" required>
+              </div>
+
+              <div class="form-group">
+                <label for="apellidos"><i class="fas fa-user"></i> Apellidos</label>
+                <input type="text" id="apellidos" placeholder="Tus apellidos" autocomplete="family-name" maxlength="80" required>
+              </div>
+
+              <div class="form-group full">
+                <label for="telefono"><i class="fas fa-phone"></i> Número de celular</label>
+                <input type="tel" id="telefono" placeholder="Ej: 3001234567" autocomplete="tel" maxlength="20">
+                <div class="helper-text">Se utilizará para contactarte sobre tus pedidos.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="perfil-section">
+            <div class="section-title"><i class="fas fa-envelope"></i> Cuenta</div>
+
+            <div class="form-group">
+              <label for="email"><i class="fas fa-envelope"></i> Correo electrónico</label>
+              <input type="email" id="email" readonly>
+              <div class="helper-text"><i class="fas fa-lock"></i> Este es el correo utilizado para iniciar sesión. No se modifica desde este perfil.</div>
+            </div>
+          </section>
+
+          <!-- =============================================
+               UBICACIÓN CON MAPA - VERSIÓN COMPLETA
+          ============================================= -->
+          <section class="perfil-section">
+            <div class="section-title"><i class="fas fa-location-dot"></i> Mi ubicación</div>
+
+            <div class="location-card">
+              <!-- Emojis decorativos -->
+              <div class="location-deco">
+                <span>🛒</span><span>🍾</span><span>🍎</span><span>🥫</span>
+                <span>🧃</span><span>📦</span><span>🥬</span><span>🧺</span>
+                <span>🍇</span><span>🥩</span><span>🧴</span><span>🏷️</span>
+              </div>
+
+              <div class="location-main">
+                <div class="location-icon"><i class="fas fa-location-crosshairs"></i></div>
+                <div class="location-text">
+                  <strong>Ubicación actual</strong>
+                  <span id="edit-ubicacion-texto">Se utiliza para mostrarte comercios cercanos.</span>
+                </div>
+              </div>
+
+              <!-- Dirección manual -->
+              <div class="form-group" style="position:relative;z-index:1;margin-top:10px;">
+                <label for="direccion"><i class="fas fa-map-pin"></i> Dirección</label>
+                <input type="text" id="direccion" placeholder="Ej: Calle 123 #45-67, Barrio, Ciudad" maxlength="200">
+                <div class="helper-text">Escribe tu dirección manualmente o usa el mapa para seleccionarla.</div>
+              </div>
+
+              <!-- Controles de ubicación -->
+              <div class="location-controls">
+                <button type="button" id="btn-usar-gps" class="btn-ubicacion">
+                  <i class="fas fa-satellite-dish"></i> Usar mi ubicación actual (GPS)
+                </button>
+
+                <button type="button" id="btn-mostrar-mapa" class="btn-ubicacion btn-secondary-location">
+                  <i class="fas fa-map"></i> Seleccionar en el mapa
+                </button>
+
+                <button type="button" id="btn-ocultar-mapa" class="btn-ubicacion btn-secondary-location" style="display:none;">
+                  <i class="fas fa-times"></i> Cerrar mapa
+                </button>
+              </div>
+
+              <!-- Mapa -->
+              <div class="map-wrapper" id="map-wrapper">
+                <div id="map-perfil"></div>
+                <div style="position:relative;z-index:1;padding:6px 12px;background:rgba(255,255,255,0.9);font-size:0.7rem;color:#6b7280;text-align:center;border-top:1px solid #e5e7eb;">
+                  <i class="fas fa-hand-pointer"></i> Arrastra el marcador para ajustar tu ubicación
+                </div>
+              </div>
+
+              <!-- Estado y coordenadas -->
+              <div id="ubicacion-estado" class="ubicacion-estado"></div>
+              <div id="coordenadas" class="coordenadas"></div>
+              <div id="ubicacion-guardada" class="ubicacion-guardada"></div>
+
+              <!-- Campos ocultos para coordenadas -->
+              <input type="hidden" id="latitud" value="">
+              <input type="hidden" id="longitud" value="">
+            </div>
+          </section>
+
+          <div class="acciones">
+            <button type="button" id="btnCancelar" class="btn-secondary">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="submit" id="btnGuardarPerfil" class="btn-primary">
+              <i class="fas fa-save"></i> <span id="textoGuardar">Guardar cambios</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+      <!-- PRIVACIDAD -->
+      <div class="privacy-note">
+        <i class="fas fa-shield-halved"></i>
+        <span>Tu información de perfil se guarda asociada únicamente a tu cuenta. La ubicación se utiliza para ayudarte a encontrar comercios cercanos y para la entrega de tus pedidos.</span>
+      </div>
+
+      <!-- VOLVER -->
+      <a href="./productos.html" class="btn-volver">
+        <i class="fas fa-arrow-left"></i> Volver a Mi Tiendita
+      </a>
+
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       SCRIPTS
+  ====================================================== -->
+  <!-- Leaflet JS para el mapa -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script type="module" src="./js/firebase-config.js?v=3"></script>
+  <script type="module" src="./js/auth.js?v=3"></script>
+  <script type="module" src="./js/ui.js?v=3"></script>
+  <script type="module" src="./js/perfil.js?v=11"></script>
+
+</body>
+</html>
