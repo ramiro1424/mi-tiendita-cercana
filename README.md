@@ -1,4 +1,6 @@
-![Logo de Mi Tiendita Cercana](assets/logo-mtc.png)
+<p align="center">
+  <img src="assets/logo-mtc.png" alt="Logo de Mi Tiendita Cercana" width="220">
+</p>
 
 # Mi Tiendita Cercana
 
