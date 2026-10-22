@@ -1,3 +1,5 @@
+![Logo de Mi Tiendita Cercana](assets/logo-mtc.png)
+
 # Mi Tiendita Cercana
 
 **Todo a un paso de ti.**
