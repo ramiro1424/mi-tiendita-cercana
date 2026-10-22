@@ -12,6 +12,14 @@ Mi Tiendita Cercana es una plataforma tecnológica en desarrollo que busca conec
 
 Ayudar a los pequeños y medianos comercios a fortalecer su presencia digital, acercarse a nuevos clientes y gestionar sus productos mediante herramientas tecnológicas accesibles.
 
+## ¿Qué hace diferente a Mi Tiendita Cercana?
+
+Mi Tiendita Cercana busca acercar la tecnología a los pequeños y medianos comercios, ayudándolos a tener presencia digital y conectarse con clientes de su entorno.
+- **Cercanía: facilita el descubrimiento de comercios próximos.**
+- **Autonomía: cada comerciante administra los precios de su propia tienda.**
+- **Digitalización: permite mostrar catálogos y recibir pedidos mediante una plataforma digital.**
+- **Oportunidad de crecimiento: busca abrir nuevas posibilidades para que los comercios fortalezcan su presencia en el mercado.**
+
 ## Funcionalidades de la plataforma
 
 - **Comercios cercanos:** facilitar que los clientes encuentren tiendas próximas a su ubicación.
